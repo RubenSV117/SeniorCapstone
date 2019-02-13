@@ -7,6 +7,16 @@ using UnityEngine;
 
 /// <summary>
 /// This class wraps around the Firebase Authentication methods and provides debugging for each task.
+/// Use cases:
+///     Register User
+///     Login User
+///     Logout User
+///     Retrieve User
+///     Link Facebook Account
+///     
+/// The class also implements the Observable pattern by accepting an action to execute on login or logout
+/// with the methods OnLogin, OnLogout, and the generic OnEvent that accepts an 
+/// AuthenticationEventHandler object which handles both logout and login events.
 /// </summary>
 public class Authenticator
 {
@@ -17,7 +27,10 @@ public class Authenticator
 
     public Authenticator()
     {
+        // Retrieve default auth instance based on config file
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+
+        // attach state change listener for login and logout events
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
     }
@@ -80,7 +93,7 @@ public class Authenticator
 
     /// <summary>
     /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account
-    /// with the currently logged in user.
+    /// with the currently logged in user. If the User does not have an account, an account is automatically created for them.
     /// </summary>
     /// <param name="accessToken">The accessToken returned from Facebook Authentication.</param>
     /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
@@ -130,10 +143,13 @@ public class Authenticator
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
-            return newUser
+            return newUser;
         });
     }
 
+    /// <summary>
+    /// Signs out the currently logged in user by clearing all authentication data. This method never fails and succeeds immediately.
+    /// </summary>
     public void SignOut()
     {
         auth.SignOut();
@@ -143,7 +159,7 @@ public class Authenticator
     /// Attaches a listener that is called whenever a login event is fired.
     /// </summary>
     /// <param name="loginHandler">An Action that is called with the logged in User as a parameter when a login event occurs.</param>
-    public void onLogin(Action<Firebase.Auth.FirebaseUser> loginHandler)
+    public void OnLogin(Action<Firebase.Auth.FirebaseUser> loginHandler)
     {
         loginListeners.Add(loginHandler);
     }
@@ -152,11 +168,25 @@ public class Authenticator
     /// Attaches a logout listener that is called whenever a logout event is fired
     /// </summary>
     /// <param name="logoutHandler">An Action that is called with the logged out User as a parameter when a logout evnent occurs.</param>
-    public void onLogout(Action<Firebase.Auth.FirebaseUser> logoutHandler)
+    public void OnLogout(Action<Firebase.Auth.FirebaseUser> logoutHandler)
     {
         logoutListeners.Add(logoutHandler);
     }
 
+    /// <summary>
+    /// Attaches an AuthenticationEventHandler which listens for login and logout events.
+    /// </summary>
+    /// <param name="eventHandler">An object which implements the AuthenticationEventHandler interface</param>
+    public void OnEvent(AuthenticationEventHandler eventHandler)
+    {
+        OnLogin(eventHandler.onLogin);
+        OnLogout(eventHandler.onLogout);
+    }
+
+    /// <summary>
+    /// This internal method listens for authentication state changes and upon detecting a change, notifies either the attached
+    /// login listeners or the logout listeners depending on the event.
+    /// </summary>
     private void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
         if (auth.CurrentUser != user)
@@ -182,4 +212,24 @@ public class Authenticator
         }
     }
 
+}
+
+/// <summary>
+/// An event handler that listens for both login and logout events.
+/// Register an object that implements this inteface using Authenticator#OnEvent
+/// to begin handling events.
+/// </summary>
+public interface AuthenticationEventHandler
+{
+    /// <summary>
+    /// This method is called when a login occurs.
+    /// </summary>
+    /// <param name="user">The user that successfully logged in. Never null.</param>
+    void onLogin(FirebaseUser user);
+
+    /// <summary>
+    /// This method is called when a logout occurs.
+    /// </summary>
+    /// <param name="user">The user that successfully logged out.</param>
+    void onLogout(FirebaseUser user);
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "547154209287",
+    "firebase_url": "https://regen-66cf8.firebaseio.com",
+    "project_id": "regen-66cf8",
+    "storage_bucket": "regen-66cf8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547154209287:android:382fa31dc70766cf",
+        "android_client_info": {
+          "package_name": "com.moonmoon.regen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547154209287-0vkuvn21v527783ceq8ls2h3m6h6sifq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCF0XgdKQWL7lSwKX5xKgOg5E2nxo5G5i4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

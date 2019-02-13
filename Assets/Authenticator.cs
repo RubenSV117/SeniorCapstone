@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Firebase.Auth;
 using UnityEngine;
 
 /// <summary>
@@ -56,7 +57,46 @@ public class Authenticator
     /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
     public Task SignInUserWithEmail(string email, string password)
     {
-        return auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
+        return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
+    }
+
+    /// <summary>
+    /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account
+    /// with the currently logged in user.
+    /// </summary>
+    /// <param name="accessToken">The accessToken returned from Facebook Authentication.</param>
+    /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
+    public Task SignInUserWithFacebook(string accessToken)
+    {
+        Credential credential = FacebookAuthProvider.GetCredential(accessToken);
+        if (auth.CurrentUser != null)
+        {
+            return auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWith(task => {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("LinkWithCredentialAsync was canceled.");
+                    return;
+                }
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("LinkWithCredentialAsync encountered an error: " + task.Exception);
+                    return;
+                }
+
+                Firebase.Auth.FirebaseUser newUser = task.Result;
+                Debug.LogFormat("Credentials successfully linked to Firebase user: {0} ({1})",
+                    newUser.DisplayName, newUser.UserId);
+            });
+        }
+        else
+        {
+            return SignInWithCredentials(credential);
+        }
+    }
+
+    private Task SignInWithCredentials(Credential credential)
+    {
+        return auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
             if (task.IsCanceled)
             {
                 Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
@@ -72,6 +112,11 @@ public class Authenticator
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
         });
+    }
+
+    public void SignOut()
+    {
+        auth.SignOut();
     }
 
     /// <summary>

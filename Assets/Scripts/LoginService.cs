@@ -17,8 +17,8 @@ using UnityEngine;
 ///     Link Facebook Account
 ///     
 /// The class also implements the Observable pattern by accepting an action to execute on login or logout
-/// with the methods OnLogin, OnLogout, and the generic OnEvent that accepts an 
-/// AuthenticationEventHandler object which handles both logout and login events.
+/// with the methods AddLoginEventHandler, AddLogoutEventHandler, and the generic AddEventHandler that accepts an 
+/// ILoginServiceEventHandler object which handles both logout and login events.
 /// </summary>
 public class LoginService
 {
@@ -29,6 +29,8 @@ public class LoginService
 
     public LoginService()
     {
+        // lists containing eventHandlers.
+        // Not using the dotNET standard for events because it's unintuitive and inconvenient
         loginListeners = new LinkedList<Action<Firebase.Auth.FirebaseUser>>();
         logoutListeners = new LinkedList<Action<Firebase.Auth.FirebaseUser>>();
 
@@ -176,7 +178,7 @@ public class LoginService
     /// Attaches a listener that is called whenever a login event is fired.
     /// </summary>
     /// <param name="loginHandler">An Action that is called with the logged in User as a parameter when a login event occurs.</param>
-    public void OnLogin(Action<Firebase.Auth.FirebaseUser> loginHandler)
+    public void AddLoginEventHandler(Action<Firebase.Auth.FirebaseUser> loginHandler)
     {
         loginListeners.Add(loginHandler);
     }
@@ -185,7 +187,7 @@ public class LoginService
     /// Attaches a logout listener that is called whenever a logout event is fired
     /// </summary>
     /// <param name="logoutHandler">An Action that is called with the logged out User as a parameter when a logout evnent occurs.</param>
-    public void OnLogout(Action<Firebase.Auth.FirebaseUser> logoutHandler)
+    public void AddLogoutEventHandler(Action<Firebase.Auth.FirebaseUser> logoutHandler)
     {
         logoutListeners.Add(logoutHandler);
     }
@@ -194,10 +196,10 @@ public class LoginService
     /// Attaches an AuthenticationEventHandler which listens for login and logout events.
     /// </summary>
     /// <param name="eventHandler">An object which implements the AuthenticationEventHandler interface</param>
-    public void OnEvent(ILoginServiceEventHandler eventHandler)
+    public void AddEventHandler(ILoginServiceEventHandler eventHandler)
     {
-        OnLogin(eventHandler.OnLogin);
-        OnLogout(eventHandler.OnLogout);
+        AddLoginEventHandler(eventHandler.OnLogin);
+        AddLogoutEventHandler(eventHandler.OnLogout);
     }
 
     /// <summary>
@@ -233,7 +235,7 @@ public class LoginService
 
 /// <summary>
 /// An event handler that listens for both login and logout events.
-/// Register an object that implements this inteface using Authenticator#OnEvent
+/// Register an object that implements this inteface using Authenticator#AddEventHandler
 /// to begin handling events.
 /// </summary>
 public interface ILoginServiceEventHandler

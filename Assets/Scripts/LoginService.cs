@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Firebase;
 using Firebase.Auth;
 using UnityEngine;
 
@@ -19,14 +20,14 @@ using UnityEngine;
 /// with the methods OnLogin, OnLogout, and the generic OnEvent that accepts an 
 /// AuthenticationEventHandler object which handles both logout and login events.
 /// </summary>
-public class LoginManager
+public class LoginService
 {
     private readonly Firebase.Auth.FirebaseAuth auth;
     private Firebase.Auth.FirebaseUser user;
     private ICollection<Action<Firebase.Auth.FirebaseUser>> loginListeners;
     private ICollection<Action<Firebase.Auth.FirebaseUser>> logoutListeners;
 
-    public LoginManager()
+    public LoginService()
     {
         loginListeners = new LinkedList<Action<Firebase.Auth.FirebaseUser>>();
         logoutListeners = new LinkedList<Action<Firebase.Auth.FirebaseUser>>();
@@ -46,15 +47,12 @@ public class LoginManager
     /// </summary>
     private void Example()
     {
-        RegisterUserWithEmail("email", "password").ContinueWith(user =>
+        RegisterUserWithEmail("email", "password").WithSuccess(user =>
         {
-            if (user == null)
-            {
-            // code to handle if there is no user
-            // here is when the task fails
-            }
-            // code to handle if task succeeds
-
+            // handle success here
+        }).WithFailure( (FirebaseException exception) =>
+        {
+            // handle failure here   
         });
     }
 
@@ -75,24 +73,26 @@ public class LoginManager
     /// <returns>An asynchronous task that results in a nullable Firebase.Auth.FirebaseUser.</returns>
     public Task<FirebaseUser> RegisterUserWithEmail(string email, string password)
     {
-        return auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith<FirebaseUser>(task =>
+        var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+        task.ContinueWith(t =>
         {
-            if (task.IsCanceled)
+            if (t.IsCanceled)
             {
                 Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
-                return null;
+                return;
             }
-            if (task.IsFaulted)
+            if (t.IsFaulted)
             {
-                Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                return null;
+                Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + t.Exception.GetBaseException());
+                return;
             }
-        // Firebase user has been created.
-        Firebase.Auth.FirebaseUser newUser = task.Result;
+            // Firebase user has been created.
+            Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
-            return newUser;
+            return;
         });
+        return task;
     }
 
     /// <summary>
@@ -194,7 +194,7 @@ public class LoginManager
     /// Attaches an AuthenticationEventHandler which listens for login and logout events.
     /// </summary>
     /// <param name="eventHandler">An object which implements the AuthenticationEventHandler interface</param>
-    public void OnEvent(IAuthenticationEventHandler eventHandler)
+    public void OnEvent(ILoginServiceEventHandler eventHandler)
     {
         OnLogin(eventHandler.OnLogin);
         OnLogout(eventHandler.OnLogout);
@@ -236,7 +236,7 @@ public class LoginManager
 /// Register an object that implements this inteface using Authenticator#OnEvent
 /// to begin handling events.
 /// </summary>
-public interface IAuthenticationEventHandler
+public interface ILoginServiceEventHandler
 {
     /// <summary>
     /// This method is called when a login occurs.

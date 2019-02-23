@@ -167,7 +167,7 @@ public class LoginService
             }
             if (task.IsFaulted)
             {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                Debug.Log("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
                 return null;
             }
 

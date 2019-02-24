@@ -13,6 +13,9 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 {
     [SerializeField] private GameObject canvas;
 
+    [SerializeField] private GameObject emailLoginObject;
+    [SerializeField] private GameObject loginButtonsObject;
+
     private string email;
     private string passsword;
 
@@ -30,9 +33,20 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         passsword = value;
     }
 
-    public void LogIn()
+    public void LogInWithEmail()
     {
         LoginService.Instance.SignInUserWithEmail(email, passsword);
+    }
+
+    public void LogInWithFB()
+    {
+        FacebookManager.Instance.Login();
+    }
+
+    public void EnableEmailLogin()
+    {
+        loginButtonsObject.SetActive(false);
+        emailLoginObject.SetActive(true);
     }
 
     public void Enable()

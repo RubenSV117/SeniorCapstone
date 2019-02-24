@@ -43,6 +43,11 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         FacebookManager.Instance.Login();
     }
 
+    public void RecoverEmailPassword()
+    {
+        //LoginService.Instance.
+    }
+
     public void EnableEmailLogin()
     {
         loginButtonsObject.SetActive(false);

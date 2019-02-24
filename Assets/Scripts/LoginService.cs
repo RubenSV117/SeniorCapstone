@@ -21,7 +21,12 @@ using System.Collections.Generic;
 ///     OnLogoutEvent
 ///     
 /// To release this object for garbage collection, the #Detach method
-/// must be called to detach this object from Firebase
+/// must be called to detach this object from Firebase 
+/// 
+/// 
+/// 
+/// 
+/// 
 /// </summary>
 public class LoginService
 {
@@ -121,7 +126,16 @@ public class LoginService
         return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
     }
 
-   
+    /// <summary>
+    /// Send password recovery email to the user
+    /// </summary>
+    /// <param name="email">the email of the user</param>
+    /// <returns></returns>
+    public Task SendRecoverPasswordEmail(string email)
+    {
+
+    }
+
     /// <summary>
     /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account
     /// with the currently logged in user. If the User does not have an account, an account is automatically created for them.

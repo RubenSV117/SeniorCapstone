@@ -2,8 +2,9 @@
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
+using Facebook.Unity;
 using UnityEngine;
-
+using System.Collections.Generic;
 
 /// <summary>
 /// This class wraps around the Firebase Authentication methods.
@@ -120,6 +121,7 @@ public class LoginService
         return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
     }
 
+   
     /// <summary>
     /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account
     /// with the currently logged in user. If the User does not have an account, an account is automatically created for them.

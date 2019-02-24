@@ -1,0 +1,63 @@
+﻿using Facebook.Unity;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// Logs the user into their facebook account, handles social utlitiies
+/// 
+/// Ruben Sanchez
+/// 2/23/19
+/// </summary>
+public class FacebookManager : MonoBehaviour
+{
+    public static FacebookManager Instance;
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+
+        if (!FB.IsInitialized)
+        {
+            FB.Init(() =>
+            {
+                if (FB.IsInitialized)
+                    FB.ActivateApp();
+                else
+                    Debug.LogError("Couldn't initialize");
+            },
+            isGameShown =>
+            {
+                if (!isGameShown)
+                    Time.timeScale = 0;
+                else
+                    Time.timeScale = 1;
+            });
+        }
+
+        else
+            FB.ActivateApp();
+    }
+
+    public void Login()
+    {
+        var permissions = new List<string>() { "public_profile", "email", "user_friends" };
+        FB.LogInWithReadPermissions(permissions);
+    }
+
+    public void Logout()
+    {
+        FB.LogOut();
+    }
+
+    public void ShareRecipe()
+    {
+      
+    }
+
+    public void ShareApp()
+    {
+
+    }
+}

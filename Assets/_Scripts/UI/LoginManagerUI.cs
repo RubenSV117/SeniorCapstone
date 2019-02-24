@@ -37,7 +37,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void Enable()
     {
-        canvas.SetActive(true);
+        canvas.SetActive(true); 
     }
 
     public void Disable()

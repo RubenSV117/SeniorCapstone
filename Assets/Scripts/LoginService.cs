@@ -5,6 +5,7 @@ using Firebase.Auth;
 using Facebook.Unity;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// This class wraps around the Firebase Authentication methods.
@@ -123,7 +124,74 @@ public class LoginService
     /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
     public Task<FirebaseUser> SignInUserWithEmail(string email, string password)
     {
-        return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
+        return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password)); 
+    }
+
+    public bool CheckIfUserExists(string email)
+    {
+        var task = auth.FetchProvidersForEmailAsync(email);
+
+        task.ContinueWith(providers =>
+        {
+            return providers.Result.Any();
+        });
+
+        return false;
+    }
+
+    public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
+    {
+        // if account exists, attempt to sign in with the given email and password
+        if (CheckIfUserExists(email))
+        {
+            var task = auth.SignInWithEmailAndPasswordAsync(email, password);
+
+            task.ContinueWith(t =>
+            {
+                if (t.IsCanceled)
+                {
+                    Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                    return;
+                }
+                if (t.IsFaulted)
+                {
+                    Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                    return;
+                } 
+
+
+                Firebase.Auth.FirebaseUser newUser = t.Result;
+                Debug.LogFormat("User signed in successfully: {0} ({1})",
+                    newUser.DisplayName, newUser.UserId);
+            });
+
+            return task; 
+        }
+
+        // else create a new account with the given email and password
+        else
+        {
+            var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            task.ContinueWith(t =>
+            {
+                if (t.IsCanceled)
+                {
+                    Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
+                    return;
+                }
+                if (t.IsFaulted)
+                {
+                    Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + t.Exception.GetBaseException());
+                    return;
+                }
+                // Firebase user has been created.
+                Firebase.Auth.FirebaseUser newUser = t.Result;
+                Debug.LogFormat("Firebase user created successfully: {0} ({1})",
+                    newUser.DisplayName, newUser.UserId);
+                return;
+            });
+            return task;
+        }
     }
 
     /// <summary>
@@ -168,7 +236,27 @@ public class LoginService
         }
         else
         {
-            return SignInWithCredentials(credential);
+            var task = auth.SignInWithCredentialAsync(credential);
+
+            task.ContinueWith(t =>
+                {
+                    if (t.IsCanceled)
+                    {
+                        Debug.LogError("SignInWithCredentialAsync was canceled.");
+                        return;
+                    }
+                    if (t.IsFaulted)
+                    {
+                        Debug.LogError("SignInWithCredentialAsync encountered an error: " + task.Exception);
+                        return;
+                    }
+
+                    Firebase.Auth.FirebaseUser newUser = t.Result;
+                    Debug.LogFormat("User signed in successfully: {0} ({1})",
+                                        newUser.DisplayName, newUser.UserId);
+                });
+
+            return task;
         }
     }
 

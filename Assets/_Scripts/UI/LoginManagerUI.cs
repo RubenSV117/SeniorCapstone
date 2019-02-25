@@ -35,7 +35,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void LogInWithEmail()
     {
-        //LoginService.Instance.SignInWithEmailAndPassword(email, passsword);
+        LoginService.Instance.SignInUserWithEmailAndPassword(email, passsword);
     }
 
     public void RegisterNewUserWithEmail()

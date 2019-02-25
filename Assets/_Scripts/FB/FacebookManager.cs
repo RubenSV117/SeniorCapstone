@@ -43,23 +43,13 @@ public class FacebookManager : MonoBehaviour
     public void Login()
     {
         var permissions = new List<string>() { "public_profile", "email" };
-        FB.LogInWithReadPermissions(permissions, FBAuthCallback);
-    }
 
-    private void FBAuthCallback(ILoginResult result)
-    {
-        if (FB.IsLoggedIn)
+        FB.LogInWithReadPermissions(permissions, (result) => 
         {
-            print(string.Format("Logged in with token {0}, sending token to LoginService", AccessToken.CurrentAccessToken.ToString()));
-
-            // sign into firebase with the acquired access token
-            LoginService.Instance.SignInUserWithFacebook(AccessToken.CurrentAccessToken.ToString()); 
+            print(string.Format("Logged in with token {0}, sending token to LoginService", result.AccessToken.TokenString));
+            LoginService.Instance.SignInUserWithFacebook(result.AccessToken.TokenString); 
         }
-
-        else
-        {
-            Debug.Log("User cancelled login");
-        }
+        );
     }
 
     public void Logout()

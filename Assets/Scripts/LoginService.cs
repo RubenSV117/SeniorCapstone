@@ -117,16 +117,10 @@ public class LoginService
     }
 
     /// <summary>
-    /// Signs in an existing user with their email and paswword.
+    /// Check if the User already exists
     /// </summary>
-    /// <param name="email">the email of the user.</param>
-    /// <param name="password">the password of the user.</param>
-    /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
-    public Task<FirebaseUser> SignInUserWithEmail(string email, string password)
-    {
-        return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password)); 
-    }
-
+    /// <param name="email"></param>
+    /// <returns></returns>
     public bool CheckIfUserExists(string email)
     {
         var task = auth.FetchProvidersForEmailAsync(email);
@@ -138,6 +132,12 @@ public class LoginService
 
         return false;
     }
+    /// <summary>
+    /// Signs in an existing user with their email and paswword.
+    /// </summary>
+    /// <param name="email">the email of the user.</param>
+    /// <param name="password">the password of the user.</param>
+    /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
 
     public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
     {

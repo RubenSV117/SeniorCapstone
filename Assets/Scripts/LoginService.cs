@@ -131,10 +131,10 @@ public class LoginService
     /// </summary>
     /// <param name="email">the email of the user</param>
     /// <returns></returns>
-    public Task SendRecoverPasswordEmail(string email)
-    {
+    //public Task SendRecoverPasswordEmail(string email)
+    //{
 
-    }
+    //}
 
     /// <summary>
     /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account

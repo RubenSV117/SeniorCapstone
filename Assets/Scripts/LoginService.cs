@@ -138,7 +138,10 @@ public class LoginService
     /// <param name="email">the email of the user.</param>
     /// <param name="password">the password of the user.</param>
     /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
-
+    public Task<FirebaseUser> SignInUserWithEmail(string email, string password)
+    {
+        return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
+    }
     public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
     {
         // if account exists, attempt to sign in with the given email and password

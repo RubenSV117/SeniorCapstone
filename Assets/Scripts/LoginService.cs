@@ -99,12 +99,12 @@ public class LoginService
         {
             if (t.IsCanceled)
             {
-                Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
+                Debug.Log("CreateUserWithEmailAndPasswordAsync was canceled.");
                 return;
             }
             if (t.IsFaulted)
             {
-                Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + t.Exception.GetBaseException());
+                Debug.Log("CreateUserWithEmailAndPasswordAsync encountered an error: " + t.Exception.GetBaseException());
                 return;
             }
             // Firebase user has been created.
@@ -142,59 +142,30 @@ public class LoginService
     {
         return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
     }
+
     public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
     {
-        // if account exists, attempt to sign in with the given email and password
-        if (CheckIfUserExists(email))
+        var task = auth.SignInWithEmailAndPasswordAsync(email, password);
+
+        task.ContinueWith(t =>
         {
-            var task = auth.SignInWithEmailAndPasswordAsync(email, password);
-
-            task.ContinueWith(t =>
+            if (t.IsCanceled)
             {
-                if (t.IsCanceled)
-                {
-                    Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
-                    return;
-                }
-                if (t.IsFaulted)
-                {
-                    Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                    return;
-                } 
-
-
-                Firebase.Auth.FirebaseUser newUser = t.Result;
-                Debug.LogFormat("User signed in successfully: {0} ({1})",
-                    newUser.DisplayName, newUser.UserId);
-            });
-
-            return task; 
-        }
-
-        // else create a new account with the given email and password
-        else
-        {
-            var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
-            task.ContinueWith(t =>
-            {
-                if (t.IsCanceled)
-                {
-                    Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
-                    return;
-                }
-                if (t.IsFaulted)
-                {
-                    Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + t.Exception.GetBaseException());
-                    return;
-                }
-                // Firebase user has been created.
-                Firebase.Auth.FirebaseUser newUser = t.Result;
-                Debug.LogFormat("Firebase user created successfully: {0} ({1})",
-                    newUser.DisplayName, newUser.UserId);
+                Debug.Log("SignInWithEmailAndPasswordAsync was canceled.");
                 return;
-            });
-            return task;
-        }
+            }
+            if (t.IsFaulted)
+            {
+                Debug.Log("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                return;
+            }
+
+            Firebase.Auth.FirebaseUser newUser = t.Result;
+            Debug.LogFormat("User signed in successfully: {0} ({1})",
+                newUser.DisplayName, newUser.UserId);
+        });
+
+        return task;
     }
 
     /// <summary>

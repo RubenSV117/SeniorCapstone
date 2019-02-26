@@ -195,11 +195,11 @@ public class LoginService
             {
                 if (t.IsCanceled)
                 {
-                    Debug.LogError("LinkWithCredentialAsync was canceled.");
+                    Debug.Log("LinkWithCredentialAsync was canceled.");
                 }
                 if (t.IsFaulted)
                 {
-                    Debug.LogError("LinkWithCredentialAsync encountered an error: " + t.Exception);
+                    Debug.Log("LinkWithCredentialAsync encountered an error: " + t.Exception);
                 }
 
                 Firebase.Auth.FirebaseUser newUser = t.Result;
@@ -216,12 +216,12 @@ public class LoginService
                 {
                     if (t.IsCanceled)
                     {
-                        Debug.LogError("SignInWithCredentialAsync was canceled.");
+                        Debug.Log("SignInWithCredentialAsync was canceled.");
                         return;
                     }
                     if (t.IsFaulted)
                     {
-                        Debug.LogError("SignInWithCredentialAsync encountered an error: " + task.Exception);
+                        Debug.Log("SignInWithCredentialAsync encountered an error: " + task.Exception);
                         return;
                     }
 

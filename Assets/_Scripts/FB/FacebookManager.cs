@@ -1,4 +1,6 @@
 ﻿using Facebook.Unity;
+using Firebase;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,7 +49,27 @@ public class FacebookManager : MonoBehaviour
         FB.LogInWithReadPermissions(permissions, (result) => 
         {
             print(string.Format("Logged in with token {0}, sending token to LoginService", result.AccessToken.TokenString));
-            LoginService.Instance.SignInUserWithFacebook(result.AccessToken.TokenString); 
+
+            LoginService.Instance.SignInUserWithFacebook(result.AccessToken.TokenString).WithSuccess(user =>
+            {
+                LoginManagerUI.Instance.SetAttempt(true, true, "Login Successful");
+            })
+        .WithFailure((FirebaseException exception) =>
+        {
+            // parse error code to send to ui notification
+            string errorStr = ((Firebase.Auth.AuthError)exception.ErrorCode).ToString();
+
+            string errorMessage = "";
+
+            for (int i = 0; i < errorStr.Length; i++)
+            {
+                errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
+                ? " " + errorStr[i].ToString()
+                : errorStr[i].ToString());
+            }
+
+            LoginManagerUI.Instance.SetAttempt(true, false, errorMessage);
+        });
         }
         );
     }

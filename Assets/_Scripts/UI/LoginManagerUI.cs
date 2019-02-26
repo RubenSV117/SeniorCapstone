@@ -184,8 +184,26 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         emailGroup.SetActive(false);
     }
 
+    public void SetAttempt(bool finished, bool succeeded, string message)
+    {
+        attemptFinished = finished;
+        attemptSuccess = succeeded;
+        errorMessage = message;
+    }
+
     public void LogInWithFB()
     {
+        // start coruoutine to handle attempt result ui notification
+        if (attemptCo != null)
+        {
+            StopCoroutine(attemptCo);
+            attemptCo = null;
+        }
+
+        attemptCo = StartCoroutine(HandleLoginAttempt());
+
+        attemptFinished = false;
+
         FacebookManager.Instance.Login();
     }
 

@@ -2787,7 +2787,7 @@ MonoBehaviour:
   emailGroup: {fileID: 8865125879982474778}
   loginGroup: {fileID: 5967314663446820362}
   registerGroup: {fileID: 8157515341943733413}
-  initialButtonGroup: {fileID: 1922764360}
+  initialGroup: {fileID: 1922764360}
 --- !u!1 &4602337166652473365
 GameObject:
   m_ObjectHideFlags: 0

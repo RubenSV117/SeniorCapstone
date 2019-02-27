@@ -102,8 +102,32 @@ public class LoginService : ILoginService
         return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
     }
 
+    public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
+    {
+        var task = auth.SignInWithEmailAndPasswordAsync(email, password);
 
-    public Task SendRecoverPasswordEmail(string email)
+        task.ContinueWith(t =>
+        {
+            if (t.IsCanceled)
+            {
+                Debug.Log("SignInWithEmailAndPasswordAsync was canceled.");
+                return;
+            }
+            if (t.IsFaulted)
+            {
+                Debug.Log("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                return;
+            }
+
+            Firebase.Auth.FirebaseUser newUser = t.Result;
+            Debug.LogFormat("User signed in successfully: {0} ({1})",
+                newUser.DisplayName, newUser.UserId);
+        });
+
+        return task;
+    }
+
+        public Task SendRecoverPasswordEmail(string email)
     {
         return auth.SendPasswordResetEmailAsync(email)
             .WithSuccess(() => Debug.Log("Recovery email sent to " + email))
@@ -160,24 +184,7 @@ public class LoginService : ILoginService
 
     private Task<FirebaseUser> SignInWithCredentials(Credential credential)
     {
-        return auth.SignInWithCredentialAsync(credential).ContinueWith<FirebaseUser>(task =>
-        {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
-                return null;
-            }
-            if (task.IsFaulted)
-            {
-                Debug.Log("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                return null;
-            }
-
-            Firebase.Auth.FirebaseUser newUser = task.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})",
-                newUser.DisplayName, newUser.UserId);
-            return newUser;
-        });
+        return auth.SignInWithCredentialAsync(credential);
     }
 
     public void SignOut()

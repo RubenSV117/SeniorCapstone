@@ -72,7 +72,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
         attemptFinished = false;
 
-        LoginService.Instance.SignInUserWithEmail(email, passsword).WithSuccess(user =>
+        LoginService.Instance.SignInUserWithEmailAndPassword(email, passsword).WithSuccess(user =>
         {
             attemptSuccess = true;
             attemptFinished = true;
@@ -242,7 +242,8 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void Enable()
     {
-        canvas.SetActive(true); 
+        canvas.SetActive(true);
+        EnableInitialGroup();
     }
 
     public void Disable()

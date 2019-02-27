@@ -72,7 +72,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
         attemptFinished = false;
 
-        LoginService.Instance.SignInUserWithEmailAndPassword(email, passsword).WithSuccess(user =>
+        LoginService.Instance.SignInUserWithEmail(email, passsword).WithSuccess(user =>
         {
             attemptSuccess = true;
             attemptFinished = true;
@@ -80,7 +80,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         .WithFailure((FirebaseException exception) =>
         {
             // parse error code to send to ui notification
-            string errorStr = ((Firebase.Auth.AuthError)exception.ErrorCode).ToString();
+            string errorStr = exception.GetAuthError().ToString();
 
             errorMessage = "";
 
@@ -122,7 +122,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         .WithFailure((FirebaseException exception) =>
         {
             // parse error code to send to ui notification
-            string errorStr = ((Firebase.Auth.AuthError)exception.ErrorCode).ToString();
+            string errorStr = exception.GetAuthError().ToString();
 
             errorMessage = "";
 

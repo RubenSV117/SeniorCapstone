@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Firebase;
-using Firebase.Auth;
-using Facebook.Unity;
-using UnityEngine;
+﻿using Firebase.Auth;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using UnityEngine;
 
 /// <summary>
 /// This class wraps around the Firebase Authentication methods.
@@ -24,41 +22,33 @@ using System.Linq;
 /// To release this object for garbage collection, the #Detach method
 /// must be called to detach this object from Firebase 
 /// 
-/// 
-/// 
-/// 
-/// 
 /// </summary>
-public class LoginService
+public class LoginService : ILoginService
 {
     private static readonly Lazy<LoginService> lazy = new Lazy<LoginService>(() => new LoginService());
 
-    public static LoginService Instance { get { return lazy.Value; } }
-    
-    private readonly FirebaseAuth auth;
-    public FirebaseUser User { get; private set; }
+    public static LoginService Instance => lazy.Value;
 
-    /// <summary>
-    /// This event is fired whenever a user logs in or out
-    /// </summary>
+    private readonly FirebaseAuth auth;
+
     public event EventHandler<AuthEvent> OnEvent;
-    /// <summary>
-    /// This event is fired whenever a user logs in
-    /// </summary>
     public event EventHandler<AuthLoginEvent> OnLoginEvent;
-    /// <summary>
-    /// This event is fired whenevet a user logs out
-    /// </summary>
     public event EventHandler<AuthLogoutEvent> OnLogoutEvent;
+
+    public FirebaseUser User { get; private set; }
 
     public LoginService()
     {
         OnEvent += (o, e) =>
         {
             if (e is AuthLoginEvent)
+            {
                 OnLoginEvent(this, (AuthLoginEvent)e);
+            }
             else if (e is AuthLogoutEvent)
+            {
                 OnLogoutEvent(this, (AuthLogoutEvent)e);
+            }
         };
         OnLoginEvent += (o, e) => Debug.Log("Signed in " + e.User.UserId);
         OnLogoutEvent += (o, e) => Debug.Log("Signed out " + e.User.UserId);
@@ -71,30 +61,9 @@ public class LoginService
         User = auth.CurrentUser;
     }
 
-    /// <summary>
-    /// Example task usage with login or registering
-    /// </summary>
-    private void Example()
-    {
-        RegisterUserWithEmail("email", "password").WithSuccess(user =>
-        {
-            // handle success here
-        }).WithFailure( (FirebaseException exception) =>
-        {
-            // handle failure here   
-        });
-    }
-
-    /// <summary>
-    /// Registers a new user using an email and password. If the registration fails, the user is null.
-    /// If the account is successfully created, the newly created account is logged in.
-    /// </summary>
-    /// <param name="email">The user's email.</param>
-    /// <param name="password">The user's new password to use for their account.</param>
-    /// <returns>An asynchronous task that results in a nullable Firebase.Auth.FirebaseUser.</returns>
     public Task<FirebaseUser> RegisterUserWithEmail(string email, string password)
     {
-        var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+        Task<FirebaseUser> task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
         task.ContinueWith(t =>
         {
             if (t.IsCanceled)
@@ -113,84 +82,37 @@ public class LoginService
                 newUser.DisplayName, newUser.UserId);
             return;
         });
-        return task; 
+        return task;
     }
 
-    /// <summary>
-    /// Check if the User already exists
-    /// </summary>
-    /// <param name="email"></param>
-    /// <returns></returns>
-    public bool CheckIfUserExists(string email)
+    public Task<bool> CheckIfUserExists(string email)
     {
-        var task = auth.FetchProvidersForEmailAsync(email);
+        Task<IEnumerable<string>> task = auth.FetchProvidersForEmailAsync(email);
 
-        task.ContinueWith(providers =>
+        return task.ContinueWith(providers =>
         {
             return providers.Result.Any();
         });
-
-        return false;
     }
-    /// <summary>
-    /// Signs in an existing user with their email and paswword.
-    /// </summary>
-    /// <param name="email">the email of the user.</param>
-    /// <param name="password">the password of the user.</param>
-    /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
+
+
     public Task<FirebaseUser> SignInUserWithEmail(string email, string password)
     {
         return SignInWithCredentials(EmailAuthProvider.GetCredential(email, password));
     }
 
-    public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
+
+    public Task SendRecoverPasswordEmail(string email)
     {
-        var task = auth.SignInWithEmailAndPasswordAsync(email, password);
-
-        task.ContinueWith(t =>
-        {
-            if (t.IsCanceled)
-            {
-                Debug.Log("SignInWithEmailAndPasswordAsync was canceled.");
-                return;
-            }
-            if (t.IsFaulted)
-            {
-                Debug.Log("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                return;
-            }
-
-            Firebase.Auth.FirebaseUser newUser = t.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})",
-                newUser.DisplayName, newUser.UserId);
-        });
-
-        return task;
+        throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Send password recovery email to the user
-    /// </summary>
-    /// <param name="email">the email of the user</param>
-    /// <returns></returns>
-    //public Task SendRecoverPasswordEmail(string email)
-    //{
-
-    //}
-
-    /// <summary>
-    /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account
-    /// with the currently logged in user. If the User does not have an account, an account is automatically created for them.
-    /// This method does sign in the user if successful.
-    /// </summary>
-    /// <param name="accessToken">The accessToken returned from Facebook Authentication.</param>
-    /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
     public Task<FirebaseUser> SignInUserWithFacebook(string accessToken)
     {
         Credential credential = FacebookAuthProvider.GetCredential(accessToken);
         if (auth.CurrentUser != null)
         {
-            var task = auth.CurrentUser.LinkWithCredentialAsync(credential);
+            Task<FirebaseUser> task = auth.CurrentUser.LinkWithCredentialAsync(credential);
             task.ContinueWith(t =>
             {
                 if (t.IsCanceled)
@@ -210,7 +132,7 @@ public class LoginService
         }
         else
         {
-            var task = auth.SignInWithCredentialAsync(credential);
+            Task<FirebaseUser> task = auth.SignInWithCredentialAsync(credential);
 
             task.ContinueWith(t =>
                 {
@@ -229,7 +151,6 @@ public class LoginService
                     Debug.LogFormat("User signed in successfully: {0} ({1})",
                                         newUser.DisplayName, newUser.UserId);
                 });
-
             return task;
         }
     }
@@ -256,18 +177,11 @@ public class LoginService
         });
     }
 
-    /// <summary>
-    /// Signs out the currently logged in user by clearing all authentication data. This method never fails and succeeds immediately.
-    /// </summary>
     public void SignOut()
     {
         auth.SignOut();
     }
 
-    /// <summary>
-    /// Detaches this class from Firebase. This allows this class to be garbage collected if no other references exist.
-    /// Upon calling this method, no further events are emitted and all event listeners are removed.
-    /// </summary>
     public void Detach()
     {
         auth.StateChanged -= AuthStateChanged;
@@ -295,30 +209,6 @@ public class LoginService
                 OnEvent(this, new AuthLoginEvent(User));
             }
 
-        }
-    }
-
-    public abstract class AuthEvent : EventArgs
-    {
-        public readonly FirebaseUser User;
-
-        internal AuthEvent(FirebaseUser user)
-        {
-            User = user;
-        }
-    }
-
-    public class AuthLoginEvent : AuthEvent
-    {
-        public AuthLoginEvent(FirebaseUser user) : base(user)
-        {
-        }
-    }
-
-    public class AuthLogoutEvent : AuthEvent
-    {
-        public AuthLogoutEvent(FirebaseUser user) : base(user)
-        {
         }
     }
 

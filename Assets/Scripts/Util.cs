@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Firebase;
+using Firebase.Auth;
+using System;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -47,5 +49,13 @@ public static class TaskCallbackExtensions
     public static Task<R> WithFailure<R, E>(this Task<R> task, Action<E> failureCallback) where E : Exception
     {
         return WithCallback(task, null, failureCallback);
+    }
+}
+
+public static class FirebaseExtensions
+{
+    public static AuthError GetAuthError(this FirebaseException e)
+    {
+        return (AuthError)e.ErrorCode;
     }
 }

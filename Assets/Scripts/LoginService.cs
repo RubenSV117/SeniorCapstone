@@ -1,4 +1,5 @@
-﻿using Firebase.Auth;
+﻿using Firebase;
+using Firebase.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,7 +105,9 @@ public class LoginService : ILoginService
 
     public Task SendRecoverPasswordEmail(string email)
     {
-        throw new NotImplementedException();
+        return auth.SendPasswordResetEmailAsync(email)
+            .WithSuccess(() => Debug.Log("Recovery email sent to " + email))
+            .WithFailure<FirebaseException>(e => Debug.Log("Failed to send recovery email to " + email + ": " + e.Message));
     }
 
     public Task<FirebaseUser> SignInUserWithFacebook(string accessToken)

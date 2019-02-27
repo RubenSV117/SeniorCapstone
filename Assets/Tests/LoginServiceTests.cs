@@ -42,9 +42,7 @@ namespace Tests
         {
             Task setupTask = EnsureTestUserDoesNotExist();
             while (setupTask.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
             // test event handler 
             Mock<EventHandler<AuthEvent>> eventHandler = new Mock<EventHandler<AuthEvent>>();
             auth.OnEvent += eventHandler.Object;
@@ -56,9 +54,7 @@ namespace Tests
             Task<FirebaseUser> taskRegister = auth.RegisterUserWithEmail(TEST_EMAIL, TEST_PASSWORD)
                 .WithCallback(callback.Object);
             while (taskRegister.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
             FirebaseUser user = taskRegister.Result;
             Assert.NotNull(user);
@@ -77,16 +73,14 @@ namespace Tests
         {
             Task setupTask = EnsureTestUserExists(false);
             while (setupTask.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
             Mock<EventHandler<AuthEvent>> eventHandler = new Mock<EventHandler<AuthEvent>>();
             auth.OnEvent += eventHandler.Object;
             // test callback
             Mock<ICallbackHandler<FirebaseUser, FirebaseException>> callback = new Mock<ICallbackHandler<FirebaseUser, FirebaseException>>();
 
-            LogAssert.Expect(LogType.Error, "CreateUserWithEmailAndPasswordAsync encountered an error: Firebase.FirebaseException: The email address is already in use by another account.");
+            LogAssert.Expect(LogType.Log, "CreateUserWithEmailAndPasswordAsync encountered an error: Firebase.FirebaseException: The email address is already in use by another account.");
             Task taskRegister = AssertAsync.Throws<FirebaseException>(() =>
             {
                 // this method creates a new user and also attempts to logs in with that user
@@ -94,9 +88,7 @@ namespace Tests
                     .WithCallback(callback.Object);
             });
             while (taskRegister.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
             // no login or logout
             eventHandler.VerifyNoOtherCalls();
@@ -110,9 +102,7 @@ namespace Tests
         {
             Task setupTask = EnsureTestUserExists(false);
             while (setupTask.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
             Mock<EventHandler<AuthEvent>> eventHandler = new Mock<EventHandler<AuthEvent>>();
             auth.OnEvent += eventHandler.Object;
@@ -122,9 +112,7 @@ namespace Tests
 
             Task<FirebaseUser> signInTask = auth.SignInUserWithEmail(TEST_EMAIL, TEST_PASSWORD).WithCallback(callback.Object);
             while (signInTask.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
             eventHandler.Verify(handler => handler(Matcher.Same(auth), It.IsNotNull<AuthLoginEvent>()), Times.Once);
             eventHandler.VerifyNoOtherCalls();
@@ -138,9 +126,7 @@ namespace Tests
         {
             Task setupTask = EnsureTestUserExists(true);
             while (setupTask.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
             Mock<EventHandler<AuthEvent>> eventHandler = new Mock<EventHandler<AuthEvent>>();
             auth.OnEvent += eventHandler.Object;
@@ -150,15 +136,44 @@ namespace Tests
 
             Task<FirebaseUser> signInTask = auth.SignInUserWithEmail(TEST_EMAIL, TEST_PASSWORD).WithCallback(callback.Object);
             while (signInTask.IsRunning())
-            {
-                yield return null;
-            }
+            	yield return null;
 
-            eventHandler.Verify(handler => handler(Matcher.Same(auth), It.IsNotNull<AuthLoginEvent>()), Times.Once);
             eventHandler.VerifyNoOtherCalls();
 
             callback.Verify(c => c.OnSuccess(It.IsAny<FirebaseUser>()), Times.Once);
             callback.VerifyNoOtherCalls();
+
+            // If user signs in again it is redundant, the task succeeds and no event is fired.
+        }
+
+        [UnityTest]
+        public IEnumerator CheckIfUserExists()
+        {
+            Task t1setup = EnsureTestUserExists(false);
+            while (t1setup.IsRunning())
+            	yield return null;
+            Task t2setup = EnsureOtherTestUserDoesNotExist();
+            while (t2setup.IsRunning())
+                yield return null;
+
+            // test user does exist
+            Mock<ICallbackHandler<bool, Exception>> callback1 = new Mock<ICallbackHandler<bool, Exception>>();
+            Task<bool> t1 = auth.CheckIfUserExists(TEST_EMAIL).WithCallback(callback1.Object);
+            while (t1.IsRunning())
+            	yield return null;
+
+            callback1.Verify(c => c.OnSuccess(true), Times.Once);
+            callback1.VerifyNoOtherCalls();
+
+
+            // test user does not exist
+            Mock<ICallbackHandler<bool, Exception>> callback2 = new Mock<ICallbackHandler<bool, Exception>>();
+            Task<bool> t2 = auth.CheckIfUserExists(TEST_EMAIL_OTHER).WithCallback(callback2.Object);
+            while (t2.IsRunning())
+                yield return null;
+
+            callback2.Verify(c => c.OnSuccess(false), Times.Once);
+            callback2.VerifyNoOtherCalls();
         }
 
         //[OneTimeTearDown]

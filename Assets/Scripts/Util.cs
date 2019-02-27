@@ -2,7 +2,6 @@
 using Firebase.Auth;
 using System;
 using System.Threading.Tasks;
-
 /// <summary>
 /// This class handles success and failure callbacks for various tasks
 /// </summary>

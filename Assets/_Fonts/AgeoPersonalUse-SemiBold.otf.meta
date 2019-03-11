@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: b539ad8e506db4b46b0fb90bed2c0135
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Ageo Personal Use
+  fontNames:
+  - Ageo Personal Use
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: a83382142a40e584cb742df129ac2cf1, type: 3}
+  - {fileID: 12800000, guid: 8703d6b4cf6290c46be97f9a876d4716, type: 3}
+  - {fileID: 12800000, guid: 9ccff66612af50e4986dd72f32080418, type: 3}
+  - {fileID: 12800000, guid: 9815e437ef894fb46997f05d43e191f4, type: 3}
+  - {fileID: 12800000, guid: 537f5857aa1708d499d2cdfb44b746fe, type: 3}
+  - {fileID: 12800000, guid: 6da3cbfb02a14654480fa8c01d71ebbd, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

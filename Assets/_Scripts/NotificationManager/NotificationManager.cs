@@ -10,6 +10,7 @@ public class NotificationManager : MonoBehaviour
 
     [SerializeField] private Animator anim;
     [SerializeField] private Text messageText;
+    [SerializeField] private GameObject loadingPanel;
 
     private void Awake()
     {
@@ -25,6 +26,11 @@ public class NotificationManager : MonoBehaviour
     private void OnDisable()
     {
         LoginManagerUI.Instance.OnAccountActionAttempt -= ShowNotification;
+    }
+
+    public void SetLoadingPanel(bool isActive)
+    {
+        loadingPanel.SetActive(isActive);
     }
 
     public void ShowNotification(string message)

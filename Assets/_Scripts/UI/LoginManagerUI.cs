@@ -144,8 +144,12 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     /// <returns></returns>
     public IEnumerator HandleLoginAttempt()
     {
+        NotificationManager.Instance.SetLoadingPanel(true);
+
         // wait until firebase finishes (had really unpredictable behavior if handled from within the WithFailure callback)
         yield return new WaitUntil(() => attemptFinished);
+
+        NotificationManager.Instance.SetLoadingPanel(false);
 
         // send success notification or error message
         if (OnAccountActionAttempt != null)
@@ -210,6 +214,11 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void RecoverEmailPassword()
     {
         //LoginService.Instance.
+    }
+
+    public void Logout()
+    {
+        LoginService.Instance.SignOut();
     }
 
     /// <summary>

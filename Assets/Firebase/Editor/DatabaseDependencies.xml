@@ -5,7 +5,7 @@ FirebaseDatabase iOS and Android Dependencies.
 
 <dependencies>
   <iosPods>
-    <iosPod name="Firebase/Database" version="5.15.0" minTargetSdk="8.0">
+    <iosPod Name="Firebase/Database" version="5.15.0" minTargetSdk="8.0">
     </iosPod>
   </iosPods>
   <androidPackages>

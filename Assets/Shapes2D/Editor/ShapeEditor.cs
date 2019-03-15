@@ -704,7 +704,7 @@
                 System.IO.Directory.CreateDirectory(dname);
             if (System.IO.File.Exists(fname) 
                     && !EditorUtility.DisplayDialog("Overwrite File?", 
-                        "A file with the name " + fname + " already exists.  "
+                        "A file with the Name " + fname + " already exists.  "
                         + "Are you sure you want to overwrite it?", "Yes", "Cancel"))
                 return;
             

@@ -5,7 +5,7 @@ FirebaseAuth iOS and Android Dependencies.
 
 <dependencies>
   <iosPods>
-    <iosPod name="Firebase/Auth" version="5.15.0" minTargetSdk="8.0">
+    <iosPod Name="Firebase/Auth" version="5.15.0" minTargetSdk="8.0">
     </iosPod>
   </iosPods>
   <androidPackages>

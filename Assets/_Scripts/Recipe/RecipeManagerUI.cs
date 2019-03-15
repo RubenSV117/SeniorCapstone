@@ -52,14 +52,14 @@ public class RecipeManagerUI : MonoBehaviour
         for (int i = 0; i < starRating && i < starRatingTrans.childCount; i++)
             starRatingTrans.GetChild(i).gameObject.SetActive(true);
 
-        // remove any previous ingredients and directions
+        // remove any previous Ingredients and directions
         if (verticalGroupTrans.childCount > 1)
         {
             for (int i = 1; i < verticalGroupTrans.childCount; i++)
                 Destroy(verticalGroupTrans.GetChild(i).gameObject);
         }
 
-        // update ingredients
+        // update Ingredients
         for (int i = 0; i < ingredients.Count; i++)
         {
             Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,

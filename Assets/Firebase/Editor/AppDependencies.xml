@@ -5,7 +5,7 @@ FirebaseApp iOS and Android Dependencies.
 
 <dependencies>
   <iosPods>
-    <iosPod name="Firebase/Core" version="5.15.0" minTargetSdk="8.0">
+    <iosPod Name="Firebase/Core" version="5.15.0" minTargetSdk="8.0">
     </iosPod>
   </iosPods>
   <androidPackages>

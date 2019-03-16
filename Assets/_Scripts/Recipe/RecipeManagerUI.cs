@@ -34,22 +34,22 @@ public class RecipeManagerUI : MonoBehaviour
         Test();
     }
 
-    public void InitRecipe(Sprite dishSprite, string dishName, int calorieCount, int prepTimeMinutes, int starRating, List<string> ingredients, List<string> directions)
+    public void InitRecipeUI(Recipe newRecipe)
     {
-        // update dish image
-        dishImage.sprite = dishSprite;
+        // update dish image, get from database 
+        //dishImage.sprite = dishSprite;
 
         // update text elements
-        dishNameText.text = dishName;
-        ingredientCountText.text = ingredients.Count.ToString("N0");
-        calorieCountText.text = calorieCount.ToString("N0");
-        prepTimeText.text = prepTimeMinutes.ToString("N0");
+        dishNameText.text = newRecipe.Name;
+        ingredientCountText.text = newRecipe.Ingredients.Count.ToString("N0");
+        calorieCountText.text = newRecipe.Calories.ToString("N0");
+        prepTimeText.text = newRecipe.PrepTimeMinutes.ToString("N0");
 
         // update star rating
         for (int i = 0; i < starRatingTrans.childCount; i++)
             starRatingTrans.GetChild(i).gameObject.SetActive(false);
 
-        for (int i = 0; i < starRating && i < starRatingTrans.childCount; i++)
+        for (int i = 0; i < newRecipe.StarRating && i < starRatingTrans.childCount; i++)
             starRatingTrans.GetChild(i).gameObject.SetActive(true);
 
         // remove any previous ingredients and directions
@@ -60,12 +60,12 @@ public class RecipeManagerUI : MonoBehaviour
         }
 
         // update ingredients
-        for (int i = 0; i < ingredients.Count; i++)
+        for (int i = 0; i < newRecipe.Ingredients.Count; i++)
         {
             Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                 verticalGroupTrans).GetComponentInChildren<Text>();
 
-            infoText.text = ingredients[i];
+            infoText.text = newRecipe.Ingredients[i].ToString();
         }
 
         // create directions label
@@ -75,12 +75,12 @@ public class RecipeManagerUI : MonoBehaviour
         labelText.text = "Directions";
 
         // update directions
-        for (int i = 0; i < directions.Count; i++)
+        for (int i = 0; i < newRecipe.Steps.Count; i++)
         {
             Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                 verticalGroupTrans).GetComponentInChildren<Text>();
 
-            infoText.text = directions[i];
+            infoText.text = newRecipe.Steps[i];
         }
     }
 
@@ -96,11 +96,11 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void Test()
     {
-        List<string> ingredients = new List<string>();
+        List<Ingredient> ingredients = new List<Ingredient>();
 
         for (int i = 0; i < 10; i++)
         {
-            ingredients.Add($"ingredient item {i}");
+            ingredients.Add(new Ingredient($"Ingredient {i}", "1/2 cup"));
         }
 
         List<string> directions = new List<string>();
@@ -110,6 +110,10 @@ public class RecipeManagerUI : MonoBehaviour
             directions.Add($"{i}. do the thing");
         }
 
-        InitRecipe(testSprite, "Butter Salmon", 560, 45, 3, ingredients, directions);
+        List<string> tags = new List<string>() {"Fish"};
+
+        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, null, 3);
+
+        InitRecipeUI(recipe);
     }
 }

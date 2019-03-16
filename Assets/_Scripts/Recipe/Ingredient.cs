@@ -16,5 +16,10 @@ public class Ingredient
         IngredientName = name;
         IngredientAmount = amount;
     }
+
+    public override string ToString()
+    {
+        return $"{IngredientAmount} {IngredientName}";
+    }
 }
 

@@ -17,9 +17,10 @@ public class Recipe
     public int StarRating;
     public List<string> Reviews;
     public List<string> Tags;
+    public string imageReferencePath;
 
     /// <summary>
-    /// 
+    /// Creates a new instance of Recipe
     /// </summary>
     /// <param name="name">The name of the recipe</param>
     /// <param name="calories">The amount of calories</param>
@@ -29,9 +30,10 @@ public class Recipe
     /// <param name="steps">The steps for this recipe</param>
     /// <param name="reviews">The reviews for this recipe</param>
     /// <param name="starRating">The rating for this recipe</param>
-    public Recipe(string name, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, List<string> reviews, int starRating = 5)
+    public Recipe(string name, string imagePath, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, List<string> reviews, int starRating = 5)
     {
         Name = name;
+        imageReferencePath = imagePath;
         Calories = calories;
         PrepTimeMinutes = prepTimeMinutes;
         Tags = tags;

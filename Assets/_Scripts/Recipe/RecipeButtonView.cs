@@ -17,7 +17,7 @@ public class RecipeButtonView : MonoBehaviour
 
     private void Awake()
     {
-        Test();
+        //Test();
     }
 
     /// <summary>

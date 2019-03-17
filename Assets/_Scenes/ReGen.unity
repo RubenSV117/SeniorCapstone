@@ -598,6 +598,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 228521980}
   m_CullTransparentMesh: 0
+--- !u!114 &234152736 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4602337166664863847, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4602337165443020604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &248911318 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 523143519, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4602337165443020604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &263407606
 GameObject:
   m_ObjectHideFlags: 0
@@ -874,6 +892,12 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &439841580 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1922764360, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4602337165443020604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &457628836
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,6 +2013,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645808126}
   m_CullTransparentMesh: 0
+--- !u!1 &657649200 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5967314663446820362, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4602337165443020604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &672481145
 GameObject:
   m_ObjectHideFlags: 0
@@ -2137,6 +2167,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 710921509}
   m_CullTransparentMesh: 0
+--- !u!1 &759180533 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8865125879982474778, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4602337165443020604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &793324553
 GameObject:
   m_ObjectHideFlags: 0
@@ -4524,6 +4560,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1647073469}
   m_CullTransparentMesh: 0
+--- !u!1 &1665430741 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8157515341943733413, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4602337165443020604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1681860157
 GameObject:
   m_ObjectHideFlags: 0
@@ -5959,7 +6001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 375, y: 0.000008821487}
+  m_AnchoredPosition: {x: 0, y: 0.000008821487}
   m_SizeDelta: {x: 750, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2784046312019123183
@@ -6244,6 +6286,36 @@ PrefabInstance:
       propertyPath: passwordRecoveryGroup
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4602337166230190681, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+        type: 3}
+      propertyPath: emailButton
+      value: 
+      objectReference: {fileID: 234152736}
+    - target: {fileID: 4602337166230190681, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+        type: 3}
+      propertyPath: forgotEmailPasswordButton
+      value: 
+      objectReference: {fileID: 248911318}
+    - target: {fileID: 4602337166230190681, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+        type: 3}
+      propertyPath: emailGroup
+      value: 
+      objectReference: {fileID: 759180533}
+    - target: {fileID: 4602337166230190681, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+        type: 3}
+      propertyPath: loginGroup
+      value: 
+      objectReference: {fileID: 657649200}
+    - target: {fileID: 4602337166230190681, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+        type: 3}
+      propertyPath: registerGroup
+      value: 
+      objectReference: {fileID: 1665430741}
+    - target: {fileID: 4602337166230190681, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
+        type: 3}
+      propertyPath: initialGroup
+      value: 
+      objectReference: {fileID: 439841580}
     - target: {fileID: 4602337166230190682, guid: 9c479903c202c3e4d8bc1b16a582d5f8,
         type: 3}
       propertyPath: m_LocalPosition.x

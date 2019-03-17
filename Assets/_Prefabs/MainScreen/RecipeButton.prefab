@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -323,7 +323,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Garlic Butter Salmon
 --- !u!1 &4682684161757910765
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,6 +839,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 358533669217373455, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
         type: 3}
       propertyPath: m_Color.g
@@ -973,6 +978,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 358533669217373455, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
         type: 3}
@@ -1109,6 +1119,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 358533669217373455, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
         type: 3}
       propertyPath: m_Color.g
@@ -1243,6 +1258,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 358533669217373455, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
         type: 3}

@@ -48,7 +48,8 @@ public class DatabaseManager : MonoBehaviour
             "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
             "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
             "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
-            "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \"endies\",\"my_size\": 100}}", ParameterType.RequestBody);
+            "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \""+ name + 
+            "\",\"my_size\": 100}}", ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
         Console.WriteLine(response.Content);
     }

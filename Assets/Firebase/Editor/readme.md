@@ -8,6 +8,7 @@ features on *iOS* and *Android*:
 |:----------------------------------:|:---------------------------------:|
 | Firebase Analytics                 | FirebaseAnalytics.unitypackage    |
 | Firebase Authentication            | FirebaseAuth.unitypackage         |
+| Firebase Crashlytics               | FirebaseCrashlytics.unitypackage  |
 | Firebase Realtime Database         | FirebaseDatabase.unitypackage     |
 | Firebase Dynamic Links             | FirebaseDynamicLinks.unitypackage |
 | Firebase Functions                 | FirebaseFunctions.unitypackage    |
@@ -162,6 +163,25 @@ Support
 
 Release Notes
 -------------
+### 5.5.0
+  - Overview
+    - Added support for
+      [Crashlytics](https://firebase.google.com/docs/crashlytics/get-started#unity)
+      as a Beta release, deprecated Firebase Invites, and updated the Android
+      Resolver.
+  - Changes
+    - Crashlytics:
+      [Crashlytics for Unity](https://firebase.google.com/docs/crashlytics/get-started#unity)
+      is now available as a Beta release. Get the next evolution with BigQuery
+      exports, Jira integration, and more. To migrate from Fabric Crashlytics
+      for Unity to Firebase Crashlytics, follow the
+      [migration guide](https://firebase.google.com/docs/crashlytics/migrate-from-fabric).
+    - General (Android): Updated to using version 1.2.101 of the Android
+      Resolver. Prompt the user before the resolver runs for the
+      first time and allow the user to elect to disable from the prompt.
+    - Invites: Firebase Invites is deprecated. Please refer to
+      https://firebase.google.com/docs/invites for details.
+
 ### 5.4.4
   - Overview
     - Fixed bugs in iOS/Android Resolver components, Realtime Database on

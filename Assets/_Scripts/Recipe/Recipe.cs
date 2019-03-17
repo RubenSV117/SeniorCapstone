@@ -17,12 +17,14 @@ public class Recipe
     public int StarRating;
     public List<string> Reviews;
     public List<string> Tags;
-    public string imageReferencePath;
+    public string ImageReferencePath;
+    public Sprite ImageSprite;
 
     /// <summary>
     /// Creates a new instance of Recipe
     /// </summary>
     /// <param name="name">The name of the recipe</param>
+    /// <param name="imagePath">Image path url for the database</param>
     /// <param name="calories">The amount of calories</param>
     /// <param name="prepTimeMinutes">The prep time in minutes</param>
     /// <param name="tags">The tags for this recipe</param>
@@ -33,7 +35,7 @@ public class Recipe
     public Recipe(string name, string imagePath, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, List<string> reviews, int starRating = 5)
     {
         Name = name;
-        imageReferencePath = imagePath;
+        ImageReferencePath = imagePath;
         Calories = calories;
         PrepTimeMinutes = prepTimeMinutes;
         Tags = tags;

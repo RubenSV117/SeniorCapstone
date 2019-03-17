@@ -13,8 +13,12 @@ public class RecipeButtonView : MonoBehaviour
     [SerializeField] private Text recipeName;
     [SerializeField] private GameObject loadingPanelObject;
 
-    private string recipeImagePath;
     private Recipe recipe;
+
+    private void Awake()
+    {
+        Test();
+    }
 
     /// <summary>
     /// Initialize the recipe button
@@ -24,20 +28,13 @@ public class RecipeButtonView : MonoBehaviour
     {
         // turn on loading panel until the image is retrieved
         loadingPanelObject.SetActive(true);
-        recipeImagePath = newRecipe.imageReferencePath;
-        recipeName.text = name;
+        recipeName.text = newRecipe.Name;
         recipe = newRecipe;
 
+        recipeImage.sprite = null;
         GetSprite();
 
-        GetComponent<Button>().onClick.AddListener(OpenRecipe);
-    }
-
-    private void GetSprite()
-    {
-        //recipeImage.sprite = recipeSprite;
-
-        loadingPanelObject.SetActive(false);
+        GetComponentInChildren<Button>().onClick.AddListener(OpenRecipe);
     }
 
     /// <summary>
@@ -46,5 +43,57 @@ public class RecipeButtonView : MonoBehaviour
     public void OpenRecipe()
     {
         RecipeManagerUI.Instance.InitRecipeUI(recipe);
+    }
+
+    private void GetSprite()
+    {
+        StorageManager.Instance.GetSprite(recipe.ImageReferencePath, recipeImage);
+        StartCoroutine(WaitForImage());
+    }
+
+    private IEnumerator WaitForImage()
+    {
+        yield return new WaitWhile(() => recipeImage.sprite == null);
+
+        loadingPanelObject.SetActive(false);
+        recipe.ImageSprite = recipeImage.sprite;
+
+        RecipeManagerUI.Instance.SetSprite(recipeImage.sprite);
+    }
+
+    private void Test()
+    {
+        List<Ingredient> ingredients = new List<Ingredient>()
+        {
+            new Ingredient("flour", "1/2 cup"),
+            new Ingredient("marinara", "1/2 cup"),
+            new Ingredient("mozzerella", "2 cups"),
+            new Ingredient("ham", "1/3 cup"),
+            new Ingredient("pineapple", "1/4 cup")
+        };
+
+        List<string> steps = new List<string>()
+        {
+            "Knead the dough.",
+            "Add the marinara sauce.",
+            "Add the mozerrella cheese.",
+            "Add the ham.",
+            "Add the pineapple.",
+            "Bake at 360F for 45 minutes."
+        };
+
+        List<string> tags = new List<string>()
+        {
+            "dairy"
+        };
+
+        List<string> reviews = new List<string>()
+        {
+            "This was pretty ok."
+        };
+
+        Recipe newRecipe = new Recipe("Garlic Salmon", "gs://regen-66cf8.appspot.com/Recipes/garlicsalmon.jpg", 450, 50, tags, ingredients, steps, reviews, 4);
+
+        InitRecipeButton(newRecipe);
     }
 }

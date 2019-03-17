@@ -24,20 +24,24 @@ public class RecipeManagerUI : MonoBehaviour
     [SerializeField] private Transform starRatingTrans;
     [SerializeField] private Transform verticalGroupTrans;
 
-    [SerializeField] private Sprite testSprite;
+    [SerializeField] private GameObject loadingObject;
 
+    private Sprite currentRecipeSprite;
+    
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
+    }
 
-        Test();
+    public void SetSprite(Sprite newSprite)
+    {
+        currentRecipeSprite = newSprite;
     }
 
     public void InitRecipeUI(Recipe newRecipe)
     {
-        // update dish image, get from database 
-        //dishImage.sprite = dishSprite;
+        dishImage.sprite = currentRecipeSprite;
 
         // update text elements
         dishNameText.text = newRecipe.Name;
@@ -82,6 +86,11 @@ public class RecipeManagerUI : MonoBehaviour
 
             infoText.text = newRecipe.Steps[i];
         }
+
+        loadingObject.SetActive(true);
+        StartCoroutine(WaitForImage());
+
+        canvas.SetActive(true);
     }
 
     public void Enable()
@@ -92,6 +101,12 @@ public class RecipeManagerUI : MonoBehaviour
     public void Disable()
     {
         canvas.SetActive(false);
+    }
+
+    private IEnumerator WaitForImage()
+    {
+        yield return new WaitWhile(() => dishImage == null);
+        loadingObject.SetActive(false);
     }
 
     public void Test()

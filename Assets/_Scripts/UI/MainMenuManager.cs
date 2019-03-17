@@ -26,7 +26,7 @@ public class MainMenuManager : MonoBehaviour
         foreach (var recipe in recipes)
         {
             RecipeButtonView recipeView = Instantiate(buttonViewPrefab, recipeListTrans).GetComponent<RecipeButtonView>();
-            recipeView.InitRecipeButton(recipe.);
+            recipeView.InitRecipeButton(recipe);
         }
     }
 }

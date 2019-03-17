@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Firebase;
 using Firebase.Database;
 using Firebase.Unity.Editor;
 using UnityEngine;
 using Object = System.Object;
-using Restsharp;
+//using Restsharp;
 
 
 public class DatabaseManager : MonoBehaviour
@@ -12,6 +13,10 @@ public class DatabaseManager : MonoBehaviour
     public static DatabaseManager Instance;
     
     private DatabaseReference databaseReference;
+
+    private bool hasAttemptFinished;
+
+    private List<Recipe> currentRecipes = new List<Recipe>();
 
     private void Awake()
     {
@@ -23,8 +28,9 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        TestPublish("Chicken Burrito");
-        TestPublish("Spring Roll");
+        //TestPublish("Hawaiian Pizza");
+        //TestPublish("Hawaiian Rolls");
+        //TestPublish("Hawaiian Salmon");
 
 
         TestRead("Hawaiian");
@@ -32,29 +38,41 @@ public class DatabaseManager : MonoBehaviour
 
     private void PublishNewRecipe(Recipe recipe)
     {
+        string key = databaseReference.Child("recipes").Push().Key;
+
+        string recipeNameTrimmed = recipe.Name.Trim();
+        recipeNameTrimmed = recipeNameTrimmed.Replace(" ", "");
+
+        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/{recipeNameTrimmed}{key}.jpg";
+
         string json = JsonUtility.ToJson(recipe);
 
-        databaseReference.Child("recipes").Child(recipe.Name).SetRawJsonValueAsync(json);
+        databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
     private void testWebrequestName(string name)
     {
-        var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
-        var request = new RestRequest(Method.GET);
-        request.AddHeader("Postman-Token", "e4f474bc-ca7c-4853-a2ec-27f7e5748c88");
-        request.AddHeader("cache-control", "no-cache");
-        request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
-        request.AddHeader("Content-Type", "application/json");
-        request.AddParameter("undefined", "{\"source\": { \"query\": {\"bool\": {\"must_not\": [ {\"wildcard\": " +
-            "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
-            "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
-            "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
-            "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \""+ name + 
-            "\",\"my_size\": 100}}", ParameterType.RequestBody);
-        IRestResponse response = client.Execute(request);
-        Console.WriteLine(response.Content);
+        //var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
+        //var request = new RestRequest(Method.GET);
+        //request.AddHeader("Postman-Token", "e4f474bc-ca7c-4853-a2ec-27f7e5748c88");
+        //request.AddHeader("cache-control", "no-cache");
+        //request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
+        //request.AddHeader("Content-Type", "application/json");
+        //request.AddParameter("undefined", "{\"source\": { \"query\": {\"bool\": {\"must_not\": [ {\"wildcard\": " +
+        //    "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
+        //    "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
+        //    "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
+        //    "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \""+ name + 
+        //    "\",\"my_size\": 100}}", ParameterType.RequestBody);
+        //IRestResponse response = client.Execute(request);
+        //Console.WriteLine(response.Content);
     }
     private void TestRead(string name)
     {
+        hasAttemptFinished = false;
+        currentRecipes.Clear();
+
+        StartCoroutine(WaitForRecipes());
+
         FirebaseDatabase.DefaultInstance
             .GetReference("recipes").OrderByChild("Name")
             .StartAt(name)
@@ -67,11 +85,27 @@ public class DatabaseManager : MonoBehaviour
                 else if (task.IsCompleted)
                 {
                     DataSnapshot snapshot = task.Result;
+                    print(snapshot.GetRawJsonValue());
+
+                    foreach (var recipe in snapshot.Children)
+                    {
+                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(recipe.GetRawJsonValue());
+                        currentRecipes.Add(newRecipe);
+                    }
+
                     // Do something with snapshot...
                 }
+
+                hasAttemptFinished = true;
             });
     }
 
+    private IEnumerator WaitForRecipes ()
+    {
+        yield return new WaitUntil(() => hasAttemptFinished);
+
+        MainMenuManager.Instance.RefreshRecipeList(currentRecipes);
+    }
 
     private void TestPublish(string name)
     {
@@ -104,7 +138,7 @@ public class DatabaseManager : MonoBehaviour
             "This was pretty ok."
         };
 
-        Recipe newRecipe = new Recipe(name, 450, 50, tags, ingredients, steps, reviews, 4);
+        Recipe newRecipe = new Recipe(name, "", 450, 50, tags, ingredients, steps, reviews, 4);
 
         PublishNewRecipe(newRecipe);
     }

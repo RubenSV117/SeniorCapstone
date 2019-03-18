@@ -6001,7 +6001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000008821487}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0.000008821487}
   m_SizeDelta: {x: 750, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2784046312019123183
@@ -6152,7 +6152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recipeListTrans: {fileID: 2784046312019123182}
-  buttonViewPrefab: {fileID: 4999351211489565121, guid: 9e22969905cafb84f9ca6324919e7965,
+  buttonViewPrefab: {fileID: 2421533790633716077, guid: 9e22969905cafb84f9ca6324919e7965,
     type: 3}
 --- !u!224 &2784046312374023928
 RectTransform:

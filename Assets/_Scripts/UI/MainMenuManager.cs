@@ -26,23 +26,12 @@ public class MainMenuManager : MonoBehaviour
 
     }
 
-    private void CreateButtons()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            GameObject obj = Instantiate(buttonViewPrefab, recipeListTrans);
-
-        }
-    }
-
     public void RefreshRecipeList(List<Recipe> recipes)
     {
         foreach (var recipe in recipes)
         {
-            GameObject obj = Instantiate(buttonViewPrefab, recipeListTrans);
+            RecipeButtonView recipeView = Instantiate(buttonViewPrefab, recipeListTrans).GetComponent<RecipeButtonView>();
 
-            RecipeButtonView recipeView = obj.GetComponent<RecipeButtonView>();
-            recipeView.transform.SetParent(recipeListTrans);
             recipeView.InitRecipeButton(recipe);
         }
 

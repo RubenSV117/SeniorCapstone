@@ -18,10 +18,8 @@ public class StorageManager : MonoBehaviour
     #region Private Variables
 
     private bool attemptDone;
-    private FirebaseStorage storageReference;
+    public static FirebaseStorage storageReference { get; private set; }
     private StorageReference storageFolderReference;
-    private Uri uri;
-    
 
     #endregion
 
@@ -50,75 +48,7 @@ public class StorageManager : MonoBehaviour
         return space_ref.ToString();
     }
 
-    public void GetSprite(string itemPath, Image image)
-    {
-        print($"StorageManager Requesting image at {itemPath}");
-
-        // get reference to the itemPath
-        StorageReference reference = storageReference.GetReferenceFromUrl(itemPath);
-
-        uri = null;
-        StartCoroutine(GetImage(image));
-
-        reference.GetDownloadUrlAsync().ContinueWith((task) => {
-            if (!task.IsFaulted && !task.IsCanceled)
-            {
-                print($"URI {task.Result}");
-                uri = task.Result;
-            }
-
-            else
-            {
-                print($"StorageManager Requesting image Failed");
-            }
-        });
-
-        //Task task = reference.GetDownloadUrlAsync().ContinueWith(task2 =>
-        //    {
-        //        print($"StorageManager Starting Coroutine");
-        //        StartCoroutine(GetImage(task2, image));
-
-        //        Debug.Log("Download URL: " + task2.ToString());
-
-        //    })
-        //.WithFailure((FirebaseException exception) =>
-        //    {
-        //        print($"StorageManager Requesting image Failed");
-
-        //    });
-
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private IEnumerator GetImage(Image image)
-    {
-        print("In Coroutine");
-
-        yield return new WaitWhile(() => uri == null);
-
-        WWW request = new WWW(uri.ToString());
-
-        print($"StorageManager waiting for image at {uri}");
-
-        yield return request;
-
-        print($"StorageManager Done Waiting");
-
-
-        //if (request.isNetworkError || request.isHttpError)
-        //{
-        //    Debug.Log(request.error);
-        //    print($"StorageManager request Failed");
-
-        //    yield break;
-        //}
-
-        Sprite newSprite = Sprite.Create(request.texture, new Rect(Vector2.zero, new Vector2(request.texture.width, request.texture.height)), new Vector2(0.5f, 0.5f));
-        image.sprite = newSprite;
-    }
+  
 
     private void PublishImageToStorage(string localFile, string key)
     {
@@ -149,7 +79,9 @@ public class StorageManager : MonoBehaviour
                     });
                 }
             });
-    } 
+    }
+#endregion
 
-    #endregion
+   
+    
 }

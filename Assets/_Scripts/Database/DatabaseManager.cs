@@ -33,7 +33,7 @@ public class DatabaseManager : MonoBehaviour
         //TestPublish("Hawaiian Salmon");
 
 
-        TestRead("Hawaiian");
+        //Search("Hawaiian");
     }
 
     private void PublishNewRecipe(Recipe recipe)
@@ -66,7 +66,7 @@ public class DatabaseManager : MonoBehaviour
         //IRestResponse response = client.Execute(request);
         //Console.WriteLine(response.Content);
     }
-    private void TestRead(string name)
+    public void Search(string name)
     {
         hasAttemptFinished = false;
         currentRecipes.Clear();

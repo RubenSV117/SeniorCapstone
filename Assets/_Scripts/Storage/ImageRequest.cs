@@ -57,15 +57,6 @@ public class ImageRequest : MonoBehaviour
 
         print($"StorageManager Done Waiting");
 
-
-        //if (request.isNetworkError || request.isHttpError)
-        //{
-        //    Debug.Log(request.error);
-        //    print($"StorageManager request Failed");
-
-        //    yield break;
-        //}
-
         Sprite newSprite = Sprite.Create(request.texture,
             new Rect(Vector2.zero, new Vector2(request.texture.width, request.texture.height)),
             new Vector2(0.5f, 0.5f));

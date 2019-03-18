@@ -67,8 +67,6 @@ public class RecipeButtonView : MonoBehaviour
 
         loadingPanelObject.SetActive(false);
         recipe.ImageSprite = recipeImage.sprite;
-
-        RecipeManagerUI.Instance.SetSprite(recipeImage.sprite);
     }
 
     private void Test()

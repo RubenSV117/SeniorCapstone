@@ -9,11 +9,14 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform recipeListTrans;
     [SerializeField] private GameObject buttonViewPrefab;
 
+    public List<string> TagsToExlude{ get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
 
+        TagsToExlude = new List<string>();
         //CreateButtons();
     }
 
@@ -23,7 +26,7 @@ public class MainMenuManager : MonoBehaviour
     /// <param name="recipeName">Name of the recipe to searched</param>
     public void SearchForRecipes(string recipeName)
     {
-
+        DatabaseManager.Instance.Search(recipeName);
     }
 
     public void RefreshRecipeList(List<Recipe> recipes)
@@ -43,5 +46,18 @@ public class MainMenuManager : MonoBehaviour
         //}
 
         // add new recipes
+    }
+
+    public void ToggleTag(string newTag)
+    {
+        if (!TagsToExlude.Contains(newTag))
+        {
+            TagsToExlude.Add(newTag);
+        }
+
+        else
+        {
+            TagsToExlude.Remove(newTag);
+        }
     }
 }

@@ -41,7 +41,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void InitRecipeUI(Recipe newRecipe)
     {
-        dishImage.sprite = currentRecipeSprite;
+        dishImage.sprite = newRecipe.ImageSprite;
 
         // update text elements
         dishNameText.text = newRecipe.Name;

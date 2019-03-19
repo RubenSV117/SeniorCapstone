@@ -63,8 +63,12 @@ public class ImageRequest : MonoBehaviour
 
         yield return request;
 
-        if (request.texture == null)
+        if (request.texture == null || image == null)
+        {
+            Destroy(gameObject);
+
             yield break;
+        }
 
         // create a sprite with the data retrieved and set the image to it
         Sprite newSprite = Sprite.Create(request.texture,

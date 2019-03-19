@@ -84,6 +84,9 @@ public class DatabaseManager : MonoBehaviour
                 }
                 else if (task.IsCompleted)
                 {
+                    if (task.Result.ChildrenCount == 0)
+                        return;
+
                     DataSnapshot snapshot = task.Result;
                     print(snapshot.GetRawJsonValue());
 
@@ -92,8 +95,6 @@ public class DatabaseManager : MonoBehaviour
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(recipe.GetRawJsonValue());
                         currentRecipes.Add(newRecipe);
                     }
-
-                    // Do something with snapshot...
                 }
 
                 hasAttemptFinished = true;
@@ -104,7 +105,9 @@ public class DatabaseManager : MonoBehaviour
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 
-        MainMenuManager.Instance.RefreshRecipeList(currentRecipes);
+        // if search has yielded results, update the recipe list in the ui
+        if(currentRecipes.Count > 0)
+            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
     private void TestPublish(string name)

@@ -4,12 +4,20 @@ using System.Collections;
 using Firebase.Storage;
 using UnityEngine.UI;
 
+/// <summary>
+/// References StorageManager to create a call to Fire Storage an get an image at the given path
+/// </summary>
 public class ImageRequest : MonoBehaviour
 {
     public string itemPath;
     public Image image;
     private Uri uri;
 
+    /// <summary>
+    /// Link the image to initialize to the path to retrieve from 
+    /// </summary>
+    /// <param name="itemPath">The item path for the image in Firebase Storage</param>
+    /// <param name="image">The UI image to be initialized with the retrieved data</param>
     public void Init(string itemPath, Image image)
     {
         this.itemPath = itemPath;
@@ -26,6 +34,8 @@ public class ImageRequest : MonoBehaviour
         StorageReference reference = StorageManager.storageReference.GetReferenceFromUrl(itemPath);
 
         uri = null;
+
+        // launch coroutine to wait for the Uri to be set 
         StartCoroutine(GetImage(image));
 
         reference.GetDownloadUrlAsync().ContinueWith((task) =>
@@ -45,21 +55,22 @@ public class ImageRequest : MonoBehaviour
 
     private IEnumerator GetImage(Image image)
     {
-        print("In Coroutine");
-
+        // wait until the Uri has been set
         yield return new WaitWhile(() => uri == null);
 
+        // retrieve the image
         WWW request = new WWW(uri.ToString());
-
-        print($"StorageManager waiting for image at {uri}");
 
         yield return request;
 
-        print($"StorageManager Done Waiting");
+        if (request.texture == null)
+            yield break;
 
+        // create a sprite with the data retrieved and set the image to it
         Sprite newSprite = Sprite.Create(request.texture,
             new Rect(Vector2.zero, new Vector2(request.texture.width, request.texture.height)),
             new Vector2(0.5f, 0.5f));
+
         image.sprite = newSprite;
 
         Destroy(gameObject);

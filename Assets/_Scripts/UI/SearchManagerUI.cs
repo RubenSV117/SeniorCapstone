@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuManager : MonoBehaviour
+/// <summary>
+/// Manages UI for searching and sends input to the DatabaseManager instance
+/// </summary>
+public class SearchManagerUI : MonoBehaviour
 {
-    public static MainMenuManager Instance;
+    public static SearchManagerUI Instance;
 
     [SerializeField] private Transform recipeListTrans;
     [SerializeField] private GameObject buttonViewPrefab;
@@ -17,7 +20,6 @@ public class MainMenuManager : MonoBehaviour
             Instance = this;
 
         TagsToExlude = new List<string>();
-        //CreateButtons();
     }
 
     /// <summary>
@@ -31,21 +33,20 @@ public class MainMenuManager : MonoBehaviour
 
     public void RefreshRecipeList(List<Recipe> recipes)
     {
+        // remove previous recipes
+        if (recipeListTrans.transform.childCount > 0)
+        {
+            for (int i = 0; i < recipeListTrans.transform.childCount; i++)
+                Destroy(recipeListTrans.transform.GetChild(i).gameObject);
+        }
+
+        // add new recipes
         foreach (var recipe in recipes)
         {
             RecipeButtonView recipeView = Instantiate(buttonViewPrefab, recipeListTrans).GetComponent<RecipeButtonView>();
 
             recipeView.InitRecipeButton(recipe);
         }
-
-        // remove previous recipes
-        //if (recipeListTrans.transform.childCount > 0)
-        //{
-        //    for (int i = 0; i < recipeListTrans.transform.childCount; i++)
-        //        Destroy(recipeListTrans.transform.GetChild(i).gameObject); 
-        //}
-
-        // add new recipes
     }
 
     public void ToggleTag(string newTag)

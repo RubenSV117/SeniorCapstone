@@ -14,10 +14,11 @@ public class RecipeButtonView : MonoBehaviour
     [SerializeField] private GameObject loadingPanelObject;
 
     private Recipe recipe;
+    private static bool isCurrentRequestDone = true;
 
     private void Awake()
     {
-        Test();
+        //Test();
     }
 
     /// <summary>
@@ -47,8 +48,17 @@ public class RecipeButtonView : MonoBehaviour
 
     private void GetSprite()
     {
-        StorageManager.Instance.GetSprite(recipe.ImageReferencePath, recipeImage);
+        GameObject imageRequest = new GameObject("Image Request");
+        ImageRequest newRequest = imageRequest.AddComponent<ImageRequest>();
+        newRequest.Init(recipe.ImageReferencePath, recipeImage);
+
         StartCoroutine(WaitForImage());
+    }
+
+    private IEnumerator WaitToRequestImage()
+    {
+        yield return new WaitUntil(() => isCurrentRequestDone);
+
     }
 
     private IEnumerator WaitForImage()
@@ -57,8 +67,6 @@ public class RecipeButtonView : MonoBehaviour
 
         loadingPanelObject.SetActive(false);
         recipe.ImageSprite = recipeImage.sprite;
-
-        RecipeManagerUI.Instance.SetSprite(recipeImage.sprite);
     }
 
     private void Test()
@@ -96,4 +104,6 @@ public class RecipeButtonView : MonoBehaviour
 
         InitRecipeButton(newRecipe);
     }
+
+
 }

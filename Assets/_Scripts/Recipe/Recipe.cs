@@ -24,7 +24,7 @@ public class Recipe
     /// Creates a new instance of Recipe
     /// </summary>
     /// <param name="name">The name of the recipe</param>
-    /// <param name="imagePath">Image path url for the database</param>
+    /// <param name="imagePath">Image itemPath url for the database</param>
     /// <param name="calories">The amount of calories</param>
     /// <param name="prepTimeMinutes">The prep time in minutes</param>
     /// <param name="tags">The tags for this recipe</param>

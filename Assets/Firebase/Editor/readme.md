@@ -163,6 +163,15 @@ Support
 
 Release Notes
 -------------
+### 5.6.0
+  - Overview
+    - Added Game Center sign-in to Auth and fixed intermittent crashes due to
+      garbage collection.
+  - Changes
+    - Auth (iOS): Added Game Center authentication.
+    - General: Fixed intermittent crashes caused when multiple native objects
+      were garbage-collected at the same time.
+
 ### 5.5.0
   - Overview
     - Added support for

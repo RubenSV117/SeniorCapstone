@@ -4,7 +4,7 @@ using Firebase.Database;
 using Firebase.Unity.Editor;
 using UnityEngine;
 using Object = System.Object;
-using Restsharp;
+using RestSharp;
 
 
 public class DatabaseManager : MonoBehaviour

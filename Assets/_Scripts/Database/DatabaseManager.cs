@@ -28,9 +28,9 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        //TestPublish("Hawaiian Pizza");
-        //TestPublish("Hawaiian Rolls");
-        //TestPublish("Hawaiian Salmon");
+        TestPublish("Hawaiian Pizza");
+        TestPublish("Hawaiian Rolls");
+        TestPublish("Hawaiian Salmon");
 
 
         //Search("Hawaiian");
@@ -49,22 +49,47 @@ public class DatabaseManager : MonoBehaviour
 
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
-    private void testWebrequestName(string name)
+
+    public void elasticSearchExclude(string name,string[] excludeTags)
     {
-        //var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
-        //var request = new RestRequest(Method.GET);
-        //request.AddHeader("Postman-Token", "e4f474bc-ca7c-4853-a2ec-27f7e5748c88");
-        //request.AddHeader("cache-control", "no-cache");
-        //request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
-        //request.AddHeader("Content-Type", "application/json");
-        //request.AddParameter("undefined", "{\"source\": { \"query\": {\"bool\": {\"must_not\": [ {\"wildcard\": " +
-        //    "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
-        //    "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
-        //    "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
-        //    "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \""+ name + 
-        //    "\",\"my_size\": 100}}", ParameterType.RequestBody);
-        //IRestResponse response = client.Execute(request);
-        //Console.WriteLine(response.Content);
+        var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
+        var request = new RestRequest(Method.GET);
+
+        string param = "\"{\"source\": {\"query\": {\"bool\": {";
+        string must_not = "\"must_not\":[";
+        string Excludetag = "{\"term\":{\"tags\":\"";
+        string should = "\"should\":[{\"wildcard\":{\"name\":\"" + name + "\"}},{\"fuzzy\":{\"name\":{\"value\":\"hick\"}}}]}}";
+        string size = "\"size\" : 10";
+        request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
+        request.AddHeader("cache-control", "no-cache");
+        request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
+        request.AddHeader("Content-Type", "application/json");
+        if (excludeTags.Length > 0)
+        {
+            param = param + must_not;
+            for(int i=0; i < excludeTags.Length; i++)
+            {
+                if(i !=0) {
+                    param += ",";
+                }
+                param = param + Excludetag + excludeTags[i] + "\"}}";
+            }
+            param += "],";
+            param = param + should + size;
+            
+        }
+        else
+        {
+            param = "{\"source\": { \"query\": {\"bool\": {\"should\": [ {\"wildcard\": " +
+                "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
+                "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
+                "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
+                "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
+                "\",\"my_size\": 100}}";
+        }
+
+        request.AddParameter("undefined", param, ParameterType.RequestBody);
+        var response = client.Execute(request);
     }
     public void Search(string name)
     {

@@ -5,7 +5,7 @@ using Firebase.Unity.Editor;
 using UnityEngine;
 using Object = System.Object;
 using RestSharp;
-
+using System;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -104,7 +104,7 @@ public class DatabaseManager : MonoBehaviour
             "This was pretty ok."
         };
 
-        Recipe newRecipe = new Recipe(name, 450, 50, tags, ingredients, steps, reviews, 4);
+        Recipe newRecipe = new Recipe(name, null, 450, 50, tags, ingredients, steps, reviews, 4);
 
         PublishNewRecipe(newRecipe);
     }

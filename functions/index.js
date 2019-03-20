@@ -11,9 +11,9 @@ const _ = require('lodash');
 const request = require('request-promise');
 
 exports.indexRecipesToElastic = functions.database.ref('regen/recipes/{ID}')
-    .onWrite((change, context) => {
-        let recData = change.after.val();
-        let RID = context.param.ID;
+    .onWrite(event => {
+        let recData = event.data.val();
+        let RID = event.param.ID;
 
         console.log('Indexing Recipe', recData);
 

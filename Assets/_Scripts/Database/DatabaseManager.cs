@@ -7,6 +7,7 @@ using UnityEngine;
 using Object = System.Object;
 using RestSharp;
 using System;
+using Newtonsoft.Json;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -49,7 +50,18 @@ public class DatabaseManager : MonoBehaviour
 
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
-
+    public void elasticSearch(string name)
+    {
+        var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
+        var request = new RestRequest(Method.GET);
+        request.AddHeader("Postman-Token", "33d32a58-494a-49fb-8bb8-924d330ad906");
+        request.AddHeader("cache-control", "no-cache");
+        request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
+        request.AddHeader("Content-Type", "application/json");
+        request.AddParameter("application/json","{ \"query\":{ \"bool\":{ \"must\":[],\"must_not\":[{\"match_all\":{}}],\"should\":[{\"match_all\":{}}]}},\"from\":0,\"size\":10,\"sort\":[],\"aggs\":{}}", ParameterType.RequestBody);
+        IRestResponse response = client.Execute(request);
+        print(response.Content);
+    }
     public void elasticSearchExclude(string name,string[] excludeTags)
     {
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
@@ -58,7 +70,7 @@ public class DatabaseManager : MonoBehaviour
         string param = "\"{\"source\": {\"query\": {\"bool\": {";
         string must_not = "\"must_not\":[";
         string Excludetag = "{\"term\":{\"tags\":\"";
-        string should = "\"should\":[{\"wildcard\":{\"name\":\"" + name + "\"}},{\"fuzzy\":{\"name\":{\"value\":\"hick\"}}}]}}";
+        string should = "\"should\":[{\"wildcard\":{\"name\":{\"value\":" + name + "\"}},{\"fuzzy\":{\"name\":{\"value\":\"" + name + "\"}}}]}}";
         string size = "\"size\" : 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
         request.AddHeader("cache-control", "no-cache");
@@ -88,8 +100,9 @@ public class DatabaseManager : MonoBehaviour
                 "\",\"my_size\": 100}}";
         }
 
-        request.AddParameter("undefined", param, ParameterType.RequestBody);
-        var response = client.Execute(request);
+        request.AddParameter("application/json", "{\n    \"source\": {\n        \"query\": {\n            \"bool\": {\n                \"must_not\": [\n                    {\n                        \"fuzzy\": {\n                            \"{{my_field3}}\": \"{{my_tags}}\"\n                        }\n                    },\n                    {\n                        \"wildcard\": {\n                            \"{{my_field3}}\": \"*{{my_tags}}*\"\n                        }\n                    }\n                ],\n                \"should\":[\n                \t                    {\n                        \"wildcard\": {\n                            \"{{my_field1}}\": \"*{{my_value}}*\"\n                        }\n                    },\n                    {\n                        \"fuzzy\": {\n                            \"{{my_field1}}\": \"{{my_value}}\"\n                        }\n                    }\n                \t]\n            }\n        },\n        \"size\": \"{{my_size}}\"\n    },\n    \"params\": {\n        \"my_field1\": \"name\",\n        \"my_field3\": \"tags\",\n        \"my_value\": \"endies\",\n        \"my_tags\": \"asdfa\",\n        \"my_size\": 100\n    }\n}", ParameterType.RequestBody);
+        IRestResponse response = client.Execute(request);
+        print(response.Content);
     }
     public void Search(string name)
     {

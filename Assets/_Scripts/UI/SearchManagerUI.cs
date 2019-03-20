@@ -26,9 +26,10 @@ public class SearchManagerUI : MonoBehaviour
     /// Call database class and receive the list of recipes 
     /// </summary>
     /// <param name="recipeName">Name of the recipe to searched</param>
-    public void SearchForRecipes(string recipeName, string[] tags)
+    public void SearchForRecipes(string recipeName)
     {
-        DatabaseManager.Instance.elasticSearchExclude(recipeName,tags);
+        string[] excludeTags = TagsToExlude.ToArray();
+        DatabaseManager.Instance.elasticSearch(recipeName);
     }
 
     public void RefreshRecipeList(List<Recipe> recipes)

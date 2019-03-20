@@ -29,7 +29,7 @@ public class SearchManagerUI : MonoBehaviour
     public void SearchForRecipes(string recipeName)
     {
         string[] excludeTags = TagsToExlude.ToArray();
-        DatabaseManager.Instance.elasticSearch(recipeName);
+        DatabaseManager.Instance.elasticSearchExclude(recipeName, excludeTags);
     }
 
     public void RefreshRecipeList(List<Recipe> recipes)

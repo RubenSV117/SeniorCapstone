@@ -28,6 +28,12 @@ public class SearchManagerUI : MonoBehaviour
     /// <param name="recipeName">Name of the recipe to searched</param>
     public void SearchForRecipes(string recipeName)
     {
+        string[] excludeTags = TagsToExlude.ToArray();
+        DatabaseManager.Instance.Search(recipeName, excludeTags);
+    }
+
+    public void SearchForRecipesSimple(string recipeName)
+    {
         DatabaseManager.Instance.Search(recipeName);
     }
 

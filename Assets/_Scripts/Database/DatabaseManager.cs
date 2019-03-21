@@ -8,6 +8,7 @@ using Object = System.Object;
 using RestSharp;
 using System;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Linq;
 
 public class DatabaseManager : MonoBehaviour
@@ -30,7 +31,7 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        TestPublish("Hawaiian Pizza");
+        //TestPublish("Hawaiian Pizza");
         //Search("Hawaiian");
     }
 
@@ -84,14 +85,8 @@ public class DatabaseManager : MonoBehaviour
         }
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
-        print(response.Content);
-        var result = JsonUtility.FromJson<ElasticSearchResult>(response.Content);
-        IEnumerable<String> idList = result.hits.hits.Select(h => h._id);
-        foreach(string id in idList)
-        {
-            print(id);
-        }
-
+        Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+        Search(rootObject.hits.hits);
 
     }
     public void Search(string name)
@@ -128,7 +123,41 @@ public class DatabaseManager : MonoBehaviour
                 hasAttemptFinished = true;
             });
     }
+    public void Search(Hit[] hits)
+    {
+        hasAttemptFinished = false;
+        currentRecipes.Clear();
 
+        StartCoroutine(WaitForRecipes());
+        foreach (Hit hit in hits)
+        {
+            FirebaseDatabase.DefaultInstance
+                .GetReference("recipes").Child(hit._id)
+                .GetValueAsync().ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        // Handle the error...
+                    }
+                    else if (task.IsCompleted)
+                    {
+                        if (task.Result.ChildrenCount == 0)
+                            return;
+
+                        DataSnapshot snapshot = task.Result;
+                        print(snapshot.GetRawJsonValue());
+
+                        foreach (var recipe in snapshot.Children)
+                        {
+                            Recipe newRecipe = JsonUtility.FromJson<Recipe>(recipe.GetRawJsonValue());
+                            currentRecipes.Add(newRecipe);
+                        }
+                    }
+
+                    hasAttemptFinished = true;
+                });
+        }
+    }
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);

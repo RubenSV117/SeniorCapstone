@@ -7,6 +7,9 @@ using UnityEngine;
 using Object = System.Object;
 using RestSharp;
 using System;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Linq;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -29,10 +32,9 @@ public class DatabaseManager : MonoBehaviour
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
         //TestPublish("Hawaiian Pizza");
-        //TestPublish("Hawaiian Rolls");
-        //TestPublish("Hawaiian Salmon");
-
-
+        //TestPublish("Hawaiian Pasta");
+        //TestPublish("Chicken Tenders");
+        //TestPublish("Chicken Burrito");
         //Search("Hawaiian");
     }
 
@@ -46,25 +48,59 @@ public class DatabaseManager : MonoBehaviour
         recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/{recipeNameTrimmed}{key}.jpg";
 
         string json = JsonUtility.ToJson(recipe);
-
+        print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
-    private void testWebrequestName(string name)
+    public void elasticSearchExclude(string name,string[] excludeTags)
     {
-        //var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
-        //var request = new RestRequest(Method.GET);
-        //request.AddHeader("Postman-Token", "e4f474bc-ca7c-4853-a2ec-27f7e5748c88");
-        //request.AddHeader("cache-control", "no-cache");
-        //request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
-        //request.AddHeader("Content-Type", "application/json");
-        //request.AddParameter("undefined", "{\"source\": { \"query\": {\"bool\": {\"must_not\": [ {\"wildcard\": " +
-        //    "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
-        //    "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
-        //    "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
-        //    "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \""+ name + 
-        //    "\",\"my_size\": 100}}", ParameterType.RequestBody);
-        //IRestResponse response = client.Execute(request);
-        //Console.WriteLine(response.Content);
+        var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
+        var request = new RestRequest(Method.POST);
+        string param = "{\"source\":{\"query\": {\"bool\": {";
+        string must_not = "\"must_not\":[";
+        string Excludetag = "{\"term\": {\"tags\": \"";
+        string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"" + name +"\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
+        request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
+        request.AddHeader("cache-control", "no-cache");
+        request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
+        request.AddHeader("Content-Type", "application/json");
+        if (excludeTags.Length > 0)
+        {
+            param = param + must_not;
+            for(int i=0; i < excludeTags.Length; i++)
+            {
+                if(i !=0) {
+                    param += ",";
+                }
+                param = param + Excludetag + excludeTags[i] + "\"}}";
+            }
+            param += "],";
+            param = param + should + "}}";
+            
+        }
+        else
+        {
+            param = "{\"source\": { \"query\": {\"bool\": {\"should\": [ {\"wildcard\": " +
+                "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
+                "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
+                "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
+                "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
+                "\",\"my_size\": 100}}";
+        }
+        request.AddParameter("application/json",param, ParameterType.RequestBody);
+        IRestResponse response = client.Execute(request);
+        if (!response.Content.Contains("\"total\":0"))
+        {
+            print(response.Content);
+            Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            Search(rootObject.hits.hits);
+        }
+        else
+        {
+            print(response.Content);
+            currentRecipes.Clear();
+            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+        }
+
     }
     public void Search(string name)
     {
@@ -100,7 +136,38 @@ public class DatabaseManager : MonoBehaviour
                 hasAttemptFinished = true;
             });
     }
+    public void Search(Hit[] hits)
+    {
+        hasAttemptFinished = false;
+        currentRecipes.Clear();
 
+        StartCoroutine(WaitForRecipes());
+        foreach (Hit hit in hits)
+        {
+            FirebaseDatabase.DefaultInstance
+                .GetReference("recipes").Child(hit._id)
+                .GetValueAsync().ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        // Handle the error...
+                    }
+                    else if (task.IsCompleted)
+                    {
+                        if (task.Result.ChildrenCount == 0)
+                            return;
+
+                        DataSnapshot snapshot = task.Result;
+
+                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+                        currentRecipes.Add(newRecipe);
+
+                    }
+
+                    hasAttemptFinished = true;
+                });
+        }
+    }
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);
@@ -114,26 +181,23 @@ public class DatabaseManager : MonoBehaviour
     {
         List<Ingredient> ingredients = new List<Ingredient>()
         {
-            new Ingredient("flour", "1/2 cup"),
-            new Ingredient("marinara", "1/2 cup"),
-            new Ingredient("mozzerella", "2 cups"),
-            new Ingredient("ham", "1/3 cup"),
-            new Ingredient("pineapple", "1/4 cup")
+            new Ingredient("Chicken", "1"),
+            new Ingredient("Breading", "Some"),
+            new Ingredient("Cooking oil","enough for frying")
+
         };
 
         List<string> steps = new List<string>()
         {
-            "Knead the dough.",
-            "Add the marinara sauce.",
-            "Add the mozerrella cheese.",
-            "Add the ham.",
-            "Add the pineapple.",
-            "Bake at 360F for 45 minutes."
+            "Bread the chicken",
+            "Cook oil in a fryer until boiling",
+            "Dunk breaded chicken in oil until fried"
         };
 
         List<string> tags = new List<string>()
         {
-            "dairy"
+            "poultry",
+            "wheat"
         };
 
         List<string> reviews = new List<string>()

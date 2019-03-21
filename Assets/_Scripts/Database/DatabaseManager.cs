@@ -33,7 +33,7 @@ public class DatabaseManager : MonoBehaviour
 
         //TestPublish("Hawaiian Pizza");
         //TestPublish("Hawaiian Pasta");
-        //TestPublish("Chicken Tenders");
+        TestPublish("Chicken Tenders");
         //TestPublish("Chicken Burrito");
         //Search("Hawaiian");
     }
@@ -45,7 +45,7 @@ public class DatabaseManager : MonoBehaviour
         string recipeNameTrimmed = recipe.Name.Trim();
         recipeNameTrimmed = recipeNameTrimmed.Replace(" ", "");
 
-        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/{recipeNameTrimmed}{key}.jpg";
+        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders.jpg";
 
         string json = JsonUtility.ToJson(recipe);
         print(json);
@@ -86,11 +86,13 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
+        print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
         if (!response.Content.Contains("\"total\":0"))
         {
             print(response.Content);
+
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             Search(rootObject.hits.hits);
         }
@@ -100,8 +102,8 @@ public class DatabaseManager : MonoBehaviour
             currentRecipes.Clear();
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
-
     }
+ 
     public void Search(string name)
     {
         hasAttemptFinished = false;

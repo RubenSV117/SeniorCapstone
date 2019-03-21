@@ -10,6 +10,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -151,7 +152,7 @@ public class DatabaseManager : MonoBehaviour
             Task<DataSnapshot> t = FirebaseDatabase.DefaultInstance
                 .GetReference("recipes").Child(hit._id)
                 .GetValueAsync();
-            yield return new WaitUnitl(() => t.IsComplete);
+            yield return new WaitUntil(() => t.IsCompleted);
             DataSnapshot snapshot = t.Result;
             Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
             currentRecipes.Add(newRecipe);

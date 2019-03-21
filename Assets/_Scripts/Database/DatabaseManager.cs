@@ -34,7 +34,7 @@ public class DatabaseManager : MonoBehaviour
         //TestPublish("Hawaiian Pizza");
         //TestPublish("Hawaiian Pasta");
         //TestPublish("Chicken Tenders");
-        TestPublish("Chicken Burrito");
+        //TestPublish("Chicken Burrito");
         //Search("Hawaiian");
     }
 
@@ -83,13 +83,22 @@ public class DatabaseManager : MonoBehaviour
                 "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
                 "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
                 "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
-                "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
+                "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
-        Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
-        Search(rootObject.hits.hits);
+        if (!response.Content.Contains("\"total\":0"))
+        {
+            print(response.Content);
+            Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            Search(rootObject.hits.hits);
+        }
+        else
+        {
+            print(response.Content);
+            currentRecipes.Clear();
+        }
 
     }
     public void Search(string name)
@@ -172,27 +181,23 @@ public class DatabaseManager : MonoBehaviour
     {
         List<Ingredient> ingredients = new List<Ingredient>()
         {
-            new Ingredient("flour", "1/2 cup"),
-            new Ingredient("marinara", "1/2 cup"),
-            new Ingredient("mozzerella", "2 cups"),
-            new Ingredient("ham", "1/3 cup"),
-            new Ingredient("pineapple", "1/4 cup")
+            new Ingredient("Chicken", "1"),
+            new Ingredient("Breading", "Some"),
+            new Ingredient("Cooking oil","enough for frying")
+
         };
 
         List<string> steps = new List<string>()
         {
-            "Knead the dough.",
-            "Add the marinara sauce.",
-            "Add the mozerrella cheese.",
-            "Add the ham.",
-            "Add the pineapple.",
-            "Bake at 360F for 45 minutes."
+            "Bread the chicken",
+            "Cook oil in a fryer until boiling",
+            "Dunk breaded chicken in oil until fried"
         };
 
         List<string> tags = new List<string>()
         {
-            "dairy",
-            "meat"
+            "poultry",
+            "wheat"
         };
 
         List<string> reviews = new List<string>()

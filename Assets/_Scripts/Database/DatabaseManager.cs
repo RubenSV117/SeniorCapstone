@@ -98,6 +98,7 @@ public class DatabaseManager : MonoBehaviour
         {
             print(response.Content);
             currentRecipes.Clear();
+            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
 
     }
@@ -157,7 +158,6 @@ public class DatabaseManager : MonoBehaviour
                             return;
 
                         DataSnapshot snapshot = task.Result;
-                        print(snapshot.GetRawJsonValue());
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         currentRecipes.Add(newRecipe);

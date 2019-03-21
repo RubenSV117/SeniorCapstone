@@ -31,8 +31,8 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        TestPublish("Hawaiian Pizza");
-        //TestPublish("Hawaiian Pasta");
+        //TestPublish("Hawaiian Pizza");
+        TestPublish("Hawaiian Pasta");
         //TestPublish("Chicken Tenders");
         //TestPublish("Chicken Burrito");
         //Search("Hawaiian");
@@ -88,6 +88,7 @@ public class DatabaseManager : MonoBehaviour
         }
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
+        print(response.Content);
         Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
         Search(rootObject.hits.hits);
 

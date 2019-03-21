@@ -142,11 +142,10 @@ public class DatabaseManager : MonoBehaviour
     private void Search(Hit[] hits)
     {
         StartCoroutine(LoadRecipes(hits));
-       
     }
     private IEnumerator LoadRecipes(Hit[] hits)
     {
-    foreach (Hit hit in hits)
+        foreach (Hit hit in hits)
         {
             print(hit._id);
             Task<DataSnapshot> t = FirebaseDatabase.DefaultInstance
@@ -157,28 +156,10 @@ public class DatabaseManager : MonoBehaviour
             Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
             currentRecipes.Add(newRecipe);
             print("added " + newRecipe.Name);
-            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+            
 
-            /*ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                    {
-                        // Handle the error...
-                    }
-                    else if (task.IsCompleted)
-                    {
-                        if (task.Result.ChildrenCount == 0)
-                            return;
-
- 
-                        DataSnapshot snapshot = task.Result;
-                        
-
-                       
-                    }         
-                });*/
-
-        }    
+        }
+        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
     private IEnumerator WaitForRecipes ()

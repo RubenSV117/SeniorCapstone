@@ -14,37 +14,42 @@ using UnityEngine.UI;
 /// </summary>
 public class LoginManagerUI : MonoBehaviour, IPanel
 {
-    public static LoginManagerUI Instance;
-
     public delegate void AccountAction(string message);
     public event AccountAction OnAccountActionAttempt;
 
+    public static LoginManagerUI Instance;
+
     [SerializeField] private GameObject canvas;
 
-    [SerializeField] private Button emailButton;
+    [Header("Initial Screen UI")]
+    [SerializeField] private GameObject initialGroup; // initial log in, sign up buttons
+    //[SerializeField] private Button signUpButton;
+    //[SerializeField] private Button loginButton;
+
+
+    [Header("Registration Options UI")]
+    [SerializeField] private GameObject signupOptionsGroup; // ui group to register new user
+    [SerializeField] private GameObject emailRegisterGroup;
+
+    [Header("Login Options UI")]
+    [SerializeField] private GameObject emailLoginGroup;
+
+
+    //[SerializeField] private Button emailLoginButton;
+
     [SerializeField] private GameObject forgotEmailPasswordButton;
 
-    [SerializeField] private GameObject emailGroup;
-
     [SerializeField] private GameObject loginGroup; // ui button group to sign in user
-    [SerializeField] private GameObject registerGroup; // ui group to register new user
-    [SerializeField] private GameObject initialGroup; // initial log in, sign up buttons
 
     private string email;
-    private string passsword;
+    private string password;
+	private string confirmPassword;
 
     private bool attemptFinished;
     private bool attemptSuccess;
     private string errorMessage;
 
     private Coroutine attemptCo;
-
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-
-    }
 
     public void UpdateEmail(string value)
     {
@@ -53,7 +58,12 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void UpdatePassword(string value)
     {
-        passsword = value;
+        password = value;
+    }
+	
+	public void UpdateConfirmPassword(string value)
+    {
+        confirmPassword = value;
     }
 
     /// <summary>
@@ -72,7 +82,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
         attemptFinished = false;
 
-        LoginService.Instance.SignInUserWithEmailAndPassword(email, passsword).WithSuccess(user =>
+        LoginService.Instance.SignInUserWithEmailAndPassword(email, password).WithSuccess(user =>
         {
             attemptSuccess = true;
             attemptFinished = true;
@@ -80,16 +90,17 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         .WithFailure((FirebaseException exception) =>
         {
             // parse error code to send to ui notification
-            string errorStr = exception.GetAuthError().ToString();
+            //string errorStr = exception.GetAuthError().ToString();
 
-            errorMessage = "";
+            //errorMessage = "";
 
-            for (int i = 0; i < errorStr.Length; i++)
-            {
-                errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
-                ? " " + errorStr[i].ToString()
-                : errorStr[i].ToString());
-            }
+            //for (int i = 0; i < errorStr.Length; i++)
+            //{
+            //    errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
+            //    ? " " + errorStr[i].ToString()
+            //    : errorStr[i].ToString());
+            //}
+            errorMessage = exception.Message;
 
             attemptSuccess = false;
             attemptFinished = true;
@@ -103,6 +114,13 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     /// </summary>
     public void RegisterNewUserWithEmail()
     {
+        if (confirmPassword != password)
+        {
+            errorMessage = "Confirmation password must match first password.";
+            OnAccountActionAttempt?.Invoke(errorMessage);
+            return;
+        }
+
         // start coruoutine to handle attempt result ui notification
         if (attemptCo != null)
         {
@@ -110,28 +128,31 @@ public class LoginManagerUI : MonoBehaviour, IPanel
             attemptCo = null;
         }
 
-        attemptCo = StartCoroutine(HandleLoginAttempt());
+        attemptCo = StartCoroutine(HandleSignupAttempt());
 
         attemptFinished = false;
 
-        LoginService.Instance.RegisterUserWithEmail(email, passsword).WithSuccess(user =>
+        LoginService.Instance.RegisterUserWithEmail(email, password).WithSuccess(user =>
         {
             attemptSuccess = true;
             attemptFinished = true;
         })
         .WithFailure((FirebaseException exception) =>
         {
+            
             // parse error code to send to ui notification
             string errorStr = exception.GetAuthError().ToString();
 
-            errorMessage = "";
+            //errorMessage = "";
 
-            for (int i = 0; i < errorStr.Length; i++)
-            {
-                errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
-                ? " " + errorStr[i].ToString()
-                : errorStr[i].ToString());
-            }
+            //for (int i = 0; i < errorStr.Length; i++)
+            //{
+            //    errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
+            //    ? " " + errorStr[i].ToString()
+            //    : errorStr[i].ToString());
+            //}
+
+            errorMessage = exception.Message;
 
             attemptSuccess = false;
             attemptFinished = true;
@@ -154,16 +175,47 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         // send success notification or error message
         if (OnAccountActionAttempt != null)
         {
-            if (!attemptSuccess)
-                OnAccountActionAttempt.Invoke(errorMessage);
-
-            else
+            if (attemptSuccess)
             {
                 OnAccountActionAttempt.Invoke("Login Successful");
                 Disable();
+
+                /** 
+                 * To-do: remove dependency on MainMenuManagerUI
+                 * (this class shouldn't know about other UI classes).
+                 */
+                MainMenuManagerUI.Instance.Enable();
+            }
+            else
+            {
+                OnAccountActionAttempt.Invoke(errorMessage);
             }
         }
 
+        attemptFinished = false;
+        attemptSuccess = false;
+    }
+
+    /// <summary>
+    /// Display a popup for event success or failure.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator HandleSignupAttempt()
+    {
+        NotificationManager.Instance.SetLoadingPanel(true);
+
+        // wait until firebase finishes (had really unpredictable behavior if handled from within the WithFailure callback)
+        yield return new WaitUntil(() => attemptFinished);
+
+        NotificationManager.Instance.SetLoadingPanel(false);
+
+        // send success notification or error message
+        if (OnAccountActionAttempt != null)
+        {
+            OnAccountActionAttempt.Invoke(
+                ( attemptSuccess ? 
+                "Account registered" : errorMessage ));
+        }
         attemptFinished = false;
         attemptSuccess = false;
     }
@@ -177,15 +229,16 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void EnableRegister()
     {
         initialGroup.SetActive(false);
-        registerGroup.SetActive(true);
+        signupOptionsGroup.SetActive(true);
     }
 
     public void EnableInitialGroup()
     {
         initialGroup.SetActive(true);
         loginGroup.SetActive(false);
-        registerGroup.SetActive(false);
-        emailGroup.SetActive(false);
+        signupOptionsGroup.SetActive(false);
+        emailLoginGroup.SetActive(false);
+        emailRegisterGroup.SetActive(false);
     }
 
     public void SetAttempt(bool finished, bool succeeded, string message)
@@ -227,12 +280,12 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void EnableEmailLogin()
     {
         loginGroup.SetActive(false);
-        emailGroup.SetActive(true);
+        emailLoginGroup.SetActive(true);
         forgotEmailPasswordButton.SetActive(true);
 
         // clear email button listener and set to Email sign in
-        emailButton.onClick.RemoveAllListeners();
-        emailButton.onClick.AddListener(LogInWithEmail);
+        //emailLoginButton.onClick.RemoveAllListeners();
+        //emailLoginButton.onClick.AddListener(LogInWithEmail);
     }
 
     /// <summary>
@@ -240,13 +293,13 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     /// </summary>
     public void EnableEmailRegister()
     {
-        registerGroup.SetActive(false);
-        emailGroup.SetActive(true);
+        signupOptionsGroup.SetActive(false);
+        emailRegisterGroup.SetActive(true);
         forgotEmailPasswordButton.SetActive(false);
 
         // clear email button listener and set to Email register
-        emailButton.onClick.RemoveAllListeners();
-        emailButton.onClick.AddListener(RegisterNewUserWithEmail);
+        //emailLoginButton.onClick.RemoveAllListeners();
+        //emailLoginButton.onClick.AddListener(RegisterNewUserWithEmail);
     }
 
     public void Enable()
@@ -268,5 +321,17 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void Refresh()
     {
         throw new System.NotImplementedException();
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
+
+    private void Start()
+    {
+        canvas?.SetActive(true);
+        ;
     }
 }

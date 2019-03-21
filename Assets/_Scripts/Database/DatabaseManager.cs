@@ -10,6 +10,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -141,43 +142,24 @@ public class DatabaseManager : MonoBehaviour
     private void Search(Hit[] hits)
     {
         StartCoroutine(LoadRecipes(hits));
-       
     }
     private IEnumerator LoadRecipes(Hit[] hits)
     {
-    foreach (Hit hit in hits)
+        foreach (Hit hit in hits)
         {
             print(hit._id);
             Task<DataSnapshot> t = FirebaseDatabase.DefaultInstance
                 .GetReference("recipes").Child(hit._id)
                 .GetValueAsync();
-            yield return new WaitUnitl(() => t.IsComplete);
+            yield return new WaitUntil(() => t.IsCompleted);
             DataSnapshot snapshot = t.Result;
             Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
             currentRecipes.Add(newRecipe);
             print("added " + newRecipe.Name);
-            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+            
 
-            /*ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                    {
-                        // Handle the error...
-                    }
-                    else if (task.IsCompleted)
-                    {
-                        if (task.Result.ChildrenCount == 0)
-                            return;
-
- 
-                        DataSnapshot snapshot = task.Result;
-                        
-
-                       
-                    }         
-                });*/
-
-        }    
+        }
+        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
     private IEnumerator WaitForRecipes ()

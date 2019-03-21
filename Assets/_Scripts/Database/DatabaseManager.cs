@@ -32,8 +32,8 @@ public class DatabaseManager : MonoBehaviour
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
         //TestPublish("Hawaiian Pizza");
-        TestPublish("Hawaiian Pasta");
-        //TestPublish("Chicken Tenders");
+        //TestPublish("Hawaiian Pasta");
+        TestPublish("Chicken Tenders");
         //TestPublish("Chicken Burrito");
         //Search("Hawaiian");
     }

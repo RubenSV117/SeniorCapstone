@@ -107,7 +107,7 @@ public class DatabaseManager : MonoBehaviour
     public void Search(string name)
     {
         hasAttemptFinished = false;
-        currentRecipes.Clear();
+
 
         StartCoroutine(WaitForRecipes());
 
@@ -138,18 +138,27 @@ public class DatabaseManager : MonoBehaviour
                 hasAttemptFinished = true;
             });
     }
-    public void Search(Hit[] hits)
+    private void Search(Hit[] hits)
     {
-        hasAttemptFinished = false;
-        currentRecipes.Clear();
-
-        StartCoroutine(WaitForRecipes());
-        foreach (Hit hit in hits)
+        StartCoroutine(LoadRecipes(hits));
+       
+    }
+    private IEnumerator LoadRecipes(Hit[] hits)
+    {
+    foreach (Hit hit in hits)
         {
             print(hit._id);
-            FirebaseDatabase.DefaultInstance
+            Task<DataSnapshot> t = FirebaseDatabase.DefaultInstance
                 .GetReference("recipes").Child(hit._id)
-                .GetValueAsync().ContinueWith(task =>
+                .GetValueAsync();
+            yield return new WaitUnitl(() => t.IsComplete);
+            DataSnapshot snapshot = t.Result;
+            Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+            currentRecipes.Add(newRecipe);
+            print("added " + newRecipe.Name);
+            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+
+            /*ContinueWith(task =>
                 {
                     if (task.IsFaulted)
                     {
@@ -160,24 +169,23 @@ public class DatabaseManager : MonoBehaviour
                         if (task.Result.ChildrenCount == 0)
                             return;
 
+ 
                         DataSnapshot snapshot = task.Result;
+                        
 
-                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
-                        currentRecipes.Add(newRecipe);
-                        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
-                    }
+                       
+                    }         
+                });*/
 
-                    hasAttemptFinished = true;
-                });
-        }
-        
+        }    
     }
+
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 
         // if search has yielded results, update the recipe list in the ui
-        if(currentRecipes.Count > 0)
+        if (currentRecipes.Count > 0)
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 

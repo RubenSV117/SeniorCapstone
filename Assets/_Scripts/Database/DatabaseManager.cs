@@ -31,7 +31,10 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        //TestPublish("Hawaiian Pizza");
+        TestPublish("Hawaiian Pizza");
+        TestPublish("Hawaiian Pasta");
+        TestPublish("Chicken Tenders");
+        TestPublish("Chicken Burrito");
         //Search("Hawaiian");
     }
 
@@ -190,7 +193,8 @@ public class DatabaseManager : MonoBehaviour
 
         List<string> tags = new List<string>()
         {
-            "dairy"
+            "dairy",
+            "meat"
         };
 
         List<string> reviews = new List<string>()

@@ -46,7 +46,7 @@ public class DatabaseManager : MonoBehaviour
         string recipeNameTrimmed = recipe.Name.Trim();
         recipeNameTrimmed = recipeNameTrimmed.Replace(" ", "");
 
-        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders.jpg";
+        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders-LaUKHKGNOs9RhN4Xgs1.jpg";
 
         string json = JsonUtility.ToJson(recipe);
         print(json);

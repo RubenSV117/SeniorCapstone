@@ -87,17 +87,11 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-<<<<<<< HEAD
-        print(param);
-=======
-
-
->>>>>>> z
+		print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
         if (!response.Content.Contains("\"total\":0"))
         {
-<<<<<<< HEAD
             print(response.Content);
 
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
@@ -105,13 +99,9 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
-=======
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             Search(rootObject.hits.hits);
         }
-        
->>>>>>> z
-
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
     }

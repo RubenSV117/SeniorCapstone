@@ -2,18 +2,10 @@
     "name": "Tests",
     "references": [
         "Scripts",
-        "Packages"
+        "Packages",
+        "AsyncAwaitUtil"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": []
+    ]
 }

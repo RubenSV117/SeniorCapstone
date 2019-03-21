@@ -39,11 +39,6 @@ public class SearchManagerUI : MonoBehaviour
         DatabaseManager.Instance.elasticSearchExclude(recipeName, excludeTags);
     }
 
-    public void SearchForRecipesSimple(string recipeName)
-    {
-        // DatabaseManager.Instance.Search(recipeName);
-    }
-
     public void RefreshRecipeList(List<Recipe> recipes)
     {
         // remove previous recipes

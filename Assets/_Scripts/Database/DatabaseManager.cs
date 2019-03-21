@@ -33,7 +33,7 @@ public class DatabaseManager : MonoBehaviour
 
         //TestPublish("Hawaiian Pizza");
         //TestPublish("Hawaiian Pasta");
-        TestPublish("Chicken Tenders");
+        //TestPublish("Chicken Tenders");
         //TestPublish("Chicken Burrito");
         //Search("Hawaiian");
     }
@@ -53,12 +53,13 @@ public class DatabaseManager : MonoBehaviour
     }
     public void elasticSearchExclude(string name,string[] excludeTags)
     {
+        currentRecipes.Clear();
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
         var request = new RestRequest(Method.POST);
         string param = "{\"source\":{\"query\": {\"bool\": {";
         string must_not = "\"must_not\":[";
         string Excludetag = "{\"term\": {\"tags\": \"";
-        string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"" + name +"\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
+        string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
         request.AddHeader("cache-control", "no-cache");
         request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
@@ -98,8 +99,7 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
-            print(response.Content);
-            currentRecipes.Clear();
+
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
     }
@@ -146,6 +146,7 @@ public class DatabaseManager : MonoBehaviour
         StartCoroutine(WaitForRecipes());
         foreach (Hit hit in hits)
         {
+            print(hit._id);
             FirebaseDatabase.DefaultInstance
                 .GetReference("recipes").Child(hit._id)
                 .GetValueAsync().ContinueWith(task =>
@@ -163,12 +164,13 @@ public class DatabaseManager : MonoBehaviour
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         currentRecipes.Add(newRecipe);
-
+                        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
                     }
 
                     hasAttemptFinished = true;
                 });
         }
+        
     }
     private IEnumerator WaitForRecipes ()
     {

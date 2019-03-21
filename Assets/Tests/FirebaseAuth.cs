@@ -14,7 +14,7 @@ using static Tests.Constants;
 namespace Tests.Misc
 {
     [TestFixture]
-    public class FirebaseAuthIntegration : BaseTest
+    public class FirebaseAuthIntegration
     {
         private ILoginService auth;
 
@@ -38,8 +38,18 @@ namespace Tests.Misc
                     // Firebase Unity SDK is not safe to use here.
                 }
             });
-            SetUp(() => { auth = new LoginService(); });
-            TearDown(() => auth.Detach());
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            auth = new LoginService();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            auth.Detach();
         }
 
         [UnityTest]
@@ -148,7 +158,7 @@ namespace Tests.Misc
 
             // test user does exist
             Mock<ICallbackHandler<bool, Exception>> callback1 = new Mock<ICallbackHandler<bool, Exception>>();
-            Task<bool> t1 = auth.CheckIfUserExists(Constants.TEST_EMAIL).WithCallback(callback1.Object);
+            Task<bool> t1 = auth.CheckIfUserExists(TEST_EMAIL).WithCallback(callback1.Object);
             yield return t1.AsIEnumerator();
 
             callback1.Verify(c => c.OnSuccess(true), Times.Once);
@@ -157,7 +167,7 @@ namespace Tests.Misc
 
             // test user does not exist
             Mock<ICallbackHandler<bool, Exception>> callback2 = new Mock<ICallbackHandler<bool, Exception>>();
-            Task<bool> t2 = auth.CheckIfUserExists(Constants.TEST_EMAIL_OTHER).WithCallback(callback2.Object);
+            Task<bool> t2 = auth.CheckIfUserExists(TEST_EMAIL_OTHER).WithCallback(callback2.Object);
             yield return t2.AsIEnumerator();
 
             callback2.Verify(c => c.OnSuccess(false), Times.Once);

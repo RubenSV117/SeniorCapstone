@@ -26,9 +26,9 @@ using UnityEngine;
 /// </summary>
 public class LoginService : ILoginService
 {
-    private static readonly Lazy<LoginService> lazy = new Lazy<LoginService>(() => new LoginService());
+    private static readonly Lazy<ILoginService> lazy = new Lazy<ILoginService>(() => new LoginService());
 
-    public static LoginService Instance => lazy.Value;
+    public static ILoginService Instance => lazy.Value;
 
     private readonly FirebaseAuth auth;
 
@@ -127,7 +127,7 @@ public class LoginService : ILoginService
         return task;
     }
 
-        public Task SendRecoverPasswordEmail(string email)
+    public Task SendRecoverPasswordEmail(string email)
     {
         return auth.SendPasswordResetEmailAsync(email)
             .WithSuccess(() => Debug.Log("Recovery email sent to " + email))

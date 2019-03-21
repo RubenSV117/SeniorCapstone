@@ -8,6 +8,16 @@ using System.Collections;
 
 namespace Tests
 {
+    public class Constants
+    {
+        public static readonly string TEST_EMAIL = "TestEmail@FakeDomain.com";
+        public static readonly string TEST_PASSWORD = "NotARealPassword";
+
+        public static readonly string TEST_EMAIL_OTHER = "OtherTestEmail@FakeDomain.com";
+        public static readonly string TEST_PASSWORD_OTHER = "DefinitelyNotARealPassword";
+    }
+
+
     namespace Common
     {
         public class Auth
@@ -160,6 +170,10 @@ namespace Tests
                 }
                 catch (Exception e)
                 {
+                    if (e is AggregateException)
+                    {
+                        e = e.GetBaseException();
+                    }
                     actual = e.GetType();
                 }
                 Assert.AreEqual(expected, actual);

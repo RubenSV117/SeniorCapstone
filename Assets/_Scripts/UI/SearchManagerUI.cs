@@ -28,9 +28,20 @@ public class SearchManagerUI : MonoBehaviour
     /// <param name="recipeName">Name of the recipe to searched</param>
     public void SearchForRecipes(string recipeName)
     {
+        if (string.IsNullOrWhiteSpace(recipeName))
+        {
+            return;
+        }
 
-        string[] excludeTags = TagsToExlude.ToArray();
-        DatabaseManager.Instance.elasticSearchExclude(recipeName, excludeTags);
+        Debug.Log($"Searching {recipeName} with {TagsToExlude.Count} tags to exclude...");
+
+        //DatabaseManager.Instance.Search(recipeName);
+        DatabaseManager.Instance.elasticSearchExclude(recipeName, tagsToExlude.ToArray());
+    }
+
+    public void SearchForRecipesSimple(string recipeName)
+    {
+        // DatabaseManager.Instance.Search(recipeName);
     }
 
     public void RefreshRecipeList(List<Recipe> recipes)
@@ -45,7 +56,9 @@ public class SearchManagerUI : MonoBehaviour
         // add new recipes
         foreach (var recipe in recipes)
         {
-            RecipeButtonView recipeView = Instantiate(buttonViewPrefab, recipeListTrans).GetComponent<RecipeButtonView>();
+            RecipeButtonView recipeView = 
+                Instantiate(buttonViewPrefab, recipeListTrans)
+                    .GetComponent<RecipeButtonView>();
 
             recipeView.InitRecipeButton(recipe);
         }
@@ -57,7 +70,6 @@ public class SearchManagerUI : MonoBehaviour
         {
             TagsToExlude.Add(newTag);
         }
-
         else
         {
             TagsToExlude.Remove(newTag);

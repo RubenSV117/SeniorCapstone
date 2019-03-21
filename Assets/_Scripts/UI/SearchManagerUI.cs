@@ -32,11 +32,11 @@ public class SearchManagerUI : MonoBehaviour
         {
             return;
         }
-
+        string[] excludeTags = TagsToExlude.ToArray();
         Debug.Log($"Searching {recipeName} with {TagsToExlude.Count} tags to exclude...");
 
         //DatabaseManager.Instance.Search(recipeName);
-        DatabaseManager.Instance.elasticSearchExclude(recipeName, tagsToExlude.ToArray());
+        DatabaseManager.Instance.elasticSearchExclude(recipeName, excludeTags);
     }
 
     public void SearchForRecipesSimple(string recipeName)

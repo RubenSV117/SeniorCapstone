@@ -7,7 +7,8 @@ using UnityEngine;
 using Object = System.Object;
 using RestSharp;
 using System;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -30,10 +31,6 @@ public class DatabaseManager : MonoBehaviour
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
         TestPublish("Hawaiian Pizza");
-        TestPublish("Hawaiian Rolls");
-        TestPublish("Hawaiian Salmon");
-
-
         //Search("Hawaiian");
     }
 
@@ -47,7 +44,7 @@ public class DatabaseManager : MonoBehaviour
         recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/{recipeNameTrimmed}{key}.jpg";
 
         string json = JsonUtility.ToJson(recipe);
-
+        print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
     public void elasticSearchExclude(string name,string[] excludeTags)
@@ -85,10 +82,17 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-        print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
         print(response.Content);
+        var result = JsonUtility.FromJson<ElasticSearchResult>(response.Content);
+        IEnumerable<String> idList = result.hits.hits.Select(h => h._id);
+        foreach(string id in idList)
+        {
+            print(id);
+        }
+
+
     }
     public void Search(string name)
     {

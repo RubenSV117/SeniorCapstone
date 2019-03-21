@@ -10,15 +10,15 @@ const functions = require('firebase-functions');
 const _ = require('lodash');
 const request = require('request-promise');
 
-exports.indexRecipesToElastic = functions.database.ref('regen/recipes/{ID}')
-    .onWrite(event => {
-        let recData = event.data.val();
-        let RID = event.param.ID;
-
-        console.log('Indexing Recipe', recData);
+exports.indexRecipesToElastic = functions.database.ref('/recipes/{ID}')
+    .onWrite((snapshot,context) => {
+        let recData = snapshot.after.val();
+        let RID = context.params.ID;
+        console.log(context.resource);
+        console.log('Indexing Recipe', RID, recData);
 
         let elasticSearchConfig = functions.config().elasticsearch;
-        let elasticSearchUrl = elasticSearchConfig.url + '/regen/recipes/' + RID;
+        let elasticSearchUrl = elasticSearchConfig.url + 'regen/recipes/' + RID;
         let elasticSearchMethod = recData ? 'POST' : 'DELETE';
 
         let elasticsearchRequest = {

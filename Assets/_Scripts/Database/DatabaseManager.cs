@@ -52,6 +52,7 @@ public class DatabaseManager : MonoBehaviour
         print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
+
     public void elasticSearchExclude(string name,string[] excludeTags)
     {
         currentRecipes.Clear();
@@ -101,6 +102,7 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
+            print("No Results");
             //Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             //Search(rootObject.hits.hits);
         }
@@ -156,7 +158,8 @@ public class DatabaseManager : MonoBehaviour
                 .GetValueAsync();
             yield return new WaitUntil(() => t.IsCompleted);
             DataSnapshot snapshot = t.Result;
-            Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+            Debug.Log(snapshot.GetRawJsonValue());
+            Recipe newRecipe = JsonConvert.DeserializeObject<Recipe>(snapshot.GetRawJsonValue());
             currentRecipes.Add(newRecipe);
             print("added " + newRecipe.Name);
             

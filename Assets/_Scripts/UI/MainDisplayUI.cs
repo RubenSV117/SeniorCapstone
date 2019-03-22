@@ -71,6 +71,6 @@ public class MainDisplayUI : MonoBehaviour, IPanel
     // for debugging purposes
     public void ShowIncompleteDialog()
     {
-        UnityEditor.EditorUtility.DisplayDialog("Error", "This feature isn't fully implemented yet, sorry!", "OK");
+        // UnityEditor.EditorUtility.DisplayDialog("Error", "This feature isn't fully implemented yet, sorry!", "OK");
     }
 }

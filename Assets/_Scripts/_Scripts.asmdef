@@ -1,14 +1,9 @@
 {
-    "name": "Tests",
+    "name": "_Scripts",
     "references": [
-        "Scripts",
-        "Packages",
-        "AsyncAwaitUtil",
-        "_Scripts"
+        "Scripts"
     ],
-    "optionalUnityReferences": [
-        "TestAssemblies"
-    ],
+    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -12,15 +12,14 @@ public class SearchManagerUI : MonoBehaviour
     [SerializeField] private Transform recipeListTrans;
     [SerializeField] private GameObject buttonViewPrefab;
 
-    public List<string> TagsToInclude{ get; private set; }
+    public List<string> TagsToExlude{ get; private set; }
 
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
 
-        TagsToInclude = new List<string>();
-
+        TagsToExlude = new List<string>();
     }
 
     /// <summary>
@@ -33,11 +32,11 @@ public class SearchManagerUI : MonoBehaviour
         {
             return;
         }
-
-        Debug.Log($"Searching {recipeName} with {TagsToInclude.Count} tags to include...");
+        string[] excludeTags = TagsToExlude.ToArray();
+        Debug.Log($"Searching {recipeName} with {TagsToExlude.Count} tags to exclude...");
 
         //DatabaseManager.Instance.Search(recipeName);
-        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToInclude.ToArray());
+        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExlude.ToArray());
     }
 
     public void SearchForRecipesSimple(string recipeName)
@@ -67,13 +66,13 @@ public class SearchManagerUI : MonoBehaviour
 
     public void ToggleTag(string newTag)
     {
-        if (!TagsToInclude.Contains(newTag))
+        if (!TagsToExlude.Contains(newTag))
         {
-            TagsToInclude.Add(newTag);
+            TagsToExlude.Add(newTag);
         }
-        else if (TagsToInclude.Contains(newTag))
+        else
         {
-            TagsToInclude.Remove(newTag);
+            TagsToExlude.Remove(newTag);
         }
     }
 }

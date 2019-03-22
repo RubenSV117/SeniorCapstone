@@ -26,9 +26,9 @@ using UnityEngine;
 /// </summary>
 public class LoginService : ILoginService
 {
-    private static readonly Lazy<LoginService> lazy = new Lazy<LoginService>(() => new LoginService());
+    private static readonly Lazy<ILoginService> lazy = new Lazy<ILoginService>(() => new LoginService());
 
-    public static LoginService Instance => lazy.Value;
+    public static ILoginService Instance => lazy.Value;
 
     private readonly FirebaseAuth auth;
 
@@ -60,6 +60,11 @@ public class LoginService : ILoginService
         // attach state change listener for login and logout events
         auth.StateChanged += AuthStateChanged;
         User = auth.CurrentUser;
+    }
+
+    public Task<FirebaseUser> RegisterUserWithEmailAndPassword(string email, string password)
+    {
+        return RegisterUserWithEmail(email, password);
     }
 
     public Task<FirebaseUser> RegisterUserWithEmail(string email, string password)
@@ -104,30 +109,10 @@ public class LoginService : ILoginService
 
     public Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password)
     {
-        var task = auth.SignInWithEmailAndPasswordAsync(email, password);
-
-        task.ContinueWith(t =>
-        {
-            if (t.IsCanceled)
-            {
-                Debug.Log("SignInWithEmailAndPasswordAsync was canceled.");
-                return;
-            }
-            if (t.IsFaulted)
-            {
-                Debug.Log("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                return;
-            }
-
-            Firebase.Auth.FirebaseUser newUser = t.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})",
-                newUser.DisplayName, newUser.UserId);
-        });
-
-        return task;
+        return SignInUserWithEmail(email, password);
     }
 
-        public Task SendRecoverPasswordEmail(string email)
+    public Task SendRecoverPasswordEmail(string email)
     {
         return auth.SendPasswordResetEmailAsync(email)
             .WithSuccess(() => Debug.Log("Recovery email sent to " + email))

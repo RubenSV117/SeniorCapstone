@@ -177,14 +177,9 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         {
             if (attemptSuccess)
             {
-                OnAccountActionAttempt.Invoke("Login Successful");
-                Disable();
-
-                /** 
-                 * To-do: remove dependency on MainMenuManagerUI
-                 * (this class shouldn't know about other UI classes).
-                 */
-                MainMenuManagerUI.Instance.Enable();
+                //OnAccountActionAttempt.Invoke("Login Successful");
+                //Disable();
+                SwitchToMainMenu("Login Successful");
             }
             else
             {
@@ -272,6 +267,18 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void Logout()
     {
         LoginService.Instance.SignOut();
+    }
+
+    public void SwitchToMainMenu(string transitionMessage)
+    {
+        OnAccountActionAttempt.Invoke(transitionMessage);
+        this.Disable();
+
+        /** 
+        * To-do: remove dependency on MainMenuManagerUI
+        * (this class shouldn't know about other UI classes).
+        */
+        MainMenuManagerUI.Instance.Enable();
     }
 
     /// <summary>

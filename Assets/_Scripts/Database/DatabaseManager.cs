@@ -58,7 +58,7 @@ public class DatabaseManager : MonoBehaviour
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
         var request = new RestRequest(Method.POST);
         string param = "{\"source\":{\"query\": {\"bool\": {";
-        string must_not = "\"must_not\":[";
+        string must = "\"must\":[";
         string Excludetag = "{\"term\": {\"tags\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
@@ -67,7 +67,7 @@ public class DatabaseManager : MonoBehaviour
         request.AddHeader("Content-Type", "application/json");
         if (excludeTags.Length > 0)
         {
-            param = param + must_not;
+            param = param + must;
             for(int i=0; i < excludeTags.Length; i++)
             {
                 if(i !=0) {
@@ -88,9 +88,10 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-        print(param);
+		print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
+
         if (!response.Content.Contains("\"total\":0"))
         {
             print(response.Content);
@@ -100,9 +101,11 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
-
-            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+            //Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            //Search(rootObject.hits.hits);
         }
+
+        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
  
     public void Search(string name)

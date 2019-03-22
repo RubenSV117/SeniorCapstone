@@ -90,6 +90,7 @@ public class DatabaseManager : MonoBehaviour
 		print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
+
         if (!response.Content.Contains("\"total\":0"))
         {
             print(response.Content);
@@ -99,11 +100,11 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
-            Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
-            Search(rootObject.hits.hits);
+            //Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            //Search(rootObject.hits.hits);
         }
-            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
-        }
+
+        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
  
     public void Search(string name)

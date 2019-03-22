@@ -38,6 +38,9 @@ public interface ILoginService
     /// <returns>An asynchronous task that results in a nullable Firebase.Auth.FirebaseUser.</returns>
     Task<FirebaseUser> RegisterUserWithEmail(string email, string password);
 
+    [Obsolete("RegisterUserWithEmailAndPassword is deprecated, please use RegisterUserWithEmail instead.")]
+    Task<FirebaseUser> RegisterUserWithEmailAndPassword(string email, string password);
+
     /// <summary>
     /// Send password recovery email to the user
     /// </summary>
@@ -52,6 +55,9 @@ public interface ILoginService
     /// <param name="password">the password of the user.</param>
     /// <returns>A Task that if succesfully completes, results in the Firebase.Auth.FirebaseUser. </returns>
     Task<FirebaseUser> SignInUserWithEmail(string email, string password);
+
+    [Obsolete("SignInUserWithEmailAndPassword is deprecated, please use SignInUserWithEmail instead.")]
+    Task<FirebaseUser> SignInUserWithEmailAndPassword(string email, string password);
 
     /// <summary>
     /// Signs in a user with a Facebook access token. If their is a user already logged in, this will link the Facebook account

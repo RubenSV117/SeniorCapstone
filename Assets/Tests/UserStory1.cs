@@ -13,8 +13,7 @@ using static Tests.Constants;
 namespace Tests
 {
     public class UserStory1 : UITest
-    {
-
+    {   
         private Mock<ILoginService> InjectMockLoginService()
         {
             var f = typeof(LoginService).GetField("lazy", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);

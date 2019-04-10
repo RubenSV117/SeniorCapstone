@@ -45,7 +45,7 @@ public class RecipeManagerUI : MonoBehaviour
 
         // update text elements
         dishNameText.text = newRecipe.Name;
-        ingredientCountText.text = newRecipe.Ingredients.Count.ToString("N0");
+        ingredientCountText.text = newRecipe.Ingredients.Length.ToString("N0");
         calorieCountText.text = newRecipe.Calories.ToString("N0");
         prepTimeText.text = newRecipe.PrepTimeMinutes.ToString("N0");
 
@@ -64,7 +64,7 @@ public class RecipeManagerUI : MonoBehaviour
         }
 
         // update ingredients
-        for (int i = 0; i < newRecipe.Ingredients.Count; i++)
+        for (int i = 0; i < newRecipe.Ingredients.Length; i++)
         {
             Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                 verticalGroupTrans).GetComponentInChildren<Text>();
@@ -79,7 +79,7 @@ public class RecipeManagerUI : MonoBehaviour
         labelText.text = "Directions";
 
         // update directions
-        for (int i = 0; i < newRecipe.Steps.Count; i++)
+        for (int i = 0; i < newRecipe.Steps.Length; i++)
         {
             Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                 verticalGroupTrans).GetComponentInChildren<Text>();

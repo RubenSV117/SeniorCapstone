@@ -12,11 +12,11 @@ public class Recipe
     public string Name;
     public int Calories;
     public int PrepTimeMinutes;
-    public List<Ingredient> Ingredients;
-    public List<string> Steps;
+    public Ingredient[] Ingredients;
+    public string[] Steps;
     public int StarRating;
-    public List<string> Reviews;
-    public List<string> Tags;
+    public string[] Reviews;
+    public string[] Tags;
     public string ImageReferencePath;
     public Sprite ImageSprite;
 
@@ -38,10 +38,10 @@ public class Recipe
         ImageReferencePath = imagePath;
         Calories = calories;
         PrepTimeMinutes = prepTimeMinutes;
-        Tags = tags;
-        Ingredients = ingredients;
-        Steps = steps;
+        Tags = tags.ToArray();
+        Ingredients = ingredients.ToArray();
+        Steps = steps.ToArray();
         StarRating = starRating;
-        Reviews = reviews;
+        Reviews = reviews.ToArray();
     }
 }

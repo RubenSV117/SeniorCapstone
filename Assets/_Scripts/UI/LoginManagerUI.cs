@@ -82,7 +82,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
         attemptFinished = false;
 
-        LoginService.Instance.SignInUserWithEmailAndPassword(email, password).WithSuccess(user =>
+        LoginService.Instance.SignInUserWithEmail(email, password).WithSuccess(user =>
         {
             attemptSuccess = true;
             attemptFinished = true;
@@ -267,6 +267,12 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void Logout()
     {
         LoginService.Instance.SignOut();
+    }
+
+    public void SkipLogIn()
+    {
+        Disable();
+        MainMenuManagerUI.Instance.Enable();
     }
 
     public void SwitchToMainMenu(string transitionMessage)

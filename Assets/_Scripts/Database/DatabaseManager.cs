@@ -10,7 +10,6 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
-using System.Threading.Tasks;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -32,11 +31,6 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        //TestPublish("Hawaiian Pizza");
-        //TestPublish("Hawaiian Pasta");
-        //TestPublish("Chicken Tenders");
-        //TestPublish("Chicken Burrito");
-        //Search("Hawaiian");
     }
 
     private void PublishNewRecipe(Recipe recipe)
@@ -46,7 +40,7 @@ public class DatabaseManager : MonoBehaviour
         string recipeNameTrimmed = recipe.Name.Trim();
         recipeNameTrimmed = recipeNameTrimmed.Replace(" ", "");
 
-        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders-LaUKHKGNOs9RhN4Xgs1.jpg";
+        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders.jpg";
 
         string json = JsonUtility.ToJson(recipe);
         print(json);
@@ -58,7 +52,7 @@ public class DatabaseManager : MonoBehaviour
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
         var request = new RestRequest(Method.POST);
         string param = "{\"source\":{\"query\": {\"bool\": {";
-        string must_not = "\"must_not\":[";
+        string must = "\"must\":[";
         string Excludetag = "{\"term\": {\"tags\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
@@ -67,7 +61,7 @@ public class DatabaseManager : MonoBehaviour
         request.AddHeader("Content-Type", "application/json");
         if (excludeTags.Length > 0)
         {
-            param = param + must_not;
+            param = param + must;
             for(int i=0; i < excludeTags.Length; i++)
             {
                 if(i !=0) {
@@ -88,9 +82,10 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-        print(param);
+		print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         IRestResponse response = client.Execute(request);
+
         if (!response.Content.Contains("\"total\":0"))
         {
             print(response.Content);
@@ -98,17 +93,14 @@ public class DatabaseManager : MonoBehaviour
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             Search(rootObject.hits.hits);
         }
-        else
-        {
-
-            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
-        }
+        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
- 
+    
+    //Searching by name, old version of the search function
     public void Search(string name)
     {
         hasAttemptFinished = false;
-
+        currentRecipes.Clear();
 
         StartCoroutine(WaitForRecipes());
 
@@ -139,27 +131,42 @@ public class DatabaseManager : MonoBehaviour
                 hasAttemptFinished = true;
             });
     }
-    private void Search(Hit[] hits)
-    {
-        StartCoroutine(LoadRecipes(hits));
-    }
-    private IEnumerator LoadRecipes(Hit[] hits)
-    {
-        foreach (Hit hit in hits)
-        {
-            print(hit._id);
-            Task<DataSnapshot> t = FirebaseDatabase.DefaultInstance
-                .GetReference("recipes").Child(hit._id)
-                .GetValueAsync();
-            yield return new WaitUntil(() => t.IsCompleted);
-            DataSnapshot snapshot = t.Result;
-            Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
-            currentRecipes.Add(newRecipe);
-            print("added " + newRecipe.Name);
-            
 
+    //Search function for firebase using ID's found.
+    public void Search(Hit[] hits)
+    {
+        hasAttemptFinished = false;
+        currentRecipes.Clear();
+        StartCoroutine(WaitForRecipes());
+        for (int i = 0; i < hits.Length; i++)
+        {
+            print(hits[i]._id);
+            FirebaseDatabase.DefaultInstance
+                .GetReference("recipes").Child(hits[i]._id)
+                .GetValueAsync().ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        print("faulted");
+                    }
+                    else if (task.IsCompleted)
+                    {
+                        if (task.Result.ChildrenCount == 0)
+                            return;
+
+                        DataSnapshot snapshot = task.Result;
+
+                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+                        currentRecipes.Add(newRecipe);
+
+                        if (currentRecipes.Count == hits.Length)
+                            hasAttemptFinished = true;
+                    }
+
+                });
+         
+           
         }
-        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
     private IEnumerator WaitForRecipes ()
@@ -167,7 +174,7 @@ public class DatabaseManager : MonoBehaviour
         yield return new WaitUntil(() => hasAttemptFinished);
 
         // if search has yielded results, update the recipe list in the ui
-        if (currentRecipes.Count > 0)
+        if(currentRecipes.Count > 0)
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 

@@ -31,11 +31,6 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        //TestPublish("Hawaiian Pizza");
-        //TestPublish("Hawaiian Pasta");
-        //TestPublish("Chicken Tenders");
-        //TestPublish("Chicken Burrito");
-        //Search("Hawaiian");
     }
 
     private void PublishNewRecipe(Recipe recipe)
@@ -98,12 +93,6 @@ public class DatabaseManager : MonoBehaviour
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             Search(rootObject.hits.hits);
         }
-        else
-        {
-            //Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
-            //Search(rootObject.hits.hits);
-        }
-
         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
  
@@ -157,6 +146,7 @@ public class DatabaseManager : MonoBehaviour
                     if (task.IsFaulted)
                     {
                         // Handle the error...
+                        print("faulted");
                     }
                     else if (task.IsCompleted)
                     {
@@ -167,7 +157,9 @@ public class DatabaseManager : MonoBehaviour
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         currentRecipes.Add(newRecipe);
+                        print(newRecipe.Name);
                         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+
                     }
 
                     hasAttemptFinished = true;

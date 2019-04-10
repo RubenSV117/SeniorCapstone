@@ -138,11 +138,11 @@ public class DatabaseManager : MonoBehaviour
         hasAttemptFinished = false;
         currentRecipes.Clear();
         StartCoroutine(WaitForRecipes());
-        foreach (Hit hit in hits)
+        for (int i = 0; i < hits.Length; i++)
         {
-            print(hit._id);
+            print(hits[i]._id);
             FirebaseDatabase.DefaultInstance
-                .GetReference("recipes").Child(hit._id)
+                .GetReference("recipes").Child(hits[i]._id)
                 .GetValueAsync().ContinueWith(task =>
                 {
                     if (task.IsFaulted)
@@ -157,14 +157,18 @@ public class DatabaseManager : MonoBehaviour
                         DataSnapshot snapshot = task.Result;
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
-                        currentRecipes.Add(newRecipe);                   
+                        currentRecipes.Add(newRecipe);
+
+                        if (currentRecipes.Count == hits.Length)
+                            hasAttemptFinished = true;
                     }
 
                 });
          
+           
         }
-        hasAttemptFinished = true;
     }
+
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);

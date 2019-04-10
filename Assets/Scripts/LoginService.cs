@@ -177,6 +177,11 @@ public class LoginService : ILoginService
         auth.SignOut();
     }
 
+    public void LogOut()
+    {
+        auth.SignOut();
+    }
+
     public void Detach()
     {
         auth.StateChanged -= AuthStateChanged;
@@ -207,4 +212,28 @@ public class LoginService : ILoginService
         }
     }
 
+    CoroutineTask<bool> ILoginService.CheckIfUserExistsAsync(string email)
+    {
+        return CheckIfUserExists(email).AsCoroutine();
+    }
+
+    CoroutineTask<FirebaseUser> ILoginService.RegisterUserWithEmailAsync(string email, string password)
+    {
+        return RegisterUserWithEmail(email, password).AsCoroutine();
+    }
+
+    CoroutineTask ILoginService.SendRecoverPasswordEmailAsync(string email)
+    {
+        return SendRecoverPasswordEmail(email).AsCoroutine();
+    }
+
+    CoroutineTask<FirebaseUser> ILoginService.SignInUserWithEmailAsync(string email, string password)
+    {
+        return SignInUserWithEmail(email, password).AsCoroutine();
+    }
+
+    CoroutineTask<FirebaseUser> ILoginService.SignInUserWithFacebookAsync(string accessToken)
+    {
+        return SignInUserWithFacebook(accessToken).AsCoroutine();
+    }
 }

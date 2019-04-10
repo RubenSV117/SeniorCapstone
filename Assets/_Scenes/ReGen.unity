@@ -1733,6 +1733,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: seafood
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Seafood
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -1747,11 +1752,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Seafood
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -1908,6 +1908,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: poultry
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Poultry
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -1922,11 +1927,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Poultry
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -2813,6 +2813,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: meat
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Meat
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -2827,11 +2832,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Meat
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -4839,6 +4839,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: wheat
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Wheat
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -4853,11 +4858,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Wheat
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -4993,6 +4993,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: egg
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Egg
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -5007,11 +5012,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Egg
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -5818,6 +5818,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: soy
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Soy
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -5832,11 +5837,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Soy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -6328,6 +6328,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: peanut
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Text
+      value: Peanut
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786601729105765, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_Color.r
@@ -6342,11 +6347,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0.8962264
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786600745176601, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Text
-      value: Peanut
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e, type: 3}
@@ -12831,8 +12831,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2784046311750764103}
   m_HandleRect: {fileID: 2784046311750764102}
   m_Direction: 0
-  m_Value: 0.50000745
-  m_Size: 0.9782136
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12962,10 +12962,10 @@ RectTransform:
   m_Father: {fileID: 2784046312062274436}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: -0.00005221367}
-  m_SizeDelta: {x: 750, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2784046312019123183
 MonoBehaviour:
@@ -13116,7 +13116,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recipeListTrans: {fileID: 2784046312019123182}
-  buttonViewPrefab: {fileID: 458716720}
+  buttonViewPrefab: {fileID: 8326125226084522017, guid: 9e22969905cafb84f9ca6324919e7965,
+    type: 3}
 --- !u!114 &2784046312066519057
 MonoBehaviour:
   m_ObjectHideFlags: 0

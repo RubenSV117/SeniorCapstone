@@ -46,7 +46,7 @@ public class DatabaseManager : MonoBehaviour
         print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
-    public void elasticSearchExclude(string name,string[] excludeTags)
+    public void elasticSearchExclude(string name,string[] excludeTags, IEnumerable<string> includeTags)
     {
         currentRecipes.Clear();
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
@@ -93,7 +93,11 @@ public class DatabaseManager : MonoBehaviour
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             Search(rootObject.hits.hits);
         }
+        else
+        {
         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+        }
+
     }
     
     //Searching by name, old version of the search function

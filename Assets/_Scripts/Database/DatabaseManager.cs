@@ -95,7 +95,8 @@ public class DatabaseManager : MonoBehaviour
         }
         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
- 
+    
+    //Searching by name, old version of the search function
     public void Search(string name)
     {
         hasAttemptFinished = false;
@@ -130,11 +131,12 @@ public class DatabaseManager : MonoBehaviour
                 hasAttemptFinished = true;
             });
     }
+
+    //Search function for firebase using ID's found.
     public void Search(Hit[] hits)
     {
         hasAttemptFinished = false;
         currentRecipes.Clear();
-
         StartCoroutine(WaitForRecipes());
         foreach (Hit hit in hits)
         {
@@ -145,7 +147,6 @@ public class DatabaseManager : MonoBehaviour
                 {
                     if (task.IsFaulted)
                     {
-                        // Handle the error...
                         print("faulted");
                     }
                     else if (task.IsCompleted)
@@ -156,16 +157,13 @@ public class DatabaseManager : MonoBehaviour
                         DataSnapshot snapshot = task.Result;
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
-                        currentRecipes.Add(newRecipe);
-                        print(newRecipe.Name);
-                        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
-
+                        currentRecipes.Add(newRecipe);                   
                     }
 
-                    hasAttemptFinished = true;
                 });
+         
         }
-        
+        hasAttemptFinished = true;
     }
     private IEnumerator WaitForRecipes ()
     {

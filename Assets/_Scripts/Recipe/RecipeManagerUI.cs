@@ -120,14 +120,27 @@ public class RecipeManagerUI : MonoBehaviour
 
         List<string> directions = new List<string>();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 50; i++)
         {
             directions.Add($"{i}. do the thing");
         }
 
         List<string> tags = new List<string>() {"Fish"};
 
-        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, null, 3);
+        List<string> reviews =
+            new List<string>()
+            {
+                "pretty good",
+                "pretty good",
+                "pretty good",
+                "pretty good",
+                "pretty good",
+                "pretty good",
+                "pretty good",
+                "pretty good"
+            };
+
+        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, reviews, 3);
 
         InitRecipeUI(recipe);
     }

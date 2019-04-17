@@ -36,7 +36,7 @@ public class SearchManagerUI : MonoBehaviour
         Debug.Log($"Searching {recipeName} with {TagsToExlude.Count} tags to exclude...");
 
         //DatabaseManager.Instance.Search(recipeName);
-        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExlude.ToArray());
+        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExlude.ToArray(), new List<string>());
     }
 
     public void SearchForRecipesSimple(string recipeName)

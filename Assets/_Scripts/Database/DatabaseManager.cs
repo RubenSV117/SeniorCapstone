@@ -10,6 +10,8 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
+using Firebase.Storage;
+using System.Threading.Tasks;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -33,14 +35,28 @@ public class DatabaseManager : MonoBehaviour
 
     }
 
-    private void PublishNewRecipe(Recipe recipe)
+    private void PublishNewRecipe(Recipe recipe, string local_file)
     {
+        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         string key = databaseReference.Child("recipes").Push().Key;
+        // File located on disk
+        Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com");
+        // Create a reference to the file you want to upload
+        Firebase.Storage.StorageReference image_ref = storage_ref.Child("Recipes");
 
-        string recipeNameTrimmed = recipe.Name.Trim();
-        recipeNameTrimmed = recipeNameTrimmed.Replace(" ", "");
-
-        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders.jpg";
+        image_ref.PutFileAsync(local_file)
+          .ContinueWith((Task<StorageMetadata> task) => {
+              if (task.IsFaulted || task.IsCanceled)
+              {
+                  Debug.Log(task.Exception.ToString());
+          // Uh-oh, an error occurred!
+              }
+              else
+              {
+                  Debug.Log("Finished uploading...");
+              }
+          });
+        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
 
         string json = JsonUtility.ToJson(recipe);
         print(json);
@@ -212,6 +228,6 @@ public class DatabaseManager : MonoBehaviour
 
         Recipe newRecipe = new Recipe(name, "", 450, 50, tags, ingredients, steps, reviews, 4);
 
-        PublishNewRecipe(newRecipe);
+        PublishNewRecipe(newRecipe,"hi");
     }
 }

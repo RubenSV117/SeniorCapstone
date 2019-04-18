@@ -10,6 +10,9 @@ public class MainMenuManagerUI : MonoBehaviour, IPanel
 
     [Header("Main Display UI Elements")]
     [SerializeField] private GameObject header; // bar at the top
+    [SerializeField] private GameObject navigationPanel;
+    [SerializeField] private GameObject searchResultsPanel;
+    [SerializeField] private GameObject favoritesPanel;
 
     private void Awake()
     {
@@ -47,5 +50,24 @@ public class MainMenuManagerUI : MonoBehaviour, IPanel
     public void Refresh()
     {
         throw new System.NotImplementedException();
+    }
+
+    public void ShowFavorites()
+    {
+        Debug.Log("ShowFavorites() invoked.");
+        searchResultsPanel.SetActive(false);
+        favoritesPanel.SetActive(true);
+    }
+
+    public void HideFavorites()
+    {
+        Debug.Log("HideFavorites() invoked.");
+        searchResultsPanel.SetActive(true);
+        favoritesPanel.SetActive(false);
+    }
+
+    public bool FavoritesIsActive()
+    {
+        return favoritesPanel.activeInHierarchy;
     }
 }

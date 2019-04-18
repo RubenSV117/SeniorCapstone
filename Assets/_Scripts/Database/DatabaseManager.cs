@@ -10,6 +10,8 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
+using Firebase.Storage;
+using System.Threading.Tasks;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -33,14 +35,26 @@ public class DatabaseManager : MonoBehaviour
 
     }
 
-    private void PublishNewRecipe(Recipe recipe)
+    private void PublishNewRecipe(Recipe recipe, string local_file)
     {
+        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         string key = databaseReference.Child("recipes").Push().Key;
-
-        string recipeNameTrimmed = recipe.Name.Trim();
-        recipeNameTrimmed = recipeNameTrimmed.Replace(" ", "");
-
-        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/ChickenTenders.jpg";
+        // File located on disk
+        Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
+        // Create a reference to the file you want to upload
+        storage_ref.PutFileAsync(local_file)
+          .ContinueWith((Task<StorageMetadata> task) => {
+              if (task.IsFaulted || task.IsCanceled)
+              {
+                  Debug.Log(task.Exception.ToString());
+          // Uh-oh, an error occurred!
+              }
+              else
+              {
+                  Debug.Log("Finished uploading...");
+              }
+          });
+        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
 
         string json = JsonUtility.ToJson(recipe);
         print(json);
@@ -182,36 +196,5 @@ public class DatabaseManager : MonoBehaviour
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
-    private void TestPublish(string name)
-    {
-        List<Ingredient> ingredients = new List<Ingredient>()
-        {
-            new Ingredient("Chicken", "1"),
-            new Ingredient("Breading", "Some"),
-            new Ingredient("Cooking oil","enough for frying")
-
-        };
-
-        List<string> steps = new List<string>()
-        {
-            "Bread the chicken",
-            "Cook oil in a fryer until boiling",
-            "Dunk breaded chicken in oil until fried"
-        };
-
-        List<string> tags = new List<string>()
-        {
-            "poultry",
-            "wheat"
-        };
-
-        List<string> reviews = new List<string>()
-        {
-            "This was pretty ok."
-        };
-
-        Recipe newRecipe = new Recipe(name, "", 450, 50, tags, ingredients, steps, reviews, 4);
-
-        PublishNewRecipe(newRecipe);
-    }
+ 
 }

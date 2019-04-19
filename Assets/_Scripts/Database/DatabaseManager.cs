@@ -12,16 +12,23 @@ using Newtonsoft.Json;
 using System.Linq;
 using Firebase.Storage;
 using System.Threading.Tasks;
+using Firebase.Auth;
 
 public class DatabaseManager : MonoBehaviour
 {
+
     public static DatabaseManager Instance;
     
     private DatabaseReference databaseReference;
 
     private bool hasAttemptFinished;
 
+    private List<string> userFavorites = new List<string>();
+
     private List<Recipe> currentRecipes = new List<Recipe>();
+
+    Firebase.Auth.FirebaseAuth auth;
+    Firebase.Auth.FirebaseUser user;
 
     private void Awake()
     {
@@ -33,6 +40,73 @@ public class DatabaseManager : MonoBehaviour
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
+        Debug.Log("Setting up Firebase Auth");
+        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+        auth.StateChanged += AuthStateChanged;
+        AuthStateChanged(this, null);
+    }
+
+    void AuthStateChanged(object sender, System.EventArgs eventArgs)
+    {
+        if (auth.CurrentUser != user)
+        {
+            bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+            if (!signedIn && user != null)
+            {
+                Debug.Log("Signed out " + user.UserId);
+            }
+            user = auth.CurrentUser;
+            if (signedIn)
+            {
+                Debug.Log("Signed in " + user.UserId);
+            }
+        }
+    }
+
+    public void getFavorites()
+    {
+
+        FirebaseDatabase.DefaultInstance
+                       .GetReference("users").Child(auth.CurrentUser.UserId)
+                       .GetValueAsync().ContinueWith(task =>
+                       {
+                           if (task.IsFaulted)
+                           {
+                               print("faulted");
+                           }
+                           else if (task.IsCompleted)
+                           {
+                               if (task.Result.ChildrenCount == 0)
+                                   return;
+
+                               DataSnapshot snapshot = task.Result;
+                               string recipeID;
+                               recipeID = JsonUtility.FromJson<string>(snapshot.GetRawJsonValue());
+                               userFavorites.Add(recipeID);
+                           }
+
+                       });
+
+
+        
+    }
+
+    public void favoriteRecipe(string recipeID)
+    {
+
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            string uid = user.UserId;
+            string key = databaseReference.Child("users").Push().Key;
+            string json = JsonUtility.ToJson(uid + "," + recipeID);
+            databaseReference.Child("users").Child(uid).SetRawJsonValueAsync(json);
+        }
+        else
+        {
+            print("No user logged in.");
+        }
+        
     }
 
     private void PublishNewRecipe(Recipe recipe, string local_file)
@@ -60,13 +134,14 @@ public class DatabaseManager : MonoBehaviour
         print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
-    public void elasticSearchExclude(string name,string[] excludeTags, IEnumerable<string> includeTags)
+    public void elasticSearchExclude(string name,string[] excludeTags, string[] includeTags)
     {
         currentRecipes.Clear();
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
         var request = new RestRequest(Method.POST);
         string param = "{\"source\":{\"query\": {\"bool\": {";
         string must = "\"must\":[";
+        string must_not = "\"must\":[";
         string Excludetag = "{\"term\": {\"tags\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
@@ -84,8 +159,18 @@ public class DatabaseManager : MonoBehaviour
                 param = param + Excludetag + excludeTags[i] + "\"}}";
             }
             param += "],";
+            param = param + must_not;
+            for (int i = 0; i < includeTags.Length; i++)
+            {
+                if (i != 0)
+                {
+                    param += ",";
+
+                }
+                param = param + Excludetag + includeTags[i] + "\"}}";
+
+            }
             param = param + should + "}}";
-            
         }
         else
         {

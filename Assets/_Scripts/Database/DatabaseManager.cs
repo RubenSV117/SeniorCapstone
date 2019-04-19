@@ -160,7 +160,7 @@ public class DatabaseManager : MonoBehaviour
             }
             param += "],";
             param = param + must_not;
-            for (int i = 0; i < includeTags.Length; i++)
+            for(int i= 0; i < includeTags.Length; i++)
             {
                 if (i != 0)
                 {

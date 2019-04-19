@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 /// <summary>
 /// Manages UI for searching and sends input to the DatabaseManager instance
@@ -48,7 +49,7 @@ public class SearchManagerUI : MonoBehaviour
         Debug.Log($"Searching {recipeName} with {TagsToInclude.Count} tags to include...");
 
         //DatabaseManager.Instance.Search(recipeName);
-        //DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToInclude.ToArray());
+        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExclude.ToArray(), TagsToInclude.ToArray());
     }
 
     public void SearchForRecipesSimple(string recipeName)

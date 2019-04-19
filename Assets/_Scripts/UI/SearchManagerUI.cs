@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manages UI for searching and sends input to the DatabaseManager instance
@@ -12,14 +13,25 @@ public class SearchManagerUI : MonoBehaviour
     [SerializeField] private Transform recipeListTrans;
     [SerializeField] private GameObject buttonViewPrefab;
 
-    public List<string> TagsToExlude{ get; private set; }
+    //[Header("Test variables")]
+    //[SerializeField] private ToggleGroup test;
+    //[SerializeField] private Toggle opt1;
+    //[SerializeField] private Toggle opt2;
+    //[SerializeField] private Toggle opt3;
+
+    //public List<string> TagsToInclude { get; private set; }
+    //public List<string> TagsToExclude { get; private set; }
+
+    public HashSet<string> TagsToInclude { get; private set;}
+    public HashSet<string> TagsToExclude { get; private set; }
 
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
 
-        TagsToExlude = new List<string>();
+        TagsToInclude = new HashSet<string>();
+        TagsToExclude = new HashSet<string>();
     }
 
     /// <summary>
@@ -32,11 +44,11 @@ public class SearchManagerUI : MonoBehaviour
         {
             return;
         }
-        string[] excludeTags = TagsToExlude.ToArray();
-        Debug.Log($"Searching {recipeName} with {TagsToExlude.Count} tags to exclude...");
+
+        Debug.Log($"Searching {recipeName} with {TagsToInclude.Count} tags to include...");
 
         //DatabaseManager.Instance.Search(recipeName);
-        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExlude.ToArray(), new List<string>());
+        //DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToInclude.ToArray());
     }
 
     public void SearchForRecipesSimple(string recipeName)
@@ -56,8 +68,6 @@ public class SearchManagerUI : MonoBehaviour
         // add new recipes
         foreach (var recipe in recipes)
         {
-            Debug.Log(recipe);
-
             RecipeButtonView recipeView = 
                 Instantiate(buttonViewPrefab, recipeListTrans)
                     .GetComponent<RecipeButtonView>();
@@ -68,13 +78,48 @@ public class SearchManagerUI : MonoBehaviour
 
     public void ToggleTag(string newTag)
     {
-        if (!TagsToExlude.Contains(newTag))
+        if (!TagsToInclude.Contains(newTag))
         {
-            TagsToExlude.Add(newTag);
+            TagsToInclude.Add(newTag);
         }
-        else
+        else if (TagsToInclude.Contains(newTag))
         {
-            TagsToExlude.Remove(newTag);
+            TagsToInclude.Remove(newTag);
         }
+    }
+
+    public void ActivateIncludeTag(string tag)
+    {
+        
+            if (TagsToExclude.Contains(tag))
+                TagsToExclude.Remove(tag);
+
+            if (TagsToInclude.Add(tag))
+                Debug.Log($"Including tag '{tag}'...");
+            else
+                Debug.Log($"Including tag '{tag}' failed.");
+        
+    }       
+
+    public void ActivateExcludeTag(string tag)
+    {
+        
+            if (TagsToInclude.Contains(tag))
+                TagsToInclude.Remove(tag);
+
+            if (TagsToExclude.Add(tag))
+                Debug.Log($"Excluding tag '{tag}'...");
+            else
+                Debug.Log($"Excluding tag '{tag}' failed.");
+        
+    }
+
+    public void ClearPreference(string tag)
+    {
+        
+            Debug.Log($"Clearing preference for '{tag}'");
+            TagsToInclude.Remove(tag);
+            TagsToExclude.Remove(tag);
+        
     }
 }

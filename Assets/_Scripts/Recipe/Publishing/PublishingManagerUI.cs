@@ -12,15 +12,23 @@ public class PublishingManagerUI : MonoBehaviour
 {
     public static PublishingManagerUI Instance;
 
+    public delegate void UIEvent();
+    public event UIEvent OnUIElementAdded;
+    public event UIEvent OnUIElementRemoved;
+
     [SerializeField] private InputField caloriesInputField;
     [SerializeField] private InputField prepTimeInputField;
     [SerializeField] private GameObject ingedientBuilderPrefab;
+    [SerializeField] private GameObject directionBuilderPrefab;
     [SerializeField] private Transform ingedientVerticalGroupTrans;
-    [SerializeField] private NestedContentSizeFitter contentFitter;
+    [SerializeField] private Transform directionVerticalGroupTrans;
+    [SerializeField] private Transform tagGridroupTrans;
 
     private List<Ingredient> ingredients = new List<Ingredient>();
-    private List<string> steps = new List<string>();
+    private List<string> directions = new List<string>();
+    private List<string> tags = new List<string>();
 
+    private string recipeName;
     private int calories;
     private int minutesPrep;
     private string ingredientAmount;
@@ -35,6 +43,15 @@ public class PublishingManagerUI : MonoBehaviour
     #endregion
 
     #region Public Methods
+
+    public void UpdateName(string newName)
+    {
+        if (string.IsNullOrEmpty(newName))
+            return;
+
+        recipeName = newName;
+    }
+
     public void UpdateCalories(string caloriesString)
     {
         // check if input is numeric
@@ -71,16 +88,6 @@ public class PublishingManagerUI : MonoBehaviour
         minutesPrep = Convert.ToInt32(prepTimeString);
     }
 
-    public void UpdateIngredientAmount(string amount)
-    {
-        ingredientAmount = amount;
-    }
-
-    public void UpdateIngredientName(string name)
-    {
-        ingredientAmount = name;
-    }
-
     public void SendRecipe()
     {
     }
@@ -89,18 +96,50 @@ public class PublishingManagerUI : MonoBehaviour
     {
         // make a new ingredient builder item
         Instantiate(ingedientBuilderPrefab, ingedientVerticalGroupTrans);
-        contentFitter.Grow();
+
+        // fire event for ui element change
+        OnUIElementAdded?.Invoke();
+    }
+
+    public void AddDirectiontBuilder()
+    {
+        // make a new ingredient builder item
+        Instantiate(directionBuilderPrefab, directionVerticalGroupTrans);
+
+        // fire event for ui element change
+        OnUIElementAdded?.Invoke();
+    }
+
+    public void RemoveBuilder(GameObject obj)
+    {
+        Destroy(obj);
+
+        // fire event for ui element change
+        OnUIElementRemoved?.Invoke();
     }
 
     public void BuildRecipe()
     {
+        // get ingredients from list
         IngredientBuilderView[] ingredientBuilders = ingedientVerticalGroupTrans.GetComponentsInChildren<IngredientBuilderView>();
 
         foreach (var i in ingredientBuilders)
-        {
             if(i.GetIngredient() != null)
                 ingredients.Add(i.GetIngredient());
-        }
+
+        // get directions from list
+        DirectionBuilderView[] directionBuilders = directionVerticalGroupTrans.GetComponentsInChildren<DirectionBuilderView>();
+
+        foreach (var d in directionBuilders)
+            if (!string.IsNullOrEmpty(d.GetDirection()))
+                directions.Add(d.GetDirection());
+
+        // get tags from the list
+        Toggle[] tagToggles = tagGridroupTrans.GetComponentsInChildren<Toggle>();
+
+        foreach (var t in tagToggles)
+            if(t.isOn)
+                tags.Add(t.GetComponentInChildren<Text>().text);
     }
 
     #endregion

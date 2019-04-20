@@ -2,14 +2,15 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// Manages input field and sends new ingredient to the PublishingManager instance
+/// Manages ingredient building for PublishingManager
 ///
 /// Ruben Sanchez
 /// </summary>
 public class IngredientBuilderView : MonoBehaviour
 {
-    [SerializeField] private Button addButton;
-    [SerializeField] private GameObject deleteButton;
+    #region Private Fields
+
+    [SerializeField] private GameObject addButton;
 
     private int index; // index of this ingredient in the PublishingManagerList
 
@@ -17,7 +18,9 @@ public class IngredientBuilderView : MonoBehaviour
 
     private string amount;
     private string name;
-    private bool hasAddedIngredient;
+    private bool hasAddedIngredient; 
+
+    #endregion
 
     #region Public Methods
 
@@ -54,12 +57,12 @@ public class IngredientBuilderView : MonoBehaviour
         PublishingManagerUI.Instance.AddIngredientBuilder();
 
         // disabled add button to expose delete button
-        addButton.gameObject.SetActive(false);
+        addButton.SetActive(false);
     }
 
     public void RemoveIngredient()
     {
-        Destroy(gameObject);
+        PublishingManagerUI.Instance.RemoveBuilder(gameObject);
     }
     #endregion
 }

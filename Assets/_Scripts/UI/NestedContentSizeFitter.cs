@@ -24,9 +24,20 @@ public class NestedContentSizeFitter : MonoBehaviour
     [Tooltip("If not automatching, Default rect whose dimensions will be used to incrementally update the parent Rect")]
     [SerializeField] private Rect defaultRect;
 
+    private float initialHeight;
+    private float initialWidth;
+
     #endregion
 
     #region MonoBehavior Callbacks
+
+    private void Awake()
+    {
+        initialHeight = rectToUpdate.rect.height;
+        initialWidth = rectToUpdate.rect.width;
+    }
+
+
     private void OnEnable()
     {
         // subscribe to whatever events that needs to lead to rectToUpdate being resized
@@ -41,6 +52,8 @@ public class NestedContentSizeFitter : MonoBehaviour
             PublishingManagerUI.Instance.OnUIElementRemoved += Shrink;
             PublishingManagerUI.Instance.OnUIElementAdded += Grow;
         }
+
+        PublishingManagerUI.Instance.OnUIRefresh += ResetRect;
     }
 
     private void OnDisable()
@@ -57,11 +70,22 @@ public class NestedContentSizeFitter : MonoBehaviour
             PublishingManagerUI.Instance.OnUIElementRemoved -= Shrink;
             PublishingManagerUI.Instance.OnUIElementAdded -= Grow; 
         }
+
+        PublishingManagerUI.Instance.OnUIRefresh -= ResetRect;
     }
     #endregion
 
-    #region Public Methods
-    public void AutoMatch()
+    #region Private Methods
+
+    private void ResetRect()
+    {
+        // reset to start size
+        rectToUpdate.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, initialWidth);
+        rectToUpdate.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, initialHeight);
+    }
+
+
+    private void AutoMatch()
     {
         float newHeight = 0;
         float newWidth = 0;
@@ -84,7 +108,7 @@ public class NestedContentSizeFitter : MonoBehaviour
             rectToUpdate.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newHeight);
     }
 
-    public void Grow(float height = 0, float width = 0)
+    private void Grow(float height = 0, float width = 0)
     {
         // grow vertically by the given height or the given default rect height
         if (resizeVertically)
@@ -107,7 +131,7 @@ public class NestedContentSizeFitter : MonoBehaviour
         }
     }
 
-    public void Grow()
+    private void Grow()
     {
         // grow vertically by the defaultRect height
         if (resizeVertically)
@@ -124,7 +148,7 @@ public class NestedContentSizeFitter : MonoBehaviour
         }
     }
 
-    public void Shrink()
+    private void Shrink()
     {
         // shrink by the given defaultRect height
         if (resizeVertically)

@@ -10,13 +10,16 @@ using UnityEngine.UI;
 /// </summary>
 public class PublishingManagerUI : MonoBehaviour, IPanel
 {
+    #region Public Fields
     public static PublishingManagerUI Instance;
 
     public delegate void UIEvent();
     public event UIEvent OnUIElementAdded;
     public event UIEvent OnUIElementRemoved;
-    public event UIEvent OnUIRefresh;
+    public event UIEvent OnUIRefresh; 
+    #endregion
 
+    #region Private Fields
     [SerializeField] private GameObject canvas;
     [SerializeField] private InputField nameInputField;
     [SerializeField] private InputField caloriesInputField;
@@ -34,20 +37,18 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
     private string recipeName;
     private int calories;
-    private int minutesPrep;
-    #region MonoBehaviour Callbacks
+    private int minutesPrep; 
+    #endregion
 
+    #region MonoBehaviour Callbacks
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
     } 
-
     #endregion
 
     #region Public Methods
-
-
     public void UpdateName(string newName)
     {
         if (string.IsNullOrEmpty(newName))
@@ -152,15 +153,19 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
             if(t.isOn)
                 tags.Add(t.GetComponentInChildren<Text>().text);
 
+        // create recipe 
+        //Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions);
+
+        // send for publish
+        //DatabaseManager.Instance.PublishNewRecipe(newRecipe);
+
         // close canvas and refresh its content
         Disable();
         Refresh();
     }
-
     #endregion
 
     #region Private Methods
-
     private void UpdateIngredientCount()
     {
         ingredientAmount.text = (ingedientVerticalGroupTrans.childCount - 1).ToString();
@@ -185,7 +190,6 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         foreach (var t in tagToggles)
             t.isOn = false;
     }
-
     #endregion
 
     #region IPanel Implementation
@@ -199,9 +203,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         canvas.SetActive(false);
     }
 
-    public void Init()
-    {
-    }
+    public void Init() { }
 
     public void Refresh()
     {

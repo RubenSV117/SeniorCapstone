@@ -181,7 +181,7 @@ public class NativeToolkit : MonoBehaviour {
 	// Save texture
 	//=============================================================================
 
-	public static void SaveImage(Texture2D texture, string fileName, string fileType = "jpg")
+	public static string SaveImage(Texture2D texture, string fileName, string fileType = "jpg")
 	{
 		Debug.Log("Save image to gallery " + fileName);
 
@@ -189,21 +189,25 @@ public class NativeToolkit : MonoBehaviour {
 
 		byte[] bytes;
 		string fileExt;
-		
+
+	    Texture2D newTexture = texture;
+
 		if(fileType == "png")
 		{
-			bytes = texture.EncodeToPNG();
+			bytes = newTexture.EncodeToPNG();
 			fileExt = ".png";
 		}
 		else
 		{
-			bytes = texture.EncodeToJPG();
+			bytes = newTexture.EncodeToJPG();
 			fileExt = ".jpg";
 		}
 
 		string path = Application.persistentDataPath + "/" + fileName + fileExt;
 
 		Instance.StartCoroutine(Instance.Save(bytes, fileName, path, ImageType.IMAGE));
+
+	    return path;
 	}
 	
 	

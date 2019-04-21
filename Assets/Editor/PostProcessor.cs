@@ -1,12 +1,17 @@
 using System.IO;
+
+
+#if !UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.Callbacks;
+using UnityEditor.Callbacks; 
+#endif
 #if UNITY_IPHONE
 using UnityEditor.iOS.Xcode;
 #endif
 
 public class PostProcessor 
 {
+    #if !UNITY_EDITOR
     [PostProcessBuild]
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
@@ -44,5 +49,6 @@ public class PostProcessor
 
         File.WriteAllText(plistPath, plist.WriteToString());
 #endif
-    }	
+    }    
+    #endif
 }

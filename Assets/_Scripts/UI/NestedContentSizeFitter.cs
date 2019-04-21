@@ -43,17 +43,17 @@ public class NestedContentSizeFitter : MonoBehaviour
         // subscribe to whatever events that needs to lead to rectToUpdate being resized
         if (autoMatchChildren)
         {
-            PublishingManagerUI.Instance.OnUIElementRemoved += AutoMatch;
-            PublishingManagerUI.Instance.OnUIElementAdded += AutoMatch;
+            PublishingManagerUI.OnUIElementRemoved += AutoMatch;
+            PublishingManagerUI.OnUIElementAdded += AutoMatch;
         }
 
         else
         {
-            PublishingManagerUI.Instance.OnUIElementRemoved += Shrink;
-            PublishingManagerUI.Instance.OnUIElementAdded += Grow;
+            PublishingManagerUI.OnUIElementRemoved += Shrink;
+            PublishingManagerUI.OnUIElementAdded += Grow;
         }
 
-        PublishingManagerUI.Instance.OnUIRefresh += ResetRect;
+        PublishingManagerUI.OnUIRefresh += ResetRect;
     }
 
     private void OnDisable()
@@ -61,17 +61,17 @@ public class NestedContentSizeFitter : MonoBehaviour
         // unsubscribe on disable
         if (autoMatchChildren)
         {
-            PublishingManagerUI.Instance.OnUIElementRemoved -= AutoMatch;
-            PublishingManagerUI.Instance.OnUIElementAdded -= AutoMatch;
+            PublishingManagerUI.OnUIElementRemoved -= AutoMatch;
+            PublishingManagerUI.OnUIElementAdded -= AutoMatch;
         }
 
         else
         {
-            PublishingManagerUI.Instance.OnUIElementRemoved -= Shrink;
-            PublishingManagerUI.Instance.OnUIElementAdded -= Grow; 
+            PublishingManagerUI.OnUIElementRemoved -= Shrink;
+            PublishingManagerUI.OnUIElementAdded -= Grow; 
         }
 
-        PublishingManagerUI.Instance.OnUIRefresh -= ResetRect;
+        PublishingManagerUI.OnUIRefresh -= ResetRect;
     }
     #endregion
 

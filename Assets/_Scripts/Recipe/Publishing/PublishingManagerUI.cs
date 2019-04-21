@@ -14,13 +14,14 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     public static PublishingManagerUI Instance;
 
     public delegate void UIEvent();
-    public event UIEvent OnUIElementAdded;
-    public event UIEvent OnUIElementRemoved;
-    public event UIEvent OnUIRefresh; 
+    public static event UIEvent OnUIElementAdded;
+    public static event UIEvent OnUIElementRemoved;
+    public static event UIEvent OnUIRefresh; 
     #endregion
 
     #region Private Fields
     [SerializeField] private GameObject canvas;
+    [SerializeField] private Image recipeImage;
     [SerializeField] private InputField nameInputField;
     [SerializeField] private InputField caloriesInputField;
     [SerializeField] private InputField prepTimeInputField;
@@ -45,10 +46,29 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     {
         if (Instance == null)
             Instance = this;
-    } 
+    }
+
+    private void OnEnable()
+    {
+        // subscribe to camera events to update the recipe image
+        CameraManager.OnPictureTaken += UpdateRecipeImage;
+        CameraManager.OnCameraRollPictureChosen += UpdateRecipeImage;
+    }
+
+    private void OnDisable()
+    {
+        CameraManager.OnPictureTaken -= UpdateRecipeImage;
+        CameraManager.OnCameraRollPictureChosen -= UpdateRecipeImage;
+    }
     #endregion
 
     #region Public Methods
+
+    public void UpdateRecipeImage(Sprite newSprite)
+    {
+        recipeImage.sprite = newSprite;
+    }
+
     public void UpdateName(string newName)
     {
         if (string.IsNullOrEmpty(newName))

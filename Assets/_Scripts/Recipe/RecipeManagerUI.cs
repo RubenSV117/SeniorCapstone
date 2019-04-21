@@ -26,6 +26,8 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject loadingObject;
 
+    [SerializeField] private GameObject ratingThing;
+
     private Sprite currentRecipeSprite;
     
     private void Awake()
@@ -86,6 +88,14 @@ public class RecipeManagerUI : MonoBehaviour
 
             infoText.text = newRecipe.Steps[i];
         }
+
+        // create rating prompt
+        Text ratingText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+            verticalGroupTrans).GetComponentInChildren<Text>();
+
+        ratingText.text = "What did you think?";
+
+
 
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());

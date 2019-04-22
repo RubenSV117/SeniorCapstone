@@ -33,9 +33,12 @@ public class CameraManager : MonoBehaviour
             // create sprite from the texture
             Sprite newSprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(.5f, .5f));
 
-            print($"Dimensions of texture: {texture.width}, {texture.height}");
-
             OnPictureTaken?.Invoke(newSprite);
         }
+    }
+
+    public void ChoosePicture()
+    {
+        NativeToolkit.PickImage();
     }
 }

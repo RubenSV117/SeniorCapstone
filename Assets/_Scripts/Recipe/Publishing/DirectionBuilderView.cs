@@ -12,9 +12,20 @@ public class DirectionBuilderView : MonoBehaviour
 
     private InputField inputField;
 
+    private string direction;
+
     private void Awake()
     {
         inputField = GetComponentInChildren<InputField>();
+    }
+
+    public void SetDirection(string newDirection)
+    {
+        direction = newDirection;
+
+        // if direction has been filled, auto add a new builder
+        if(!string.IsNullOrEmpty(direction))
+            AddNewDirection();
     }
 
     public string GetDirection()

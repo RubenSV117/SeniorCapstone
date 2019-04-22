@@ -31,6 +31,8 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     [SerializeField] private Transform directionVerticalGroupTrans;
     [SerializeField] private Transform tagGridroupTrans;
     [SerializeField] private Text ingredientAmount;
+    [SerializeField] private GameObject largeCameraButtons;
+    [SerializeField] private GameObject smallCameraButtons;
 
     private List<Ingredient> ingredients = new List<Ingredient>();
     private List<string> directions = new List<string>();
@@ -66,7 +68,14 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
     public void UpdateRecipeImage(Sprite newSprite)
     {
+        if (newSprite == null)
+            return;
+
         recipeImage.sprite = newSprite;
+        
+        // deactivate big camera button, activate the small corner one
+        largeCameraButtons.SetActive(false);
+        smallCameraButtons.SetActive(true);
     }
 
     public void UpdateName(string newName)
@@ -173,6 +182,9 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
             if(t.isOn)
                 tags.Add(t.GetComponentInChildren<Text>().text);
 
+        if (!CheckForFinishedRecipe())
+            return;
+
         // create recipe 
         //Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions);
 
@@ -186,6 +198,55 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     #endregion
 
     #region Private Methods
+    private bool CheckForFinishedRecipe()
+    {
+        bool isFinished = true;
+
+        // check if image has been seet
+        if (recipeImage.sprite == null)
+        {
+            NotificationManager.Instance.ShowNotification("An image must be set for the recipe.");
+            return false;
+        }
+
+        // check if name has been seet
+        if (string.IsNullOrEmpty(nameInputField.text))
+        {
+            NotificationManager.Instance.ShowNotification("An name must be set for the recipe.");
+            return false;
+        }
+
+        // check if calories has been seet
+        if (string.IsNullOrEmpty(caloriesInputField.text))
+        {
+            NotificationManager.Instance.ShowNotification("An calorie amount must be set for the recipe.");
+            return false;
+        }
+
+        // check if prep time has been seet
+        if (string.IsNullOrEmpty(prepTimeInputField.text))
+        {
+            NotificationManager.Instance.ShowNotification("An prep time must be set for the recipe.");
+            return false;
+        }
+
+        // check if ingredients have been given
+        if (ingedientVerticalGroupTrans.childCount <= 1)
+        {
+            NotificationManager.Instance.ShowNotification("Ingredients must be set for the recipe.");
+            return false;
+        }
+
+        // check if directions have been given
+        if (directionVerticalGroupTrans.childCount <= 1)
+        {
+            NotificationManager.Instance.ShowNotification("Directions must be set for the recipe.");
+            return false;
+        }
+
+        return isFinished;
+    }
+
     private void UpdateIngredientCount()
     {
         ingredientAmount.text = (ingedientVerticalGroupTrans.childCount - 1).ToString();
@@ -242,6 +303,13 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         nameInputField.text = string.Empty;
         caloriesInputField.text = string.Empty;
         prepTimeInputField.text = string.Empty;
+
+        // reset recipe image sprite
+        recipeImage.sprite = null;
+
+        // reset camera buttons
+        largeCameraButtons.SetActive(true);
+        smallCameraButtons.SetActive(false);
 
         OnUIRefresh?.Invoke();
     } 

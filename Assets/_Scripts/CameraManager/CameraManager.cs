@@ -11,6 +11,16 @@ public class CameraManager : MonoBehaviour
     public static event CameraEvent OnPictureTaken;
     public static event CameraEvent OnCameraRollPictureChosen;
 
+    private void OnEnable()
+    {
+        NativeToolkit.OnImagePicked += OnImagePicked;
+    }
+
+    private void OnDisable()
+    {
+        NativeToolkit.OnImagePicked -= OnImagePicked;
+    }
+
     public void TakePicture()
     {
         NativeCamera.TakePicture(TakePictureCallback, 1024);
@@ -40,5 +50,13 @@ public class CameraManager : MonoBehaviour
     public void ChoosePicture()
     {
         NativeToolkit.PickImage();
+    }
+
+    public void OnImagePicked(Texture2D texture, string path)
+    {
+        // create sprite from the texture
+        Sprite newSprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(.5f, .5f));
+
+        OnCameraRollPictureChosen?.Invoke(newSprite);
     }
 }

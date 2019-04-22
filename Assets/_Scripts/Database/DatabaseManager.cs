@@ -16,17 +16,23 @@ using Firebase.Auth;
 
 public class DatabaseManager : MonoBehaviour
 {
+    //Here is the backend handling most database calls
 
     public static DatabaseManager Instance;
     
+    //firebase object
     private DatabaseReference databaseReference;
 
+    //bool to notify coroutine when searching is done
     private bool hasAttemptFinished;
 
-    private List<string> userFavorites = new List<string>();
 
+    //list objects used to later fill in UI
+    private List<string> userFavorites = new List<string>();
     private List<Recipe> currentRecipes = new List<Recipe>();
 
+
+    //Firebase.Auth object for user and authentication 
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;
 
@@ -46,6 +52,12 @@ public class DatabaseManager : MonoBehaviour
         AuthStateChanged(this, null);
     }
 
+
+    /**
+     * AuthStateChanged used for listening to user login and get that users ID to be later used 
+     * for finding the users favorites
+     * 
+     **/
     void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
         if (auth.CurrentUser != user)
@@ -63,6 +75,11 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+
+    /**
+     * Method for getting favorites of a user, used for favorites list and
+     * for checking if the user already favorited a recipe
+     **/
     public void getFavorites()
     {
 
@@ -91,6 +108,9 @@ public class DatabaseManager : MonoBehaviour
         
     }
 
+    /*
+     * Method for favoriting a recipe, takes the recipeID of the selected recipe and sends that to the users favorites on firebase
+     */
     public void favoriteRecipe(string recipeID)
     {
 
@@ -109,6 +129,11 @@ public class DatabaseManager : MonoBehaviour
         
     }
 
+    /*
+     * Method for publishing a recipe to firebase,
+     * Takes in the recipe object that has all the inputted info from the recipe publishing page and a photo of the food
+     * then sends the photo to storage and the recipe to our DB
+     */
     private void PublishNewRecipe(Recipe recipe, string local_file)
     {
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
@@ -121,7 +146,6 @@ public class DatabaseManager : MonoBehaviour
               if (task.IsFaulted || task.IsCanceled)
               {
                   Debug.Log(task.Exception.ToString());
-          // Uh-oh, an error occurred!
               }
               else
               {
@@ -134,44 +158,68 @@ public class DatabaseManager : MonoBehaviour
         print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
+
+    /*
+     * Our search function, checks an elastic search VM that holds minor information about recipes by building
+     * an HTTP get request using RestSharp, then the resulting json is then parsed and the IDs are sent to the search() function
+     * there it takes the full information of those recipes
+     */
     public void elasticSearchExclude(string name,string[] excludeTags, string[] includeTags)
     {
+        //clear the UI
         currentRecipes.Clear();
+        //initializing restclient
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
+        //POST is the only request allowed to send with a body however it can be used to Get information as well in this case
         var request = new RestRequest(Method.POST);
+
+        //Here is where we start building a query with the tags
         string param = "{\"source\":{\"query\": {\"bool\": {";
         string must = "\"must\":[";
-        string must_not = "\"must\":[";
-        string Excludetag = "{\"term\": {\"tags\": \"";
+        string must_not = "\"must_not\":[";
+        string searchTag = "{\"term\": {\"tags\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
         request.AddHeader("cache-control", "no-cache");
         request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
         request.AddHeader("Content-Type", "application/json");
-        if (excludeTags.Length > 0)
+        //checks if tags are being used
+        if (excludeTags.Length > 0 || includeTags.Length > 0)
         {
-            param = param + must;
-            for(int i=0; i < excludeTags.Length; i++)
+            //if exclude tags are being used
+            if (excludeTags.Length > 0)
             {
-                if(i !=0) {
-                    param += ",";
-                }
-                param = param + Excludetag + excludeTags[i] + "\"}}";
-            }
-            param += "],";
-            param = param + must_not;
-            for(int i= 0; i < includeTags.Length; i++)
-            {
-                if (i != 0)
+                param = param + must;
+                for (int i = 0; i < excludeTags.Length; i++)
                 {
-                    param += ",";
+                    if (i != 0)
+                    {
+                        param += ",";
+                    }
+                    param = param + searchTag + excludeTags[i] + "\"}}";
+                }
+                param += "],";
+            }
+            //if include tags are being used
+            if (includeTags.Length > 0)
+            {
+                param = param + must_not;
+                for (int i = 0; i < includeTags.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        param += ",";
+
+                    }
+                    param = param + searchTag + includeTags[i] + "\"}}";
 
                 }
-                param = param + Excludetag + includeTags[i] + "\"}}";
-
+                param += "],";
             }
+            //add the should clause for the names 
             param = param + should + "}}";
         }
+        //This area is for if no tags 
         else
         {
             param = "{\"source\": { \"query\": {\"bool\": {\"should\": [ {\"wildcard\": " +
@@ -181,19 +229,24 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
+        //this is for testing purposed to see the Parameter for the request
 		print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
+        //save the response
         IRestResponse response = client.Execute(request);
-
+        //if the response is not empty
         if (!response.Content.Contains("\"total\":0"))
         {
+            //print said response
             print(response.Content);
-
+            //convert it to rootObject
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            //send the hits of IDs to the search function
             Search(rootObject.hits.hits);
         }
         else
         {
+           //if the response is empty, just refresh the list, should just refresh the list making it empty
         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
 
@@ -272,6 +325,7 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    //coroutine that waits for search to be finished fully before updating the UI
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);

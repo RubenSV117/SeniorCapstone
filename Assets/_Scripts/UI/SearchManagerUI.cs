@@ -45,16 +45,10 @@ public class SearchManagerUI : MonoBehaviour
         {
             return;
         }
-
-<<<<<<< HEAD
+        
         Debug.Log($"Performing search for {recipeName} with the following parameters:");
         Debug.Log($"'Exclude' preferences: ({string.Join(", ", TagsToExclude)})");
         Debug.Log($"'Include' preferences: ({string.Join(", ", TagsToInclude)})");
-=======
-        Debug.Log($"Searching {recipeName} with {TagsToInclude.Count} tags to include and {TagsToExclude.Count} to exclude");
-
->>>>>>> 771a888965e587ca43b811b097c69bd5a356cce5
-        //DatabaseManager.Instance.Search(recipeName);
 
         DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExclude.ToArray(), TagsToInclude.ToArray());
     }

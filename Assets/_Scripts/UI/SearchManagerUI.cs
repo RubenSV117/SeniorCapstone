@@ -46,9 +46,11 @@ public class SearchManagerUI : MonoBehaviour
             return;
         }
 
-        Debug.Log($"Searching {recipeName} with {TagsToInclude.Count} tags to include...");
-
+        Debug.Log($"Performing search for {recipeName} with the following parameters:");
+        Debug.Log($"'Exclude' preferences: ({string.Join(", ", TagsToExclude)})");
+        Debug.Log($"'Include' preferences: ({string.Join(", ", TagsToInclude)})");
         //DatabaseManager.Instance.Search(recipeName);
+
         DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExclude.ToArray(), TagsToInclude.ToArray());
     }
 
@@ -96,9 +98,9 @@ public class SearchManagerUI : MonoBehaviour
                 TagsToExclude.Remove(tag);
 
             if (TagsToInclude.Add(tag))
-                Debug.Log($"Including tag '{tag}'...");
+                Debug.Log($"Included tag '{tag}'.");
             else
-                Debug.Log($"Including tag '{tag}' failed.");
+                Debug.Log($"Tag '{tag}' is already included.");
         
     }       
 
@@ -109,18 +111,23 @@ public class SearchManagerUI : MonoBehaviour
                 TagsToInclude.Remove(tag);
 
             if (TagsToExclude.Add(tag))
-                Debug.Log($"Excluding tag '{tag}'...");
+                Debug.Log($"Excluded tag '{tag}'.");
             else
-                Debug.Log($"Excluding tag '{tag}' failed.");
+                Debug.Log($"Tag '{tag}' is already excluded.");
         
     }
 
     public void ClearPreference(string tag)
     {
         
-            Debug.Log($"Clearing preference for '{tag}'");
-            TagsToInclude.Remove(tag);
-            TagsToExclude.Remove(tag);
+        if (TagsToInclude.Remove(tag) || TagsToExclude.Remove(tag))
+        {
+            Debug.Log($"Cleared preference for tag '{tag}'.");
+        }
+        else
+        {
+            Debug.Log($"Tag '{tag}' already set to 'no preference'.");
+        }
         
     }
 }

@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Android;
 
 /// <summary>
 /// Manages Native Camera functionalities
@@ -11,6 +15,8 @@ public class CameraManager : MonoBehaviour
     public static event CameraEvent OnPictureTaken;
     public static event CameraEvent OnCameraRollPictureChosen;
 
+    public static string PathOfCurrentImage { get; private set; }
+    
     private void OnEnable()
     {
         NativeToolkit.OnImagePicked += OnImagePicked;
@@ -29,10 +35,12 @@ public class CameraManager : MonoBehaviour
     private void TakePictureCallback(string path)
     {
         Debug.Log("Image path: " + path);
+
+
         if (path != null)
         {
             // Create a Texture2D from the captured image in the cache
-            Texture2D texture = NativeCamera.LoadImageAtPath(path);
+            Texture2D texture = NativeCamera.LoadImageAtPath(path, 1024);
 
             if (texture == null)
             {
@@ -43,8 +51,29 @@ public class CameraManager : MonoBehaviour
             // create sprite from the texture
             Sprite newSprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(.5f, .5f));
 
+            if(!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+
+            if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+                return;
+
+            PathOfCurrentImage = NativeToolkit.SaveImage(texture, "Recipes");
+
             OnPictureTaken?.Invoke(newSprite);
         }
+    }
+
+    public void RequestWritePermission()
+    {
+        Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+
+    }
+
+
+    public void RequestReadPermission()
+    {
+        Permission.RequestUserPermission(Permission.ExternalStorageRead);
+
     }
 
     public void ChoosePicture()
@@ -54,6 +83,8 @@ public class CameraManager : MonoBehaviour
 
     public void OnImagePicked(Texture2D texture, string path)
     {
+        PathOfCurrentImage = path;
+
         // create sprite from the texture
         Sprite newSprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(.5f, .5f));
 

@@ -109,31 +109,54 @@ public class DatabaseManager : MonoBehaviour
         
     }
 
-    private void PublishNewRecipe(Recipe recipe, string local_file)
+    public void PublishNewRecipe(Recipe recipe, string local_file)
     {
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
-        string key = databaseReference.Child("recipes").Push().Key;
+
+        print("is storage null : ");
+
+        print(storage == null);
+
+        print("is databaseReference null: ");
+        print(databaseReference == null);
+
+        print("is databaseReference.Child(recipes) null:  ");
+        print(databaseReference.Child("recipes") == null);
+
+        string key = "ree";//databaseReference.Child("recipes").Push().Key;
+
+        print("KEY:  ");
+        print(key);
+
         // File located on disk
-        Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
+        Firebase.Storage.StorageReference storage_ref =
+            storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
         // Create a reference to the file you want to upload
-        storage_ref.PutFileAsync(local_file)
-          .ContinueWith((Task<StorageMetadata> task) => {
-              if (task.IsFaulted || task.IsCanceled)
-              {
-                  Debug.Log(task.Exception.ToString());
-          // Uh-oh, an error occurred!
-              }
-              else
-              {
-                  Debug.Log("Finished uploading...");
-              }
-          });
+        print("storage_ref NULL: ");
+        print(storage_ref == null);
+
+        if (!string.IsNullOrEmpty(local_file))
+            storage_ref.PutFileAsync(local_file)
+                .ContinueWith((Task<StorageMetadata> task) =>
+                {
+                    if (task.IsFaulted || task.IsCanceled)
+                    {
+                        Debug.Log(task.Exception.ToString());
+                        // Uh-oh, an error occurred!
+                    }
+                    else
+                    {
+                        Debug.Log("Finished uploading...");
+                    }
+                });
+
         recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
 
         string json = JsonUtility.ToJson(recipe);
         print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
+
     public void elasticSearchExclude(string name,string[] excludeTags, string[] includeTags)
     {
         currentRecipes.Clear();

@@ -272,7 +272,7 @@ public static class NativeCamera
 	#endregion
 
 	#region Utility Functions
-	public static Texture2D LoadImageAtPath( string imagePath, int maxSize = -1, bool markTextureNonReadable = true,
+	public static Texture2D LoadImageAtPath( string imagePath, int maxSize = -1, bool markTextureNonReadable = false,
 		bool generateMipmaps = true, bool linearColorSpace = false )
 	{
 		if( string.IsNullOrEmpty( imagePath ) )

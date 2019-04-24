@@ -16,17 +16,23 @@ using Firebase.Auth;
 
 public class DatabaseManager : MonoBehaviour
 {
+    //Here is the backend handling most database calls
 
     public static DatabaseManager Instance;
     
+    //firebase object
     private DatabaseReference databaseReference;
 
+    //bool to notify coroutine when searching is done
     private bool hasAttemptFinished;
 
-    private List<string> userFavorites = new List<string>();
 
+    //list objects used to later fill in UI
+    private List<string> userFavorites = new List<string>();
     private List<Recipe> currentRecipes = new List<Recipe>();
 
+
+    //Firebase.Auth object for user and authentication 
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;
 
@@ -46,6 +52,12 @@ public class DatabaseManager : MonoBehaviour
         AuthStateChanged(this, null);
     }
 
+
+    /**
+     * AuthStateChanged used for listening to user login and get that users ID to be later used 
+     * for finding the users favorites
+     * 
+     **/
     void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
         if (auth.CurrentUser != user)
@@ -63,138 +75,154 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    public void getFavorites()
+
+    /**
+     * Method for getting favorites of a user, used for favorites list and
+     * for checking if the user already favorited a recipe
+     **/
+    public List<string> getFavorites()
     {
-
-        FirebaseDatabase.DefaultInstance
-                       .GetReference("users").Child(auth.CurrentUser.UserId)
-                       .GetValueAsync().ContinueWith(task =>
-                       {
-                           if (task.IsFaulted)
-                           {
-                               print("faulted");
-                           }
-                           else if (task.IsCompleted)
-                           {
-                               if (task.Result.ChildrenCount == 0)
-                                   return;
-
-                               DataSnapshot snapshot = task.Result;
-                               string recipeID;
-                               recipeID = JsonUtility.FromJson<string>(snapshot.GetRawJsonValue());
-                               userFavorites.Add(recipeID);
-                           }
-
-                       });
-
-
-        
-    }
-
-    public void favoriteRecipe(string recipeID)
-    {
-
+        List<string> favorites = new List<string>();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
+            FirebaseDatabase.DefaultInstance
+                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
+                           .GetValueAsync().ContinueWith(task =>
+                           {
+                               if (task.IsFaulted)
+                               {
+                                   print("faulted");
+                               }
+                               else if (task.IsCompleted)
+                               {
+                                   if (task.Result.ChildrenCount == 0)
+                                       return;
+
+                                   DataSnapshot snapshot = task.Result;
+                                   
+                                   favorites = JsonUtility.FromJson<List<string>>(snapshot.GetRawJsonValue());
+                               }
+
+                           });
+
+        }
+        return favorites;
+    }
+
+    /*
+     * Method for favoriting a recipe, takes the recipeID of the selected recipe and sends that to the users favorites on firebase
+     */
+    public bool favoriteRecipe(string recipeID)
+    {
+
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
             string uid = user.UserId;
-            string key = databaseReference.Child("users").Push().Key;
-            string json = JsonUtility.ToJson(uid + "," + recipeID);
-            databaseReference.Child("users").Child(uid).SetRawJsonValueAsync(json);
+            string json = JsonUtility.ToJson(recipeID);
+            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).SetValueAsync(true);
+            return true;
         }
         else
         {
             print("No user logged in.");
+            return false;
         }
         
     }
 
-    public void PublishNewRecipe(Recipe recipe, string local_file)
+    /*
+     * Method for publishing a recipe to firebase,
+     * Takes in the recipe object that has all the inputted info from the recipe publishing page and a photo of the food
+     * then sends the photo to storage and the recipe to our DB
+     */
+    private void PublishNewRecipe(Recipe recipe, string local_file)
     {
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
-
-        print("is storage null : ");
-
-        print(storage == null);
-
-        print("is databaseReference null: ");
-        print(databaseReference == null);
-
-        print("is databaseReference.Child(recipes) null:  ");
-        print(databaseReference.Child("recipes") == null);
-
-        string key = "ree";//databaseReference.Child("recipes").Push().Key;
-
-        print("KEY:  ");
-        print(key);
-
+        string key = databaseReference.Child("recipes").Push().Key;
         // File located on disk
-        Firebase.Storage.StorageReference storage_ref =
-            storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
+        Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
         // Create a reference to the file you want to upload
-        print("storage_ref NULL: ");
-        print(storage_ref == null);
-
-        if (!string.IsNullOrEmpty(local_file))
-            storage_ref.PutFileAsync(local_file)
-                .ContinueWith((Task<StorageMetadata> task) =>
-                {
-                    if (task.IsFaulted || task.IsCanceled)
-                    {
-                        Debug.Log(task.Exception.ToString());
-                        // Uh-oh, an error occurred!
-                    }
-                    else
-                    {
-                        Debug.Log("Finished uploading...");
-                    }
-                });
-
+        storage_ref.PutFileAsync(local_file)
+          .ContinueWith((Task<StorageMetadata> task) => {
+              if (task.IsFaulted || task.IsCanceled)
+              {
+                  Debug.Log(task.Exception.ToString());
+              }
+              else
+              {
+                  Debug.Log("Finished uploading...");
+              }
+          });
         recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
 
         string json = JsonUtility.ToJson(recipe);
-        print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
 
-    public void elasticSearchExclude(string name,string[] excludeTags, string[] includeTags)
+    /*
+     * Our search function, checks an elastic search VM that holds minor information about recipes by building
+     * an HTTP get request using RestSharp, then the resulting json is then parsed and the IDs are sent to the search() function
+     * there it takes the full information of those recipes
+     */
+    public void elasticSearchExclude(string name,string[] includeTags, string[] excludeTags)
     {
+        //clear the UI
         currentRecipes.Clear();
+        //initializing restclient
         var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
+        //POST is the only request allowed to send with a body however it can be used to Get information as well in this case
         var request = new RestRequest(Method.POST);
+
+        //Here is where we start building a query with the tags
         string param = "{\"source\":{\"query\": {\"bool\": {";
         string must = "\"must\":[";
-        string must_not = "\"must\":[";
-        string Excludetag = "{\"term\": {\"tags\": \"";
+        string must_not = "\"must_not\":[";
+        string searchTag = "{\"term\": {\"tags.keyword\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
         request.AddHeader("cache-control", "no-cache");
         request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
         request.AddHeader("Content-Type", "application/json");
-        if (excludeTags.Length > 0)
+        //checks if tags are being used
+        if (excludeTags.Length > 0 || includeTags.Length > 0)
         {
-            param = param + must;
-            for(int i=0; i < excludeTags.Length; i++)
+            //if exclude tags are being used
+            if (excludeTags.Length > 0)
             {
-                if(i !=0) {
-                    param += ",";
-                }
-                param = param + Excludetag + excludeTags[i] + "\"}}";
-            }
-            param += "],";
-            param = param + must_not;
-            for(int i= 0; i < includeTags.Length; i++)
-            {
-                if (i != 0)
+                param = param + must;
+                for (int i = 0; i < excludeTags.Length; i++)
                 {
-                    param += ",";
+                    if (i != 0)
+                    {
+                        param += ",";
+                    }
+                    param = param + searchTag + excludeTags[i] + "\"}}";
+                }
+                param += "],";
+            }
+            //if include tags are being used
+            if (includeTags.Length > 0)
+            {
+                param = param + must_not;
+                for (int i = 0; i < includeTags.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        param += ",";
+
+                    }
+                    param = param + searchTag + includeTags[i] + "\"}}";
 
                 }
-                param = param + Excludetag + includeTags[i] + "\"}}";
-
+                param += "],";
             }
+            //add the should clause for the names 
             param = param + should + "}}";
         }
+        //This area is for if no tags 
         else
         {
             param = "{\"source\": { \"query\": {\"bool\": {\"should\": [ {\"wildcard\": " +
@@ -204,19 +232,21 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-		print(param);
+        //this is for testing purposed to see the Parameter for the request
         request.AddParameter("application/json",param, ParameterType.RequestBody);
+        //save the response
         IRestResponse response = client.Execute(request);
-
+        //if the response is not empty
         if (!response.Content.Contains("\"total\":0"))
-        {
-            print(response.Content);
-
+        { 
+            //convert it to rootObject
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            //send the hits of IDs to the search function
             Search(rootObject.hits.hits);
         }
         else
         {
+           //if the response is empty, just refresh the list, should just refresh the list making it empty
         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
 
@@ -245,7 +275,6 @@ public class DatabaseManager : MonoBehaviour
                         return;
 
                     DataSnapshot snapshot = task.Result;
-                    print(snapshot.GetRawJsonValue());
 
                     foreach (var recipe in snapshot.Children)
                     {
@@ -266,7 +295,6 @@ public class DatabaseManager : MonoBehaviour
         StartCoroutine(WaitForRecipes());
         for (int i = 0; i < hits.Length; i++)
         {
-            print(hits[i]._id);
             FirebaseDatabase.DefaultInstance
                 .GetReference("recipes").Child(hits[i]._id)
                 .GetValueAsync().ContinueWith(task =>
@@ -283,6 +311,7 @@ public class DatabaseManager : MonoBehaviour
                         DataSnapshot snapshot = task.Result;
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+                        newRecipe.Key = task.Result.Key;
                         currentRecipes.Add(newRecipe);
 
                         if (currentRecipes.Count == hits.Length)
@@ -295,6 +324,7 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    //coroutine that waits for search to be finished fully before updating the UI
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);

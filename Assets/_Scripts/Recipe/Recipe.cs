@@ -9,6 +9,7 @@ using System.Collections.Generic;
 [Serializable]
 public class Recipe 
 {
+    
     public string Name;
     public int Calories;
     public int PrepTimeMinutes;
@@ -19,6 +20,7 @@ public class Recipe
     public string[] Tags;
     public string ImageReferencePath;
     public Sprite ImageSprite;
+    public string Key;
 
     /// <summary>
     /// Creates a new instance of Recipe
@@ -32,9 +34,10 @@ public class Recipe
     /// <param name="steps">The steps for this recipe</param>
     /// <param name="reviews">The reviews for this recipe</param>
     /// <param name="starRating">The rating for this recipe</param>
-    public Recipe(string name, string imagePath, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, List<string> reviews = null, int starRating = 5)
+    public Recipe(string name, string imagePath, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, List<string> reviews = null, int starRating = 5, string key = "")
     {
-        Name = name; 
+        
+        Name = name;
         ImageReferencePath = imagePath;
         Calories = calories;
         PrepTimeMinutes = prepTimeMinutes;
@@ -42,8 +45,7 @@ public class Recipe
         Ingredients = ingredients.ToArray();
         Steps = steps.ToArray();
         StarRating = starRating;
-
-        if (reviews != null)
-            Reviews = reviews.ToArray();
+        Reviews = reviews.ToArray();
+        Key = key;
     }
 }

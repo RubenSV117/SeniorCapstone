@@ -21,6 +21,9 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
     #region Private Fields
     [SerializeField] private GameObject canvas;
+    [SerializeField] private int startOrder;
+    [SerializeField] private int finalOrder;
+
     [SerializeField] private Image recipeImage;
     [SerializeField] private InputField nameInputField;
     [SerializeField] private InputField caloriesInputField;
@@ -48,6 +51,8 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     {
         if (Instance == null)
             Instance = this;
+
+        canvas.GetComponent<Canvas>().sortingOrder = startOrder;
     }
 
     private void OnEnable()
@@ -189,7 +194,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions);
 
         // send for publish
-        DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);
+        //DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);
 
         // close canvas and refresh its content
         Disable();
@@ -198,6 +203,12 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     #endregion
 
     #region Private Methods
+
+    private void SetCanvasOrder(int order)
+    {
+        canvas.GetComponent<Canvas>().sortingOrder = finalOrder;
+    }
+
     private bool CheckForFinishedRecipe()
     {
         bool isFinished = true;

@@ -4,10 +4,12 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class RecipeManagerUI : MonoBehaviour
 {
+    public static Recipe thisRecipe;
     public static RecipeManagerUI Instance;
-
+    [SerializeField] private Toggle favoritedHeart;
     [SerializeField] private GameObject canvas;
     
     [Header("Prefabs")]
@@ -36,6 +38,7 @@ public class RecipeManagerUI : MonoBehaviour
             Instance = this;
     }
 
+
     public void SetSprite(Sprite newSprite)
     {
         currentRecipeSprite = newSprite;
@@ -43,6 +46,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void InitRecipeUI(Recipe newRecipe)
     {
+        thisRecipe = newRecipe;
         dishImage.sprite = newRecipe.ImageSprite;
 
         // update text elements
@@ -95,14 +99,23 @@ public class RecipeManagerUI : MonoBehaviour
 
         ratingText.text = "What did you think?";
 
-
+        List<string> favorites;
+        favorites = DatabaseManager.Instance.getFavorites();
+        if (favorites.Contains(newRecipe.Key))
+        {
+            favoritedHeart.isOn = true;
+        }
+        else
+        {
+            favoritedHeart.isOn = false;
+        }
 
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
 
         canvas.SetActive(true);
     }
-
+ 
     public void Enable()
     {
         canvas.SetActive(true);
@@ -117,6 +130,18 @@ public class RecipeManagerUI : MonoBehaviour
     {
         yield return new WaitWhile(() => dishImage == null);
         loadingObject.SetActive(false);
+    }
+
+    public void handleToggle(bool toggleState)
+    {
+        if(toggleState == true)
+        {
+            DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
+        }
+        else
+        {
+            print("will add remove in the future");
+        }
     }
 
     public void Test()

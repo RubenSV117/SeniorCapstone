@@ -80,32 +80,34 @@ public class DatabaseManager : MonoBehaviour
      * Method for getting favorites of a user, used for favorites list and
      * for checking if the user already favorited a recipe
      **/
-    public void getFavorites()
+    public List<string> getFavorites()
     {
-
-        FirebaseDatabase.DefaultInstance
-                       .GetReference("users").Child(auth.CurrentUser.UserId)
-                       .GetValueAsync().ContinueWith(task =>
-                       {
-                           if (task.IsFaulted)
+        List<string> favorites = new List<string>();
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            FirebaseDatabase.DefaultInstance
+                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
+                           .GetValueAsync().ContinueWith(task =>
                            {
-                               print("faulted");
-                           }
-                           else if (task.IsCompleted)
-                           {
-                               if (task.Result.ChildrenCount == 0)
-                                   return;
+                               if (task.IsFaulted)
+                               {
+                                   print("faulted");
+                               }
+                               else if (task.IsCompleted)
+                               {
+                                   if (task.Result.ChildrenCount == 0)
+                                       return;
 
-                               DataSnapshot snapshot = task.Result;
-                               string recipeID;
-                               recipeID = JsonUtility.FromJson<string>(snapshot.GetRawJsonValue());
-                               userFavorites.Add(recipeID);
-                           }
+                                   DataSnapshot snapshot = task.Result;
+                                   
+                                   favorites = JsonUtility.FromJson<List<string>>(snapshot.GetRawJsonValue());
+                               }
 
-                       });
+                           });
 
-
-        
+        }
+        return favorites;
     }
 
     /*

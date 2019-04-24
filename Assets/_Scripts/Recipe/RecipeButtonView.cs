@@ -13,6 +13,7 @@ public class RecipeButtonView : MonoBehaviour
     [SerializeField] private Text recipeName;
     [SerializeField] private GameObject loadingPanelObject;
 
+
     private Recipe recipe;
     private static bool isCurrentRequestDone = true;
 
@@ -46,6 +47,7 @@ public class RecipeButtonView : MonoBehaviour
         RecipeManagerUI.Instance.InitRecipeUI(recipe);
     }
 
+ 
     private void GetSprite()
     {
         GameObject imageRequest = new GameObject("Image Request");

@@ -145,7 +145,7 @@ public class DatabaseManager : MonoBehaviour
         // File located on disk
         Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
         // Create a reference to the file you want to upload
-        storage_ref.PutFileAsync(local_file)
+        storage_ref.PutFileAsync("file://" + local_file)
           .ContinueWith((Task<StorageMetadata> task) => {
               if (task.IsFaulted || task.IsCanceled)
               {

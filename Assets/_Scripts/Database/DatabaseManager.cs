@@ -113,20 +113,22 @@ public class DatabaseManager : MonoBehaviour
     /*
      * Method for favoriting a recipe, takes the recipeID of the selected recipe and sends that to the users favorites on firebase
      */
-    public void favoriteRecipe(string recipeID)
+    public bool favoriteRecipe(string recipeID)
     {
 
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+
         if (user != null)
         {
             string uid = user.UserId;
-            string key = databaseReference.Child("users").Push().Key;
-            string json = JsonUtility.ToJson(uid + "," + recipeID);
-            databaseReference.Child("users").Child(uid).SetRawJsonValueAsync(json);
+            string json = JsonUtility.ToJson(recipeID);
+            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).SetValueAsync(true);
+            return true;
         }
         else
         {
             print("No user logged in.");
+            return false;
         }
         
     }
@@ -157,7 +159,6 @@ public class DatabaseManager : MonoBehaviour
         recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
 
         string json = JsonUtility.ToJson(recipe);
-        print(json);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
     }
 
@@ -232,15 +233,12 @@ public class DatabaseManager : MonoBehaviour
                 "\",\"my_size\": 100}}";
         }
         //this is for testing purposed to see the Parameter for the request
-		print(param);
         request.AddParameter("application/json",param, ParameterType.RequestBody);
         //save the response
         IRestResponse response = client.Execute(request);
         //if the response is not empty
         if (!response.Content.Contains("\"total\":0"))
-        {
-            //print said response
-            print(response.Content);
+        { 
             //convert it to rootObject
             Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
             //send the hits of IDs to the search function
@@ -277,7 +275,6 @@ public class DatabaseManager : MonoBehaviour
                         return;
 
                     DataSnapshot snapshot = task.Result;
-                    print(snapshot.GetRawJsonValue());
 
                     foreach (var recipe in snapshot.Children)
                     {
@@ -298,7 +295,6 @@ public class DatabaseManager : MonoBehaviour
         StartCoroutine(WaitForRecipes());
         for (int i = 0; i < hits.Length; i++)
         {
-            print(hits[i]._id);
             FirebaseDatabase.DefaultInstance
                 .GetReference("recipes").Child(hits[i]._id)
                 .GetValueAsync().ContinueWith(task =>
@@ -315,6 +311,7 @@ public class DatabaseManager : MonoBehaviour
                         DataSnapshot snapshot = task.Result;
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+                        newRecipe.Key = task.Result.Key;
                         currentRecipes.Add(newRecipe);
 
                         if (currentRecipes.Count == hits.Length)

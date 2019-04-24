@@ -34,7 +34,6 @@ public class CameraManager : MonoBehaviour
 
     private void TakePictureCallback(string path)
     {
-        Debug.Log("Image path: " + path);
 
 
         if (path != null)
@@ -55,9 +54,14 @@ public class CameraManager : MonoBehaviour
                 Permission.RequestUserPermission(Permission.ExternalStorageWrite);
 
             if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+            {
+                NotificationManager.Instance.ShowNotification("External Write Permission Required");
                 return;
+            }
 
             PathOfCurrentImage = NativeToolkit.SaveImage(texture, "Recipes");
+
+            print($"CameraManager: Path of Image {PathOfCurrentImage}");
 
             OnPictureTaken?.Invoke(newSprite);
         }
@@ -84,6 +88,8 @@ public class CameraManager : MonoBehaviour
     public void OnImagePicked(Texture2D texture, string path)
     {
         PathOfCurrentImage = path;
+
+        print($"CameraManager: Path of Image {PathOfCurrentImage}");
 
         // create sprite from the texture
         Sprite newSprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(.5f, .5f));

@@ -189,7 +189,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions);
 
         // send for publish
-        DatabaseManager.Instance.PublishNewRecipe(newRecipe, Application.persistentDataPath);//CameraManager.PathOfCurrentImage);
+        DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);
 
         // close canvas and refresh its content
         Disable();

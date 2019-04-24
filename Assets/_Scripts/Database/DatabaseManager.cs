@@ -138,7 +138,7 @@ public class DatabaseManager : MonoBehaviour
      * Takes in the recipe object that has all the inputted info from the recipe publishing page and a photo of the food
      * then sends the photo to storage and the recipe to our DB
      */
-    private void PublishNewRecipe(Recipe recipe, string local_file)
+    public void PublishNewRecipe(Recipe recipe, string local_file)
     {
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         string key = databaseReference.Child("recipes").Push().Key;

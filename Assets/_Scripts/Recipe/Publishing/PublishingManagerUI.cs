@@ -21,8 +21,8 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
     #region Private Fields
     [SerializeField] private GameObject canvas;
-    [SerializeField] private int startOrder;
-    [SerializeField] private int finalOrder;
+    [SerializeField] private int startOrder = -1;
+    [SerializeField] private int finalOrder = 0;
 
     [SerializeField] private Image recipeImage;
     [SerializeField] private InputField nameInputField;
@@ -127,10 +127,6 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         minutesPrep = Convert.ToInt32(prepTimeString);
     }
 
-    public void SendRecipe()
-    {
-    }
-
     public void AddIngredientBuilder()
     {
         // make a new ingredient builder item
@@ -204,7 +200,12 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
     #region Private Methods
 
-    private void SetCanvasOrder(int order)
+    private void SetCanvasOrderToStart()
+    {
+        canvas.GetComponent<Canvas>().sortingOrder = startOrder;
+    }
+
+    private void SetCanvasOrderToFinal()
     {
         canvas.GetComponent<Canvas>().sortingOrder = finalOrder;
     }
@@ -287,12 +288,16 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     #region IPanel Implementation
     public void Enable()
     {
+        SetCanvasOrderToStart();
+
         canvas.SetActive(true);
+        Invoke("SetCanvasOrderToFinal", .2f);
     }
 
     public void Disable()
     {
         canvas.SetActive(false);
+        SetCanvasOrderToStart();
     }
 
     public void Init() { }

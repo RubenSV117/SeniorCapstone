@@ -164,7 +164,7 @@ public class DatabaseManager : MonoBehaviour
      * an HTTP get request using RestSharp, then the resulting json is then parsed and the IDs are sent to the search() function
      * there it takes the full information of those recipes
      */
-    public void elasticSearchExclude(string name,string[] excludeTags, string[] includeTags)
+    public void elasticSearchExclude(string name,string[] includeTags, string[] excludeTags)
     {
         //clear the UI
         currentRecipes.Clear();
@@ -177,7 +177,7 @@ public class DatabaseManager : MonoBehaviour
         string param = "{\"source\":{\"query\": {\"bool\": {";
         string must = "\"must\":[";
         string must_not = "\"must_not\":[";
-        string searchTag = "{\"term\": {\"tags\": \"";
+        string searchTag = "{\"term\": {\"tags.keyword\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
         request.AddHeader("cache-control", "no-cache");

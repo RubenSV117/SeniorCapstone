@@ -57,12 +57,12 @@ public class SearchManagerUI : MonoBehaviour
     public void RefreshRecipeList(List<Recipe> recipes, bool favoriteSearch = false)
     {
         // remove previous recipes
-        if (recipeListTrans.transform.childCount > 0)
+        if (recipeListTrans.transform.childCount > 0 && !favoriteSearch)
         {
             for (int i = 0; i < recipeListTrans.transform.childCount; i++)
                 Destroy(recipeListTrans.transform.GetChild(i).gameObject);
         }
-        if (recipeListTransFavorites.transform.childCount > 0)
+        if (recipeListTransFavorites.transform.childCount > 0 && favoriteSearch)
         {
             for (int i = 0; i < recipeListTransFavorites.transform.childCount; i++)
                 Destroy(recipeListTransFavorites.transform.GetChild(i).gameObject);

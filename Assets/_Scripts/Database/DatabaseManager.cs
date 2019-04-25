@@ -86,7 +86,7 @@ public class DatabaseManager : MonoBehaviour
         if (user != null)
         {
             FirebaseDatabase.DefaultInstance
-                           .GetReference("users").Child(auth.CurrentUser.UserId)
+                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
                            .GetValueAsync().ContinueWith(task =>
                            {
                                if (task.IsFaulted)
@@ -100,12 +100,7 @@ public class DatabaseManager : MonoBehaviour
 
                                    DataSnapshot snapshot = task.Result;
                                    print(snapshot.GetRawJsonValue());
-                                   foreach (string entry in recipes.Keys)
-                                   {
-                                       // do something with entry.Value or entry.Key
-                                       favorites.Add(entry);
-                                       print(entry);
-                                   }
+
 
                                }
 

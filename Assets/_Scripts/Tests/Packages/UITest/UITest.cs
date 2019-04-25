@@ -78,6 +78,12 @@ public class UITest
         return mb.StartCoroutine(TypeIntoInternal(inputName, text));
     }
 
+    protected Coroutine TypeInto(string inputName, int idx, string text)
+    {
+        CreateMonoBehaviour();
+        return mb.StartCoroutine(TypeIntoInternal(inputName, idx, text));
+    }
+
     protected Coroutine TypeInto(GameObject o, string text)
     {
         CreateMonoBehaviour();
@@ -116,8 +122,14 @@ public class UITest
         yield return null;
     }
 
+    IEnumerator TypeIntoInternal(string inputName, int idx, string text)
+    {
+        var buttonAppeared = new ObjectAppeared(inputName, idx);
+        yield return WaitFor(buttonAppeared);
+        yield return TypeIntoInternal(buttonAppeared.o, text);
+    }
 
-    IEnumerator TypeIntoInternal(String inputName, string text)
+    IEnumerator TypeIntoInternal(string inputName, string text)
     {
         var buttonAppeared = new ObjectAppeared(inputName);
         yield return WaitFor(buttonAppeared);
@@ -275,7 +287,10 @@ public class UITest
                     if (obj.name.Contains(path) && obj.activeInHierarchy)
                     {
                         if (i == idx)
+                        {
+                            o = obj;
                             return true;
+                        }
                         else
                             i++;
                     }

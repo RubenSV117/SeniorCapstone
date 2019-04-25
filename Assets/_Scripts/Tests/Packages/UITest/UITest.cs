@@ -237,17 +237,37 @@ public class UITest
     protected class ObjectAppeared : Condition
     {
         protected string path;
+        protected int idx;
         public GameObject o;
 
-        public ObjectAppeared(string path)
+        public ObjectAppeared(string path, int idx = 0)
         {
             this.path = path;
+            this.idx = idx;
         }
 
         public override bool Satisfied()
         {
-            o = GameObject.Find(path);
-            return o != null && o.activeInHierarchy;
+            if (idx == 0)
+            {
+                o = GameObject.Find(path);
+                return o != null && o.activeInHierarchy;
+            } else
+            {
+                var objects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+                int i = 0;
+                foreach(var obj in objects)
+                {
+                    if (obj.name.Contains(path) && obj.activeInHierarchy)
+                    {
+                        if (i == idx)
+                            return true;
+                        else
+                            i++;
+                    }
+                }
+                return false;
+            }
         }
 
         public override string ToString()

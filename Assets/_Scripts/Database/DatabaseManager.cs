@@ -81,7 +81,7 @@ public class DatabaseManager : MonoBehaviour
 
     public void populateFavorites()
     {
-        userFavorites = new List<string>();
+        userFavorites.Clear();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {

@@ -62,6 +62,11 @@ public class SearchManagerUI : MonoBehaviour
             for (int i = 0; i < recipeListTrans.transform.childCount; i++)
                 Destroy(recipeListTrans.transform.GetChild(i).gameObject);
         }
+        if (recipeListTransFavorites.transform.childCount > 0)
+        {
+            for (int i = 0; i < recipeListTransFavorites.transform.childCount; i++)
+                Destroy(recipeListTransFavorites.transform.GetChild(i).gameObject);
+        }
 
         // add new recipes
         foreach (var recipe in recipes)

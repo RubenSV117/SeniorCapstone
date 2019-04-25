@@ -45,7 +45,10 @@ public class Recipe
         Ingredients = ingredients.ToArray();
         Steps = steps.ToArray();
         StarRating = starRating;
-        Reviews = reviews.ToArray();
+
+        if(reviews != null)
+            Reviews = reviews.ToArray();
+
         Key = key;
     }
 }

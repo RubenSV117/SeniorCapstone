@@ -47,14 +47,15 @@ public class IngredientBuilderView : MonoBehaviour
         ingredient = new Ingredient(name, amount);
 
         // if ingredient is complete, auto add another builder
-        if (!string.IsNullOrEmpty(amount) && !string.IsNullOrEmpty(name))
+        if (!string.IsNullOrEmpty(amount) && !string.IsNullOrEmpty(name) && !hasAddedIngredient)
+        {
+            hasAddedIngredient = true;
             AddNewIngredient();
+        }
     }
 
     public void AddNewIngredient()
     {
-        print($"IngredientBuilderView>AddNewIngredient: Ingredient Amount: {amount}, Name: {name}");
-
         // return if either field has not been populated
         if (string.IsNullOrEmpty(amount) || string.IsNullOrEmpty(name))
             return;

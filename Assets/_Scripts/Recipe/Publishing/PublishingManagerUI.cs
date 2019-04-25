@@ -181,7 +181,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
         foreach (var t in tagToggles)
             if(t.isOn)
-                tags.Add(t.GetComponentInChildren<Text>().text);
+                tags.Add(t.GetComponentInChildren<RecipeTag>().GetTag());
 
         if (!CheckForFinishedRecipe())
             return;
@@ -190,7 +190,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions);
 
         // send for publish
-        //DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);
+        DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);
 
         // close canvas and refresh its content
         Disable();

@@ -78,13 +78,16 @@ public class DatabaseManager : MonoBehaviour
      * Method for getting favorites of a user, used for favorites list and
      * for checking if the user already favorited a recipe
      **/
-    public List<string> getFavorites()
+    public void getFavorites()
     {
         print("entered get favorites");
-        List<string> favorites = new List<string>();
+        userFavorites = new List<string>();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
+            hasAttemptFinished = false;
+            StartCoroutine(WaitForFavorites());
+
             FirebaseDatabase.DefaultInstance
                            .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
                            .GetValueAsync().ContinueWith(task =>
@@ -92,6 +95,8 @@ public class DatabaseManager : MonoBehaviour
                                if (task.IsFaulted)
                                {
                                    print("faulted");
+                                   hasAttemptFinished = true;
+
                                }
                                else if (task.IsCompleted)
                                {
@@ -99,15 +104,27 @@ public class DatabaseManager : MonoBehaviour
                                        return;
 
                                    DataSnapshot snapshot = task.Result;
+
+                                   foreach (var s in snapshot.Children)
+                                   {
+                                       userFavorites.Add(s.Key);
+                                   }
+                   
                                    print(snapshot.GetRawJsonValue());
 
-
+                                   hasAttemptFinished = true;
                                }
 
                            });
-
         }
-        return favorites;
+    }
+
+    private IEnumerator WaitForFavorites()
+    {
+        yield return new WaitUntil(() => hasAttemptFinished);
+
+        RecipeManagerUI.Instance.SetFavorited(userFavorites);
+
     }
 
     /*
@@ -179,6 +196,8 @@ public class DatabaseManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(recipe);
         databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
+
+        NotificationManager.Instance.ShowNotification("Publish Successful");
     }
 
     /*

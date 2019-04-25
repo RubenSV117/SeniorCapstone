@@ -82,9 +82,10 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
         attemptFinished = false;
 
-        LoginService.Instance.SignInUserWithEmail(email, password).WithSuccess(user =>
+        LoginService.Instance.SignInUserWithEmailAndPassword(email, password).WithSuccess(user =>
         {
             attemptSuccess = true;
+
             attemptFinished = true;
         })
         .WithFailure((FirebaseException exception) =>

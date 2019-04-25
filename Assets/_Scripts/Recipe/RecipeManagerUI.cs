@@ -30,6 +30,8 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject ratingThing;
 
+    [SerializeField] private GameObject testFavorite;
+
     private Sprite currentRecipeSprite;
     
     private void Awake()
@@ -99,25 +101,25 @@ public class RecipeManagerUI : MonoBehaviour
 
         ratingText.text = "What did you think?";
 
-        List<string> favorites;
-        favorites = DatabaseManager.Instance.getFavorites();
-
-        if (favorites.Contains(newRecipe.Key))
-        {
-            favoritedHeart.isOn = true;
-        }
-        else
-        {
-            NotificationManager.Instance.ShowNotification("not yet favorited");
-            favoritedHeart.isOn = false;
-        }
-
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
 
+        DatabaseManager.Instance.getFavorites();
+
         canvas.SetActive(true);
     }
- 
+
+    public void SetFavorited(List<string> favorites)
+    {
+        favoritedHeart.isOn = favorites.Contains(thisRecipe.Key);
+
+        favoritedHeart.onValueChanged.Invoke(favorites.Contains(thisRecipe.Key));
+
+        print($"RecipeManager>SetFavorited: {favorites.Contains(thisRecipe.Key)} toggle state: {favoritedHeart.isOn}");
+
+        testFavorite.SetActive(favorites.Contains(thisRecipe.Key));
+    }
+
     public void Enable()
     {
         canvas.SetActive(true);
@@ -132,6 +134,11 @@ public class RecipeManagerUI : MonoBehaviour
     {
         yield return new WaitWhile(() => dishImage == null);
         loadingObject.SetActive(false);
+    }
+
+    public void HandleFavorite()
+    {
+
     }
 
     public void handleToggle(bool toggleState)

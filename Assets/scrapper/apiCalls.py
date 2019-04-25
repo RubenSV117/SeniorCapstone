@@ -33,6 +33,8 @@ if(data['recipes'][0]['dairyFree'] == True):
     tag.append('dairyFree')
 if(data['recipes'][0]['ketogenic'] == True):
     tag.append('ketogenic')
+if not tag:
+    tag.append("NA")
 #-----------------------------------------------------------
 #split the steps 
 step = steps.split('.')

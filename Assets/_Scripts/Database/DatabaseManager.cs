@@ -29,7 +29,7 @@ public class DatabaseManager : MonoBehaviour
     //list objects used to later fill in UI
     private List<string> userFavorites = new List<string>();
     private List<Recipe> currentRecipes = new List<Recipe>();
-
+    private List<Recipe> favoriteRecipes = new List<Recipe>();
 
     //Firebase.Auth object for user and authentication 
     Firebase.Auth.FirebaseAuth auth;
@@ -78,9 +78,99 @@ public class DatabaseManager : MonoBehaviour
      * Method for getting favorites of a user, used for favorites list and
      * for checking if the user already favorited a recipe
      **/
+
+    public void populateFavorites()
+    {
+        userFavorites = new List<string>();
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            hasAttemptFinished = false;
+            StartCoroutine(WaitForFavoritesPop());
+
+            FirebaseDatabase.DefaultInstance
+                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
+                           .GetValueAsync().ContinueWith(task =>
+                           {
+                               if (task.IsFaulted)
+                               {
+                                   print("faulted");
+                                   hasAttemptFinished = true;
+
+                               }
+                               else if (task.IsCompleted)
+                               {
+                                   if (task.Result.ChildrenCount == 0)
+                                       return;
+
+                                   DataSnapshot snapshot = task.Result;
+
+                                   foreach (var s in snapshot.Children)
+                                   {
+                                       userFavorites.Add(s.Key);
+                                   }
+
+
+                                   hasAttemptFinished = true;
+                               }
+
+                           });
+        }
+    }
+
+    public void searchFavorites(List<string> favoriteIDs)
+    {
+        hasAttemptFinished = false;
+        favoriteRecipes.Clear();
+        StartCoroutine(WaitForFavoritesSearch());
+        foreach (string id in favoriteIDs)
+        {
+            FirebaseDatabase.DefaultInstance
+                .GetReference("recipes").Child(id)
+                .GetValueAsync().ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        print("faulted");
+                    }
+                    else if (task.IsCompleted)
+                    {
+                        if (task.Result.ChildrenCount == 0)
+                            return;
+
+                        DataSnapshot snapshot = task.Result;
+
+                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+                        newRecipe.Key = task.Result.Key;
+                        favoriteRecipes.Add(newRecipe);
+
+                        if (favoriteRecipes.Count == favoriteIDs.Count)
+                            hasAttemptFinished = true;
+                    }
+
+                });
+
+
+        }
+    }
+    private IEnumerator WaitForFavoritesPop()
+    {
+        yield return new WaitUntil(() => hasAttemptFinished);
+
+        searchFavorites(userFavorites);
+
+    }
+    private IEnumerator WaitForFavoritesSearch()
+    {
+        yield return new WaitUntil(() => hasAttemptFinished);
+
+        SearchManagerUI.Instance.RefreshRecipeList(favoriteRecipes,true);
+
+    }
+
+
     public void getFavorites()
     {
-        print("entered get favorites");
         userFavorites = new List<string>();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
@@ -110,7 +200,6 @@ public class DatabaseManager : MonoBehaviour
                                        userFavorites.Add(s.Key);
                                    }
                    
-                                   print(snapshot.GetRawJsonValue());
 
                                    hasAttemptFinished = true;
                                }
@@ -288,40 +377,6 @@ public class DatabaseManager : MonoBehaviour
         SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
 
-    }
-    
-    //Searching by name, old version of the search function
-    public void Search(string name)
-    {
-        hasAttemptFinished = false;
-        currentRecipes.Clear();
-
-        StartCoroutine(WaitForRecipes());
-        FirebaseDatabase.DefaultInstance
-            .GetReference("recipes").OrderByChild("Name")
-            .StartAt(name)
-            .EndAt(name + "\uf8ff")
-            .GetValueAsync().ContinueWith(task => {
-                if (task.IsFaulted)
-                {
-                    // Handle the error...
-                }
-                else if (task.IsCompleted)
-                {
-                    if (task.Result.ChildrenCount == 0)
-                        return;
-
-                    DataSnapshot snapshot = task.Result;
-
-                    foreach (var recipe in snapshot.Children)
-                    {
-                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(recipe.GetRawJsonValue());
-                        currentRecipes.Add(newRecipe);
-                    }
-                }
-
-                hasAttemptFinished = true;
-            });
     }
 
     //Search function for firebase using ID's found.

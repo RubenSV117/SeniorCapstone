@@ -12,6 +12,7 @@ public class SearchManagerUI : MonoBehaviour
     public static SearchManagerUI Instance;
 
     [SerializeField] private Transform recipeListTrans;
+    [SerializeField] private Transform recipeListTransFavorites;
     [SerializeField] private GameObject buttonViewPrefab;
 
     //[Header("Test variables")]
@@ -53,7 +54,7 @@ public class SearchManagerUI : MonoBehaviour
         DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExclude.ToArray(), TagsToInclude.ToArray());
     }
 
-    public void RefreshRecipeList(List<Recipe> recipes)
+    public void RefreshRecipeList(List<Recipe> recipes, bool favoriteSearch = false)
     {
         // remove previous recipes
         if (recipeListTrans.transform.childCount > 0)
@@ -66,7 +67,7 @@ public class SearchManagerUI : MonoBehaviour
         foreach (var recipe in recipes)
         {
             RecipeButtonView recipeView = 
-                Instantiate(buttonViewPrefab, recipeListTrans)
+                Instantiate(buttonViewPrefab, (favoriteSearch ? recipeListTransFavorites : recipeListTrans) )
                     .GetComponent<RecipeButtonView>();
 
             recipeView.InitRecipeButton(recipe);

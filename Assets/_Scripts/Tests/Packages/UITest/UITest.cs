@@ -284,7 +284,7 @@ public class UITest
                 int i = 0;
                 foreach(var obj in objects)
                 {
-                    if (obj.name.Contains(path) && obj.activeInHierarchy)
+                    if (UnityEditor.AnimationUtility.CalculateTransformPath(obj.transform, obj.transform.root).Contains(path) && obj.activeInHierarchy)
                     {
                         if (i == idx)
                         {

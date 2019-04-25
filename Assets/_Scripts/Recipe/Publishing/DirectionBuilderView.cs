@@ -21,10 +21,13 @@ public class DirectionBuilderView : MonoBehaviour
 
     public void SetDirection(string newDirection)
     {
+        // check if this is the first time the direction has been inputed
+        bool isNew = string.IsNullOrEmpty(direction);
+
         direction = newDirection;
 
-        // if direction has been filled, auto add a new builder
-        if(!string.IsNullOrEmpty(direction))
+        // if direction has been filled and is not updating exisiting direction, auto add a new builder
+        if(!string.IsNullOrEmpty(direction) && isNew)
             AddNewDirection();
     }
 

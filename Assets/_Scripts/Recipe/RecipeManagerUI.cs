@@ -141,6 +141,23 @@ public class RecipeManagerUI : MonoBehaviour
 
     }
 
+
+
+    public void handleUnfavorite()
+    {
+        bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
+        if (worked)
+        {
+            favoritedHeart.isOn = false;
+            NotificationManager.Instance.ShowNotification("Unfavoriting.");
+
+        }
+        else
+        {
+            NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
+        }
+
+    }
     public void handleToggle(bool toggleState)
     {
         if(toggleState == true)
@@ -155,21 +172,6 @@ public class RecipeManagerUI : MonoBehaviour
             {
                 favoritedHeart.isOn = false;
             }
-        }
-        else
-        {
-            bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
-            if (worked)
-            {
-                favoritedHeart.isOn = false;
-                NotificationManager.Instance.ShowNotification("Unfavoriting.");
-
-            }
-            else
-            {
-                NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
-            }
-
         }
     }
 

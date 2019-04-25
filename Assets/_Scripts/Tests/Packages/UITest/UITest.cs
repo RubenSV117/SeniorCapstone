@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class UITest
 {
@@ -218,10 +219,23 @@ public class UITest
 
     protected class ObjectAppeared<T> : Condition where T : Component
     {
+        protected int idx;
+
+        public ObjectAppeared(int idx = 0) {
+            this.idx = idx;
+        }
+
         public override bool Satisfied()
         {
-            var obj = GameObject.FindObjectOfType(typeof (T)) as T;
-            return obj != null && obj.gameObject.activeInHierarchy;
+            if (idx == 0)
+            {
+                var obj = UnityEngine.Object.FindObjectOfType(typeof(T)) as T;
+                return obj != null && obj.gameObject.activeInHierarchy;
+            } else
+            {
+                var objects = UnityEngine.Object.FindObjectsOfType(typeof(T)).Where(o => (o as Component).gameObject.activeInHierarchy).Count();
+                return objects < idx;
+            }
         }
     }
 

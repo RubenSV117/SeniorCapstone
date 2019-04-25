@@ -13,7 +13,6 @@ using System.Linq;
 using Firebase.Storage;
 using System.Threading.Tasks;
 using Firebase.Auth;
-
 public class DatabaseManager : MonoBehaviour
 {
     //Here is the backend handling most database calls
@@ -70,7 +69,6 @@ public class DatabaseManager : MonoBehaviour
             user = auth.CurrentUser;
             if (signedIn)
             {
-                Debug.Log("Signed in " + user.UserId);
             }
         }
     }
@@ -82,12 +80,13 @@ public class DatabaseManager : MonoBehaviour
      **/
     public List<string> getFavorites()
     {
+        print("entered get favorites");
         List<string> favorites = new List<string>();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
             FirebaseDatabase.DefaultInstance
-                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
+                           .GetReference("users").Child(auth.CurrentUser.UserId)
                            .GetValueAsync().ContinueWith(task =>
                            {
                                if (task.IsFaulted)
@@ -100,8 +99,14 @@ public class DatabaseManager : MonoBehaviour
                                        return;
 
                                    DataSnapshot snapshot = task.Result;
-                                   
-                                   favorites = JsonUtility.FromJson<List<string>>(snapshot.GetRawJsonValue());
+                                   print(snapshot.GetRawJsonValue());
+                                   foreach (string entry in recipes.Keys)
+                                   {
+                                       // do something with entry.Value or entry.Key
+                                       favorites.Add(entry);
+                                       print(entry);
+                                   }
+
                                }
 
                            });
@@ -132,13 +137,32 @@ public class DatabaseManager : MonoBehaviour
         }
         
     }
+    //Same as favorite but removes
+    public bool unfavoriteRecipe(string recipeID)
+    {
+
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string uid = user.UserId;
+            string json = JsonUtility.ToJson(recipeID);
+            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).RemoveValueAsync();
+            return true;
+        }
+        else
+        {
+            print("No user logged in.");
+            return false;
+        }
+    }
 
     /*
      * Method for publishing a recipe to firebase,
      * Takes in the recipe object that has all the inputted info from the recipe publishing page and a photo of the food
      * then sends the photo to storage and the recipe to our DB
      */
-    private void PublishNewRecipe(Recipe recipe, string local_file)
+    public void PublishNewRecipe(Recipe recipe, string local_file)
     {
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         string key = databaseReference.Child("recipes").Push().Key;
@@ -259,7 +283,6 @@ public class DatabaseManager : MonoBehaviour
         currentRecipes.Clear();
 
         StartCoroutine(WaitForRecipes());
-
         FirebaseDatabase.DefaultInstance
             .GetReference("recipes").OrderByChild("Name")
             .StartAt(name)

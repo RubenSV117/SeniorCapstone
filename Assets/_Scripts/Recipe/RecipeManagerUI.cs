@@ -101,16 +101,14 @@ public class RecipeManagerUI : MonoBehaviour
 
         List<string> favorites;
         favorites = DatabaseManager.Instance.getFavorites();
-        foreach(string k in favorites)
-        {
-            print(k);
-        }
+
         if (favorites.Contains(newRecipe.Key))
         {
             favoritedHeart.isOn = true;
         }
         else
         {
+            NotificationManager.Instance.ShowNotification("not yet favorited");
             favoritedHeart.isOn = false;
         }
 
@@ -140,17 +138,31 @@ public class RecipeManagerUI : MonoBehaviour
     {
         if(toggleState == true)
         {
-            print(thisRecipe.Key);
             bool worked = DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
             if (worked)
             {
                 favoritedHeart.isOn = true;
+                NotificationManager.Instance.ShowNotification("Favorited");
             }
-            else favoritedHeart.isOn = false;
+            else
+            {
+                favoritedHeart.isOn = false;
+            }
         }
         else
         {
-            NotificationManager.Instance.ShowNotification("You must be signed in!");
+            bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
+            if (worked)
+            {
+                favoritedHeart.isOn = false;
+                NotificationManager.Instance.ShowNotification("Unfavoriting.");
+
+            }
+            else
+            {
+                NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
+            }
+
         }
     }
 

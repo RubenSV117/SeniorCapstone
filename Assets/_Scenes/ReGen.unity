@@ -1982,11 +1982,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: MeatToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2106,6 +2101,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: MeatToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -2352,11 +2352,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: SeafoodToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2462,6 +2457,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: SeafoodToggle
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2512,11 +2512,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: PoultryToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2636,6 +2631,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: PoultryToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -3557,11 +3557,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: MeatToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3681,6 +3676,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: MeatToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -3971,16 +3971,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: DairyToggle
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4085,6 +4075,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: DairyToggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -7618,11 +7618,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: WheatToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7728,6 +7723,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: WheatToggle
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7772,11 +7772,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: EggToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7882,6 +7877,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: EggToggle
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7963,7 +7963,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eff83aa490c6474eb127f4af0699490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  favoritedHeart: {fileID: 0}
+  favoritedHeart: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+    type: 3}
   canvas: {fileID: 1482271612}
   labelPrefab: {fileID: 1197439870113311635, guid: 19af3b7f58b0a9840b5f3d3a6193c8e3,
     type: 3}
@@ -8992,11 +8993,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: SoyToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9102,6 +9098,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: SoyToggle
+      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -9146,11 +9147,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: SeafoodToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9255,6 +9251,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: SeafoodToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -9729,11 +9730,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: PeanutToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9838,6 +9834,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: PeanutToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -9883,11 +9884,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: PeanutToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9992,6 +9988,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: PeanutToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -10280,11 +10281,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: WheatToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -10389,6 +10385,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: WheatToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -13505,11 +13506,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: PoultryToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13629,6 +13625,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: PoultryToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -17178,11 +17179,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: SoyToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17287,6 +17283,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: SoyToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -17691,11 +17692,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 959106910}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: EggToggle
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17800,6 +17796,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: EggToggle
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
@@ -19665,7 +19666,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2784046312436986128}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -20063,7 +20064,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2784046311750764103}
   m_HandleRect: {fileID: 2784046311750764102}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -20196,7 +20197,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2784046312019123183
@@ -20672,6 +20673,36 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 793324555}
+    - target: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: handleToggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2efafe0fc20d9f546acfc5e8e4ca9866, type: 3}
 --- !u!1001 &3846553234972091176
@@ -20931,6 +20962,46 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3846553234808743468, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553236811405411, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553234808743471, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553234808743471, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553234808743471, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553235207629555, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553235207629555, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846553235207629555, guid: 3f839a5a8ef3976488d7dc706b62781b,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3846553235207629554, guid: 3f839a5a8ef3976488d7dc706b62781b,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -20985,46 +21056,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553234808743468, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553236811405411, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553234808743471, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553234808743471, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553234808743471, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553235207629555, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553235207629555, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3846553235207629555, guid: 3f839a5a8ef3976488d7dc706b62781b,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3846553235443023784, guid: 3f839a5a8ef3976488d7dc706b62781b,
         type: 3}
@@ -23145,16 +23176,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 883082132}
     m_Modifications:
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_Name
-      value: DairyToggle
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246063, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23259,6 +23280,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_Name
+      value: DairyToggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202786602158246060, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9202786602158246062, guid: 2f11f7a8fef55b94dbe06ca5c16a5f9e,
         type: 3}

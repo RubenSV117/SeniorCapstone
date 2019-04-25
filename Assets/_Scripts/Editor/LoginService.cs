@@ -53,7 +53,6 @@ public class LoginService : ILoginService
         };
         OnLoginEvent += (o, e) => Debug.Log("Signed in " + e.User.UserId);
         OnLogoutEvent += (o, e) => Debug.Log("Signed out " + e.User.UserId);
-
         // Retrieve default auth instance based on config file
         auth = FirebaseAuth.DefaultInstance;
 
@@ -205,7 +204,6 @@ public class LoginService : ILoginService
             User = auth.CurrentUser;
             if (signedIn)
             {
-                Debug.Log("Signed in " + User.UserId);
                 OnEvent(this, new AuthLoginEvent(User));
             }
 

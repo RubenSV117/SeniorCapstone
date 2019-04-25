@@ -1063,7 +1063,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 156597557}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 793324555}
+        m_MethodName: HandleUnfavorite
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!224 &156597560
@@ -4527,7 +4538,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 519887090}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 793324555}
+        m_MethodName: HandleFavorite
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &520525999
@@ -8191,8 +8213,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eff83aa490c6474eb127f4af0699490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  favoritedHeart: {fileID: 3613985388076168093, guid: 2efafe0fc20d9f546acfc5e8e4ca9866,
-    type: 3}
   canvas: {fileID: 1482271612}
   labelPrefab: {fileID: 1197439870113311635, guid: 19af3b7f58b0a9840b5f3d3a6193c8e3,
     type: 3}
@@ -8207,7 +8227,8 @@ MonoBehaviour:
   verticalGroupTrans: {fileID: 1606194936}
   loadingObject: {fileID: 1286352853}
   ratingThing: {fileID: 0}
-  testFavorite: {fileID: 156597556}
+  favoriteButton: {fileID: 519887088}
+  unfavoriteButton: {fileID: 156597556}
 --- !u!1 &794808463
 GameObject:
   m_ObjectHideFlags: 0

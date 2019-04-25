@@ -9,7 +9,6 @@ public class RecipeManagerUI : MonoBehaviour
 {
     public static Recipe thisRecipe;
     public static RecipeManagerUI Instance;
-    [SerializeField] private Toggle favoritedHeart;
     [SerializeField] private GameObject canvas;
     
     [Header("Prefabs")]
@@ -30,7 +29,8 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject ratingThing;
 
-    [SerializeField] private GameObject testFavorite;
+    [SerializeField] private GameObject favoriteButton;
+    [SerializeField] private GameObject unfavoriteButton;
 
     private Sprite currentRecipeSprite;
     
@@ -109,17 +109,6 @@ public class RecipeManagerUI : MonoBehaviour
         canvas.SetActive(true);
     }
 
-    public void SetFavorited(List<string> favorites)
-    {
-        favoritedHeart.isOn = favorites.Contains(thisRecipe.Key);
-
-        favoritedHeart.onValueChanged.Invoke(favorites.Contains(thisRecipe.Key));
-
-        print($"RecipeManager>SetFavorited: {favorites.Contains(thisRecipe.Key)} toggle state: {favoritedHeart.isOn}");
-
-        testFavorite.SetActive(favorites.Contains(thisRecipe.Key));
-    }
-
     public void Enable()
     {
         canvas.SetActive(true);
@@ -136,42 +125,45 @@ public class RecipeManagerUI : MonoBehaviour
         loadingObject.SetActive(false);
     }
 
-    public void HandleFavorite()
+    public void SetFavorited(List<string> favorites)
     {
+        if(favorites.Contains(thisRecipe.Key))
+            HandleFavorite();
 
+        else
+            HandleUnfavorite();
     }
 
 
 
-    public void handleUnfavorite()
+    public void HandleFavorite()
+    {
+        bool worked = DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
+
+        if (worked)
+        {
+            unfavoriteButton.SetActive(true);
+            //NotificationManager.Instance.ShowNotification("Favorited");
+        }
+        else
+        {
+            unfavoriteButton.SetActive(false);
+            //NotificationManager.Instance.ShowNotification("Failed to favorite.");
+        }
+    }
+
+    public void HandleUnfavorite()
     {
         bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
         if (worked)
         {
-            favoritedHeart.isOn = false;
-            NotificationManager.Instance.ShowNotification("Unfavoriting.");
+            unfavoriteButton.SetActive(false);
+            //NotificationManager.Instance.ShowNotification("Unfavoriting.");
 
         }
         else
         {
-            NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
-        }
-
-    }
-    public void handleToggle(bool toggleState)
-    {
-        if(toggleState == true)
-        {
-            bool worked = DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
-            if (worked)
-            {
-                favoritedHeart.isOn = true;
-                NotificationManager.Instance.ShowNotification("Favorited");
-            }
-            else
-            {
-                favoritedHeart.isOn = false;
-            }
+            //NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
         }
     }
 

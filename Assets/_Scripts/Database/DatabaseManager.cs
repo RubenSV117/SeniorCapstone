@@ -42,36 +42,15 @@ public class DatabaseManager : MonoBehaviour
     {
         if (Instance == null)
             Instance = this;
+        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://regen-66cf8.firebaseio.com/");
+        // Get the root databaseReference location of the database.
+        databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
-            {
-                // Create and hold a reference to your FirebaseApp,
-                // where app is a Firebase.FirebaseApp property of your application class.
-                //   app = Firebase.FirebaseApp.DefaultInstance;
+        Debug.Log("Setting up Firebase Auth");
+        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+        auth.StateChanged += AuthStateChanged;
+        AuthStateChanged(this, null);
 
-                // Set a flag here to indicate whether Firebase is ready to use by your app.
-
-                // Set up the Editor before calling into the realtime database.
-                FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://regen-66cf8.firebaseio.com/");
-                // Get the root databaseReference location of the database.
-                databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
-
-                Debug.Log("Setting up Firebase Auth");
-                auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-                auth.StateChanged += AuthStateChanged;
-                AuthStateChanged(this, null);
-
-                Debug.Log("Firebase: READY");
-            }
-            else
-            {
-                UnityEngine.Debug.LogError(System.String.Format(
-                  "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-                // Firebase Unity SDK is not safe to use here.
-            }
-        });
 
        
     }

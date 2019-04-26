@@ -364,7 +364,7 @@ public class UITest
         {
             if (button == null)
                 return "Button " + button + " not found";
-            if (button.GetComponent<Button>() == null || button.GetComponent<Toggle>() == null)
+            if (button.GetComponent<Button>() == null && button.GetComponent<Toggle>() == null)
                 return "GameObject " + button + " does not have a Button or Toggle component attached";
             return null;
         }

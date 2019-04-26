@@ -13,6 +13,9 @@ using System.Linq;
 using Firebase.Storage;
 using System.Threading.Tasks;
 using Firebase.Auth;
+using UnityEngine.Networking;
+using System.Text;
+
 public class DatabaseManager : MonoBehaviour
 {
     //Here is the backend handling most database calls
@@ -39,8 +42,6 @@ public class DatabaseManager : MonoBehaviour
     {
         if (Instance == null)
             Instance = this;
-
-        // Set up the Editor before calling into the realtime database.
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://regen-66cf8.firebaseio.com/");
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
@@ -49,6 +50,7 @@ public class DatabaseManager : MonoBehaviour
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
+
     }
 
 
@@ -298,10 +300,6 @@ public class DatabaseManager : MonoBehaviour
     {
         //clear the UI
         currentRecipes.Clear();
-        //initializing restclient
-        var client = new RestClient("http://35.192.138.105/elasticsearch/_search/template");
-        //POST is the only request allowed to send with a body however it can be used to Get information as well in this case
-        var request = new RestRequest(Method.POST);
 
         //Here is where we start building a query with the tags
         string param = "{\"source\":{\"query\": {\"bool\": {";
@@ -309,10 +307,6 @@ public class DatabaseManager : MonoBehaviour
         string must_not = "\"must_not\":[";
         string searchTag = "{\"term\": {\"tags.keyword\": \"";
         string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
-        request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
-        request.AddHeader("cache-control", "no-cache");
-        request.AddHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
-        request.AddHeader("Content-Type", "application/json");
         //checks if tags are being used
         if (excludeTags.Length > 0 || includeTags.Length > 0)
         {
@@ -359,24 +353,40 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-        //this is for testing purposed to see the Parameter for the request
-        request.AddParameter("application/json",param, ParameterType.RequestBody);
+        var request = new UnityWebRequest("http://35.192.138.105/elasticsearch/_search/template", "POST");
+        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(param));
+        request.downloadHandler = new DownloadHandlerBuffer();
+        //request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
+        request.SetRequestHeader("cache-control", "no-cache");
+        //:monkaS: password on github
+        request.SetRequestHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
+        request.SetRequestHeader("Content-Type", "application/json");
         //save the response
-        IRestResponse response = client.Execute(request);
-        //if the response is not empty
-        if (!response.Content.Contains("\"total\":0"))
-        { 
+        Debug.Log("Sending request");
+        var sending = request.SendWebRequest();
+
+        StartCoroutine(WaitForElasticSearch(sending));
+    }
+
+    private IEnumerator WaitForElasticSearch(UnityWebRequestAsyncOperation operation)
+    {
+        yield return operation;
+        var response = ((UnityWebRequestAsyncOperation)operation).webRequest.downloadHandler.text;
+        if (!response.Contains("\"total\":0"))
+        {
             //convert it to rootObject
-            Rootobject rootObject = JsonConvert.DeserializeObject<Rootobject>(response.Content);
+            Rootobject root = JsonConvert.DeserializeObject<Rootobject>(response);
             //send the hits of IDs to the search function
-            Search(rootObject.hits.hits);
+            Search(root.hits.hits);
+            foreach(var hit in root.hits.hits)
+            {
+                print(hit._id);
+            }
         }
         else
         {
-           //if the response is empty, just refresh the list, should just refresh the list making it empty
-        SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
-
     }
 
     //Search function for firebase using ID's found.
@@ -404,6 +414,7 @@ public class DatabaseManager : MonoBehaviour
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         newRecipe.Key = task.Result.Key;
+                        print(task.Result.Key);
                         currentRecipes.Add(newRecipe);
 
                         if (currentRecipes.Count == hits.Length)

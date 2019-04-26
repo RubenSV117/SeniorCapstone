@@ -51,8 +51,6 @@ public class DatabaseManager : MonoBehaviour
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
 
-
-       
     }
 
 
@@ -302,8 +300,6 @@ public class DatabaseManager : MonoBehaviour
     {
         //clear the UI
         currentRecipes.Clear();
-        //initializing restclient
-
 
         //Here is where we start building a query with the tags
         string param = "{\"source\":{\"query\": {\"bool\": {";
@@ -368,6 +364,7 @@ public class DatabaseManager : MonoBehaviour
         //save the response
         Debug.Log("Sending request");
         var sending = request.SendWebRequest();
+
         StartCoroutine(WaitForElasticSearch(sending));
     }
 
@@ -378,9 +375,13 @@ public class DatabaseManager : MonoBehaviour
         if (!response.Contains("\"total\":0"))
         {
             //convert it to rootObject
-            var root = JsonConvert.DeserializeObject<Rootobject>(response);
+            Rootobject root = JsonConvert.DeserializeObject<Rootobject>(response);
             //send the hits of IDs to the search function
             Search(root.hits.hits);
+            foreach(var hit in root.hits.hits)
+            {
+                print(hit);
+            }
         }
         else
         {
@@ -413,6 +414,7 @@ public class DatabaseManager : MonoBehaviour
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         newRecipe.Key = task.Result.Key;
+                        print(task.Result.Key);
                         currentRecipes.Add(newRecipe);
 
                         if (currentRecipes.Count == hits.Length)

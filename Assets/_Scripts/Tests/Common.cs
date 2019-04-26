@@ -18,26 +18,17 @@ namespace Tests
         public static readonly string TEST_EMAIL_OTHER = "OtherTestEmail@FakeDomain.com";
         public static readonly string TEST_PASSWORD_OTHER = "DefinitelyNotARealPassword";
 
-        public static readonly string TEST_RECIPE_NAME = "Grilled Cheese";
+        public static readonly string TEST_RECIPE_NAME = "Test Recipe";
         public static readonly string TEST_RECIPE_CALORIES = "7";
         public static readonly string TEST_RECIPE_MINUTES = "15";
         public static readonly ReadOnlyCollection<string> TEST_RECIPE_INGREDIENTS = Array.AsReadOnly(
             new[] {
-                "2 slices cheese",
-                "2 slices bread",
-                "1/4 stick butter"
+                "1/2 test ingredient"
             }
             );
         public static readonly ReadOnlyCollection<string> TEST_RECIPE_DIRECTIONS = Array.AsReadOnly(
             new[] {
-                "Heat pan",
-                "Butter one side of each slice of bread", 
-                "Put the buttered side of bread in the pan",
-                "Butter other side of each slice of bread",
-                "Flip the bread when golden brown",
-                "Place a slice of cheese on each slice of bread",
-                "After a few seconds combined both slices of bread",
-                "Flip until both sides are golden brown and the cheese is melted"
+                "Test direction"
             }
             );
         public static readonly ReadOnlyCollection<string> TEST_RECIPE_TAGS = Array.AsReadOnly(

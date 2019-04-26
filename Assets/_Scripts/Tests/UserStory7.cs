@@ -96,19 +96,24 @@ namespace Tests
             yield return TypeInto("NameInputField", data.Name);
             yield return TypeInto("CaloriesInputField", data.Calories);
             yield return TypeInto("PrepTimeInputField", data.Minutes);
-            foreach (string k in data.IngredientsList)
+            for(int i = 0; i < data.IngredientsList.ToList().Count(); i++)
             {
-                string[] temp = k.Split(' ');
+                string[] temp = data.IngredientsList.ToList()[i].Split(' ');
                 string ingrAmount = temp[0] + ' ' + temp[1];
                 string ingrName = temp[2];
-                yield return TypeInto("AmountInputField", ingrAmount);
-                yield return TypeInto("IngredientBuilder/NameInputField", ingrName);
-                yield return Press("IngredientBuilder/AddButton");              
+                int objIndex = 0;
+                var parent = "IngredientBuilder";
+                if (i != 0)
+                    parent += "(Clone)";
+                else
+                    objIndex -= 1;
+                yield return TypeInto($"{parent}/AmountInputField", ingrAmount);
+                yield return TypeInto($"{parent}/NameInputField", ingrName);
             }
+        
             foreach (string k in data.Directions)
             {
-                yield return TypeInto("InputField", k);
-                yield return Press("DirectionBuilder/AddButton");              
+                yield return TypeInto("DirectionBuilder/InputField", k);              
             }
             foreach(string k in data.Tags)
             {
@@ -119,7 +124,7 @@ namespace Tests
                 else if (string.Compare(k, "glutenFree") == 0)
                     yield return Press("GlutenFreeToggle/Background/Checkmark");
                 else if (string.Compare(k, "dairyFree") == 0)
-                    yield return Press("DairyFreeToggle/Background/Checkmark");
+                    yield return Press("DairyFreeToggle");
                 else if (string.Compare(k, "ketogenic") == 0)
                     yield return Press("KetogenicToggle/Background/Checkmark");
             }
@@ -132,9 +137,9 @@ namespace Tests
             public string Name = "";
             public string Calories = "";
             public string Minutes = "";
-            public List<string> IngredientsList;
-            public List<string> Directions;
-            public List<string> Tags;
+            public List<string> IngredientsList = new List<string>();
+            public List<string> Directions = new List<string>();
+            public List<string> Tags = new List<string>() ;
             public string NotificationText;
             public int ErrorCode = 0;
             public string ErrorMsg;

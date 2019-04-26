@@ -380,7 +380,7 @@ public class DatabaseManager : MonoBehaviour
             Search(root.hits.hits);
             foreach(var hit in root.hits.hits)
             {
-                print(hit);
+                print(hit._id);
             }
         }
         else

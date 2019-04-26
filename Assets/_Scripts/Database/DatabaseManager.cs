@@ -353,10 +353,10 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-        var request = new UnityWebRequest("http://35.192.138.105/elasticsearch/_search/template", "POST");
+        var request = new UnityWebRequest("http://35.192.138.105/elasticsearch/_search/template", UnityWebRequest.kHttpVerbPOST);
         request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(param));
         request.downloadHandler = new DownloadHandlerBuffer();
-        //request.AddHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
+        request.SetRequestHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
         request.SetRequestHeader("cache-control", "no-cache");
         //:monkaS: password on github
         request.SetRequestHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
@@ -364,7 +364,7 @@ public class DatabaseManager : MonoBehaviour
         //save the response
         Debug.Log("Sending request");
         var sending = request.SendWebRequest();
-
+        
         StartCoroutine(WaitForElasticSearch(sending));
     }
 
@@ -372,16 +372,20 @@ public class DatabaseManager : MonoBehaviour
     {
         yield return operation;
         var response = ((UnityWebRequestAsyncOperation)operation).webRequest.downloadHandler.text;
+        Debug.Log(response.ToString());
         if (!response.Contains("\"total\":0"))
         {
             //convert it to rootObject
             Rootobject root = JsonConvert.DeserializeObject<Rootobject>(response);
             //send the hits of IDs to the search function
-            Search(root.hits.hits);
-            foreach(var hit in root.hits.hits)
+            Debug.Log($"root = {root}");
+            Debug.Log($"root.hits.hits = {root.hits.hits}");
+            Debug.Log($"root.hits.hits.Lnegth = {root.hits.hits.Length}");
+             foreach(var hit in root.hits.hits)
             {
-                print(hit._id);
+                Debug.Log(hit._id);
             }
+            Search(root.hits.hits);
         }
         else
         {

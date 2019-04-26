@@ -1,7 +1,6 @@
 ﻿using Firebase;
 using Firebase.Auth;
 using Moq;
-/*
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -44,7 +43,7 @@ namespace Tests.Misc
         [SetUp]
         public void SetUp()
         {
-            auth = new LoginServiceImpl();
+            auth = new LoginService();
         }
 
         [TearDown]
@@ -177,4 +176,3 @@ namespace Tests.Misc
         }
     }
 }
-*/

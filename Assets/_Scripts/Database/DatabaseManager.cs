@@ -389,7 +389,7 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
-            SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
+            //SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
         }
     }
 
@@ -418,7 +418,6 @@ public class DatabaseManager : MonoBehaviour
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         newRecipe.Key = task.Result.Key;
-                        print(task.Result.Key);
                         currentRecipes.Add(newRecipe);
 
                         if (currentRecipes.Count == hits.Length)

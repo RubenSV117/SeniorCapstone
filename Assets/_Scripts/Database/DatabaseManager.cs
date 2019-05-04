@@ -49,7 +49,7 @@ public class DatabaseManager : MonoBehaviour
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
-        postReview("Not bad", "-LdFyLVUjhNqMskwwB30");
+       //postReview("Not bad", "-LdFyLVUjhNqMskwwB30");
 
     }
 

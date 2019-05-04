@@ -6,7 +6,7 @@ using UnityEngine.UI;
 ///
 /// Ruben Sanchez
 /// </summary>
-public class ProfileManagerUI : MonoBehaviour
+public class ProfileManagerUI : MonoBehaviour, IPanel
 {
     public static ProfileManagerUI Instance;
 
@@ -14,6 +14,7 @@ public class ProfileManagerUI : MonoBehaviour
     public static event ProfileEvent OnNewUserName;
 
     [SerializeField] private InputField usernameInputField;
+    [SerializeField] private GameObject canvas;
 
     private string userName;
 
@@ -34,5 +35,23 @@ public class ProfileManagerUI : MonoBehaviour
         PlayerPrefs.SetString("Username", newName);
 
         OnNewUserName?.Invoke(userName);
+    }
+
+    public void Enable()
+    {
+        canvas.SetActive(true);
+    }
+
+    public void Disable()
+    {
+        canvas.SetActive(false);
+    }
+
+    public void Init()
+    {
+    }
+
+    public void Refresh()
+    {
     }
 }

@@ -396,6 +396,7 @@ public class DatabaseManager : MonoBehaviour
     //Search function for firebase using ID's found.
     public void Search(Hit[] hits)
     {
+
         hasAttemptFinished = false;
         currentRecipes.Clear();
         StartCoroutine(WaitForRecipes());
@@ -420,13 +421,19 @@ public class DatabaseManager : MonoBehaviour
                         newRecipe.Key = task.Result.Key;
                         currentRecipes.Add(newRecipe);
 
-                        if (currentRecipes.Count == hits.Length)
-                            hasAttemptFinished = true;
-                    }
+                        print($"DataBaseManager>Search: Recipe from hit: {newRecipe.Name}");
 
+                        if (currentRecipes.Count == hits.Length)
+                        {
+                            hasAttemptFinished = true;
+
+                            foreach (var r in currentRecipes)
+                            {
+                                print($"DatabaseManager>Search: Name of Recipe: {r.Name}");
+                            }
+                        }
+                    }
                 });
-         
-           
         }
     }
 
@@ -435,10 +442,15 @@ public class DatabaseManager : MonoBehaviour
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 
+        print("DatabaseManager>WaitForRecipes: Recipes being sent out to SearchManagerUI");
+
+        foreach (var r in currentRecipes)
+        {
+            print($"DatabaseManager>WaitForRecipes: Name: {r.Name}");
+        }
+
         // if search has yielded results, update the recipe list in the ui
         if(currentRecipes.Count > 0)
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
-
- 
 }

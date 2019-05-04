@@ -71,6 +71,9 @@ public class SearchManagerUI : MonoBehaviour
         // add new recipes
         foreach (var recipe in recipes)
         {
+            if (recipe == null)
+                continue;
+
             RecipeButtonView recipeView = 
                 Instantiate(buttonViewPrefab, (favoriteSearch ? recipeListTransFavorites : recipeListTrans) )
                     .GetComponent<RecipeButtonView>();

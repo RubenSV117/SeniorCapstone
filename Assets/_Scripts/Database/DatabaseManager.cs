@@ -49,7 +49,7 @@ public class DatabaseManager : MonoBehaviour
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
-       //postReview("Not bad", "-LdFyLVUjhNqMskwwB30");
+        postReview("Not bad I would have prefered more chicken.", "-LdFyLVUjhNqMskwwB30");
 
     }
 
@@ -82,9 +82,9 @@ public class DatabaseManager : MonoBehaviour
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user == null)
         {
-            string uid = "UOLIuv3TzjRkvZwXbysmQdFC7343";
+            string uid = "KyleWU";
             String timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            databaseReference.Child("recipes").Child(recipeKey).Child("Reviews").Child(uid+ "_" +timeStamp).SetValueAsync(review);
+            databaseReference.Child("Reviews").Child(recipeKey).Child(uid).SetValueAsync(review+ " - " + timeStamp);
         }
         else
         {
@@ -93,6 +93,10 @@ public class DatabaseManager : MonoBehaviour
   
     }
 
+    public void getReviews(Recipe recipe)
+    {
+
+    }
 
 
         public void populateFavorites()

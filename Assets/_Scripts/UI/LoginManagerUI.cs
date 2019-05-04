@@ -34,7 +34,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     [Header("Login Options UI")]
     [SerializeField] private GameObject emailLoginGroup;
 
-
+    Firebase.Auth.FirebaseAuth auth;
     //[SerializeField] private Button emailLoginButton;
 
     [SerializeField] private GameObject forgotEmailPasswordButton;
@@ -107,6 +107,32 @@ public class LoginManagerUI : MonoBehaviour, IPanel
             attemptFinished = true;
 
         });
+    }
+
+    public void assignUsername(string username)
+    {
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            Firebase.Auth.UserProfile profile = new Firebase.Auth.UserProfile
+            {
+                DisplayName = username,
+            };
+            user.UpdateUserProfileAsync(profile).ContinueWith(task => {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("UpdateUserProfileAsync was canceled.");
+                    return;
+                }
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("UpdateUserProfileAsync encountered an error: " + task.Exception);
+                    return;
+                }
+
+                Debug.Log("User profile updated successfully.");
+            });
+        }
     }
 
 

@@ -33,7 +33,6 @@ public class DatabaseManager : MonoBehaviour
     private List<string> userFavorites = new List<string>();
     private List<Recipe> currentRecipes = new List<Recipe>();
     private List<Recipe> favoriteRecipes = new List<Recipe>();
-
     //Firebase.Auth object for user and authentication 
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;
@@ -50,6 +49,7 @@ public class DatabaseManager : MonoBehaviour
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
+        postReview("Not bad", "-LdFyLVUjhNqMskwwB30");
 
     }
 
@@ -76,12 +76,26 @@ public class DatabaseManager : MonoBehaviour
     }
 
 
-    /**
-     * Method for getting favorites of a user, used for favorites list and
-     * for checking if the user already favorited a recipe
-     **/
 
-    public void populateFavorites()
+    public void postReview(string review, string recipeKey)
+    {
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user == null)
+        {
+            string uid = "UOLIuv3TzjRkvZwXbysmQdFC7343";
+            String timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            databaseReference.Child("recipes").Child(recipeKey).Child("Reviews").Child(uid+ "_" +timeStamp).SetValueAsync(review);
+        }
+        else
+        {
+            NotificationManager.Instance.BroadcastMessage("Review requires login.");
+        }
+  
+    }
+
+
+
+        public void populateFavorites()
     {
         userFavorites.Clear();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;

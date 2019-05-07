@@ -81,10 +81,12 @@ public class DatabaseManager : MonoBehaviour
     {
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user == null)
-        {
-            string uid = "KyleWU";
+        { 
+            string uid = user.UserId;
+            string uname = user.DisplayName;
             String timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            databaseReference.Child("Reviews").Child(recipeKey).Child(uid).SetValueAsync(review+ " - " + timeStamp);
+            databaseReference.Child("recipes").Child(recipeKey).Child("Reviews").Child(uname).SetValueAsync(review + " - " + timeStamp);
+            NotificationManager.Instance.BroadcastMessage("Review posted.");
         }
         else
         {
@@ -93,10 +95,6 @@ public class DatabaseManager : MonoBehaviour
   
     }
 
-    public void getReviews(Recipe recipe)
-    {
-
-    }
 
 
         public void populateFavorites()
@@ -437,6 +435,7 @@ public class DatabaseManager : MonoBehaviour
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
                         newRecipe.Key = task.Result.Key;
                         currentRecipes.Add(newRecipe);
+
 
                         if (currentRecipes.Count == hits.Length)
                             hasAttemptFinished = true;

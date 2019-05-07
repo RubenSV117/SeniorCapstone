@@ -80,7 +80,7 @@ public class DatabaseManager : MonoBehaviour
     public void postReview(string review, string recipeKey)
     {
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
-        if (user == null)
+        if (user != null)
         { 
             string uid = user.UserId;
             string uname = user.DisplayName;

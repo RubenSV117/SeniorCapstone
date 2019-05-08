@@ -167,6 +167,11 @@ public class RecipeManagerUI : MonoBehaviour
         }
     }
 
+    public void Share()
+    {
+        SocialShareManager.Instance.ShareRecipe(thisRecipe);
+    }
+
     public void Test()
     {
         List<Ingredient> ingredients = new List<Ingredient>();

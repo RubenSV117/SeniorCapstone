@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// Data container for a recipe
 /// </summary>
 [Serializable]
-public class Recipe 
+public partial class Recipe 
 {
     
     public string Name;

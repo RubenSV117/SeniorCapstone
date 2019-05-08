@@ -81,7 +81,21 @@ public class FacebookManager : MonoBehaviour
 
     public void ShareRecipe()
     {
-      
+        FB.FeedShare(
+            linkName: "The Larch",
+            callback: FeedCallback,
+            linkCaption: "Ingredients: 1. 2. 3. " +
+                         "Directions: 1. 2. 3. ",
+            linkDescription: "Reeeeeee" +
+                             "Reeeeee2" +
+                             "reeeeee\n reeeNewLine?",
+            link: new Uri("https://firebasestorage.googleapis.com/v0/b/regen-66cf8.appspot.com/o/Recipes%2F-LdC5_9QGWRU7ocr3Hxo.jpg?alt=media&token=ebb93ded-d515-45e4-a719-169c7876faa1")
+        );
+    }
+
+    private void FeedCallback(IShareResult result)
+    {
+        print(result);
     }
 
     public void ShareApp()

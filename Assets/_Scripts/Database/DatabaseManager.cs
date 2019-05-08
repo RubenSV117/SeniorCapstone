@@ -33,6 +33,7 @@ public class DatabaseManager : MonoBehaviour
     private List<string> userFavorites = new List<string>();
     private List<Recipe> currentRecipes = new List<Recipe>();
     private List<Recipe> favoriteRecipes = new List<Recipe>();
+    private List<string> currentRecipesJson = new List<string>();
 
     //Firebase.Auth object for user and authentication 
     Firebase.Auth.FirebaseAuth auth;
@@ -399,6 +400,8 @@ public class DatabaseManager : MonoBehaviour
 
         hasAttemptFinished = false;
         currentRecipes.Clear();
+        currentRecipesJson.Clear();
+
         StartCoroutine(WaitForRecipes());
         for (int i = 0; i < hits.Length; i++)
         {
@@ -418,20 +421,19 @@ public class DatabaseManager : MonoBehaviour
                         DataSnapshot snapshot = task.Result;
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+
+                        if(currentRecipesJson.Count < hits.Length)
+                            currentRecipesJson.Add(snapshot.GetRawJsonValue());
+
                         newRecipe.Key = task.Result.Key;
                         currentRecipes.Add(newRecipe);
 
                         print($"DataBaseManager>Search: Recipe from hit: {newRecipe.Name}");
+                        print($"DataBaseManager>Search: Length of JSons: {currentRecipesJson.Count}");
 
-                        if (currentRecipes.Count == hits.Length)
-                        {
+                        if (currentRecipesJson.Count == hits.Length)
                             hasAttemptFinished = true;
 
-                            foreach (var r in currentRecipes)
-                            {
-                                print($"DatabaseManager>Search: Name of Recipe: {r.Name}");
-                            }
-                        }
                     }
                 });
         }
@@ -441,6 +443,12 @@ public class DatabaseManager : MonoBehaviour
     private IEnumerator WaitForRecipes ()
     {
         yield return new WaitUntil(() => hasAttemptFinished);
+
+        foreach (var r in currentRecipesJson)
+        {
+            print(r);
+        }
+
 
         print("DatabaseManager>WaitForRecipes: Recipes being sent out to SearchManagerUI");
 

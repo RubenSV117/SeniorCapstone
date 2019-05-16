@@ -34,7 +34,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     [Header("Login Options UI")]
     [SerializeField] private GameObject emailLoginGroup;
 
-
+    Firebase.Auth.FirebaseAuth auth;
     //[SerializeField] private Button emailLoginButton;
 
     [SerializeField] private GameObject forgotEmailPasswordButton;
@@ -50,6 +50,36 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     private string errorMessage;
 
     private Coroutine attemptCo;
+    //Firebase.Auth object for user and authentication 
+    Firebase.Auth.FirebaseUser user;
+
+
+    private void OnEnable()
+    {
+        ProfileManagerUI.OnNewUserName += assignUsername;
+    }
+
+    private void OnDisable()
+    {
+        ProfileManagerUI.OnNewUserName -= assignUsername;
+    }
+
+    void AuthStateChanged(object sender, System.EventArgs eventArgs)
+    {
+        if (auth.CurrentUser != user)
+        {
+            bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+            if (!signedIn && user != null)
+            {
+                Debug.Log("Signed out " + user.UserId);
+            }
+            user = auth.CurrentUser;
+            if (signedIn)
+            {
+            }
+        }
+    }
+
 
     public void UpdateEmail(string value)
     {
@@ -107,6 +137,32 @@ public class LoginManagerUI : MonoBehaviour, IPanel
             attemptFinished = true;
 
         });
+    }
+
+    public void assignUsername(string username)
+    {
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            Firebase.Auth.UserProfile profile = new Firebase.Auth.UserProfile
+            {
+                DisplayName = username,
+            };
+            user.UpdateUserProfileAsync(profile).ContinueWith(task => {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("UpdateUserProfileAsync was canceled.");
+                    return;
+                }
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("UpdateUserProfileAsync encountered an error: " + task.Exception);
+                    return;
+                }
+
+                Debug.Log("User profile updated successfully.");
+            });
+        }
     }
 
 
@@ -341,6 +397,10 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     {
         if (Instance == null)
             Instance = this;
+
+        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+        auth.StateChanged += AuthStateChanged;
+        AuthStateChanged(this, null);
     }
 
     private void Start()

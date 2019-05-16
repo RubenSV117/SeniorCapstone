@@ -54,6 +54,11 @@ public class DatabaseManager : MonoBehaviour
 
     }
 
+    public void Post()
+    {
+        postReview("Was pretty aight, could use more cummies", "-LdC5Prcr9aussFzdYYs");
+
+    }
 
     /**
      * AuthStateChanged used for listening to user login and get that users ID to be later used 
@@ -77,13 +82,29 @@ public class DatabaseManager : MonoBehaviour
     }
 
 
-    /**
-     * Method for getting favorites of a user, used for favorites list and
-     * for checking if the user already favorited a recipe
-     **/
+
+    public void postReview(string review, string recipeKey)
+    {
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            string uid = user.UserId;
+            string uname = user.DisplayName;
+            String timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            databaseReference.Child("recipes").Child(recipeKey).Child("Reviews").Child(uname).SetValueAsync(review + " - " + timeStamp);
+            print("Added review");
+        }
+        else
+        {
+            print("Done fucked up");
+        }
+
+    }
 
     public void populateFavorites()
     {
+        print("DatabaseManager>PopulateFavorites: Entered");
+
         userFavorites.Clear();
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
@@ -97,14 +118,19 @@ public class DatabaseManager : MonoBehaviour
                            {
                                if (task.IsFaulted)
                                {
-                                   print("faulted");
+                                   print("DatabaseManager>PopulateFavorites: Faulted");
                                    hasAttemptFinished = true;
 
                                }
                                else if (task.IsCompleted)
                                {
+                                   print("DatabaseManager>PopulateFavorites: Complete");
+
                                    if (task.Result.ChildrenCount == 0)
+                                   {
+                                       print("DatabaseManager>PopulateFavorites: 0 results");
                                        return;
+                                   }
 
                                    DataSnapshot snapshot = task.Result;
 
@@ -113,6 +139,7 @@ public class DatabaseManager : MonoBehaviour
                                        userFavorites.Add(s.Key);
                                    }
 
+                                   print($"DatabaseManager>PopulateFavorites: Length: {userFavorites.Count}");
 
                                    hasAttemptFinished = true;
                                }
@@ -123,37 +150,64 @@ public class DatabaseManager : MonoBehaviour
 
     public void searchFavorites(List<string> favoriteIDs)
     {
+        print("DatabaseManager>searchFavorites: Entered");
+
+
         hasAttemptFinished = false;
         favoriteRecipes.Clear();
         StartCoroutine(WaitForFavoritesSearch());
-        foreach (string id in favoriteIDs)
+
+        int count = favoriteIDs.Count;
+        List<string> jsonStrings = new List<string>();
+
+        for (int i = 0; i < favoriteIDs.Count; i++)
         {
             FirebaseDatabase.DefaultInstance
-                .GetReference("recipes").Child(id)
+                .GetReference("recipes").Child(favoriteIDs[i])
                 .GetValueAsync().ContinueWith(task =>
                 {
                     if (task.IsFaulted)
                     {
-                        print("faulted");
+                        print("DatabaseManager>searchFavorites: Faulted");
                     }
                     else if (task.IsCompleted)
                     {
-                        if (task.Result.ChildrenCount == 0)
+
+                        if (task.Result.ChildrenCount == 0 && i == (favoriteIDs.Count - 1))
+                        {
+                            print($"DatabaseManager>searchFavorites: Result Not Found");
+
+                            hasAttemptFinished = true;
                             return;
+                        }
+
+                        print($"DatabaseManager>searchFavorites: Result found: {count}");
 
                         DataSnapshot snapshot = task.Result;
 
                         Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
+                        jsonStrings.Add(snapshot.GetRawJsonValue());
+
                         newRecipe.Key = task.Result.Key;
                         favoriteRecipes.Add(newRecipe);
 
-                        if (favoriteRecipes.Count == favoriteIDs.Count)
+                        print($"DatabaseManager>searchFavorites: Results Length: {jsonStrings.Count}");
+
+
+                        if (jsonStrings.Count == count)
+                        {
+                            print($"DatabaseManager>searchFavorites: Complete");
+
                             hasAttemptFinished = true;
+                        }
+
+                        else
+                        {
+                            print($"DatabaseManager>searchFavorites: Starting Next Iteration");
+                        }
                     }
 
                 });
-
-
         }
     }
     private IEnumerator WaitForFavoritesPop()

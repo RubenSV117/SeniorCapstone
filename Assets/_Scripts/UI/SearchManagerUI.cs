@@ -78,6 +78,7 @@ public class SearchManagerUI : MonoBehaviour
                 Instantiate(buttonViewPrefab, (favoriteSearch ? recipeListTransFavorites : recipeListTrans) )
                     .GetComponent<RecipeButtonView>();
 
+            recipeView.gameObject.SetActive(true);
             recipeView.InitRecipeButton(recipe);
         }
     }

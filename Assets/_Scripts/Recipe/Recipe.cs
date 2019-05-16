@@ -16,7 +16,7 @@ public partial class Recipe
     public Ingredient[] Ingredients;
     public string[] Steps;
     public int StarRating;
-    public string[] Reviews;
+    public Dictionary<string,string> Reviews;
     public string[] Tags;
     public string ImageReferencePath;
     public Sprite ImageSprite;
@@ -34,7 +34,7 @@ public partial class Recipe
     /// <param name="steps">The steps for this recipe</param>
     /// <param name="reviews">The reviews for this recipe</param>
     /// <param name="starRating">The rating for this recipe</param>
-    public Recipe(string name, string imagePath, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, List<string> reviews = null, int starRating = 5, string key = "")
+    public Recipe(string name, string imagePath, int calories, int prepTimeMinutes, List<string> tags, List<Ingredient> ingredients, List<string> steps, Dictionary<string,string> reviews = null, int starRating = 5, string key = "")
     {
         
         Name = name;
@@ -46,9 +46,11 @@ public partial class Recipe
         Steps = steps.ToArray();
         StarRating = starRating;
 
-        if(reviews != null)
-            Reviews = reviews.ToArray();
-
+        if (reviews != null)
+        {
+            foreach (var k in reviews.Keys)
+                Reviews.Add(k, reviews[k]);
+        }
         Key = key;
     }
 }

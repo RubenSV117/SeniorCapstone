@@ -163,6 +163,41 @@ Support
 
 Release Notes
 -------------
+### 5.7.0
+  - Overview
+    - Fixed an issue with escape characters in Auth, deprecated functions
+      in Remote Config, and fixed an issue in the Android Resolver.
+  - Changes
+    - Auth: Fixed UserProfile.PhotoUrl removing percent encoded characters when
+      being set.
+    - Remote Config: Config namespaces are now deprecated. You'll need to switch
+      to methods that use the default namespace.
+    - General (Android): Fixed an exception on resolution in some versions of
+      Unity 2017.4 by changing how Android ABI selection is handled.
+
+### 5.6.1
+  - Overview
+    - Fixed race condition on iOS SDK startup and fixed some issues in the
+      Android Resolver.
+  - Changes
+    - General (iOS): Updated to the latest iOS SDK to fix a crash on
+      firebase::App creation caused by a race condition.  The crash could occur
+      when accessing the [FIRApp firebaseUserAgent] property of the iOS FIRApp.
+    - General (Android): Fixed Java version check in Android resolver when using
+      Java SE 12 and above.
+    - General (Android): Whitelisted Unity 2017.4 and above for ARM64 builds.
+      Previously required ARM64 libraries would be stripped from all Unity 2017
+      builds resulting in a DllNotFoundException.
+
+### 5.6.0
+  - Overview
+    - Added Game Center sign-in to Auth and fixed intermittent crashes due to
+      garbage collection.
+  - Changes
+    - Auth (iOS): Added Game Center authentication.
+    - General: Fixed intermittent crashes caused when multiple native objects
+      were garbage-collected at the same time.
+
 ### 5.5.0
   - Overview
     - Added support for

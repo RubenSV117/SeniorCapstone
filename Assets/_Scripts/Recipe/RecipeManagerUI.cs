@@ -203,8 +203,8 @@ public class RecipeManagerUI : MonoBehaviour
                 "pretty good"
             };
 
-        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, reviews, 3);
+        //Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, reviews, 3);
 
-        InitRecipeUI(recipe);
+        //InitRecipeUI(recipe);
     }
 }

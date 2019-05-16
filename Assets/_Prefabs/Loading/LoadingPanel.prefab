@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -254,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.64678967, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -401,6 +401,11 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427856f5b807ffa47a3be8817c14a5b0, type: 3}
 --- !u!224 &8151806346720608972 stripped
@@ -539,6 +544,11 @@ PrefabInstance:
     - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
         type: 3}
       propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -681,6 +691,11 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427856f5b807ffa47a3be8817c14a5b0, type: 3}
 --- !u!224 &93273923839518914 stripped
@@ -819,6 +834,11 @@ PrefabInstance:
     - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
         type: 3}
       propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2355445542558925115, guid: 427856f5b807ffa47a3be8817c14a5b0,
+        type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

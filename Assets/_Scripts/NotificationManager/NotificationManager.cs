@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class NotificationManager : MonoBehaviour
@@ -20,12 +17,12 @@ public class NotificationManager : MonoBehaviour
 
     private void OnEnable()
     {
-        LoginManagerUI.Instance.OnAccountActionAttempt += ShowNotification;
+        LoginManagerUI.OnAccountActionAttempt += ShowNotification;
     }
 
     private void OnDisable()
     {
-        LoginManagerUI.Instance.OnAccountActionAttempt -= ShowNotification;
+        LoginManagerUI.OnAccountActionAttempt -= ShowNotification;
     }
 
     public void SetLoadingPanel(bool isActive)

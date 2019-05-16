@@ -14,6 +14,9 @@ public class SearchManagerUI : MonoBehaviour
     [SerializeField] private Transform recipeListTrans;
     [SerializeField] private Transform recipeListTransFavorites;
     [SerializeField] private GameObject buttonViewPrefab;
+    [SerializeField] private GameObject searchLoadingPanel;
+    [SerializeField] private GameObject favoritesLoadingPanel;
+    [SerializeField] private GameObject favoritesPanel;
 
     //[Header("Test variables")]
     //[SerializeField] private ToggleGroup test;
@@ -54,8 +57,26 @@ public class SearchManagerUI : MonoBehaviour
         DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExclude.ToArray(), TagsToInclude.ToArray());
     }
 
+    public void EnableFavoritesPanel()
+    {
+        if (LoginService.Instance.User == null)
+        {
+            NotificationManager.Instance.ShowNotification("Must be signed in to view favorites");
+            return;
+        }
+
+        favoritesPanel.SetActive(true);
+        favoritesLoadingPanel.SetActive(true);
+    }
+
     public void RefreshRecipeList(List<Recipe> recipes, bool favoriteSearch = false)
     {
+        if (favoriteSearch)
+            favoritesLoadingPanel.SetActive(false);
+
+        else
+            searchLoadingPanel.SetActive(false);
+
         // remove previous recipes
         if (recipeListTrans.transform.childCount > 0 && !favoriteSearch)
         {

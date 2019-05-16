@@ -62,7 +62,8 @@ public class RecipeButtonView : MonoBehaviour
         ImageRequest newRequest = imageRequest.AddComponent<ImageRequest>();
         newRequest.Init(recipe.ImageReferencePath, recipeImage);
 
-        StartCoroutine(WaitForImage());
+        if(gameObject.activeInHierarchy)
+            StartCoroutine(WaitForImage());
     }
 
     private IEnumerator WaitToRequestImage()

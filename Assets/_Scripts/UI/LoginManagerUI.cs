@@ -15,7 +15,7 @@ using UnityEngine.UI;
 public class LoginManagerUI : MonoBehaviour, IPanel
 {
     public delegate void AccountAction(string message);
-    public event AccountAction OnAccountActionAttempt;
+    public static event AccountAction OnAccountActionAttempt;
 
     public static LoginManagerUI Instance;
 

@@ -353,7 +353,7 @@ public class DatabaseManager : MonoBehaviour
                 "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
                 "\",\"my_size\": 100}}";
         }
-        var request = new UnityWebRequest("http://35.192.138.105/elasticsearch/_search/template", UnityWebRequest.kHttpVerbPOST);
+        var request = new UnityWebRequest("http://34.68.242.99/elasticsearch/_search/template", UnityWebRequest.kHttpVerbPOST);
         request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(param));
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");

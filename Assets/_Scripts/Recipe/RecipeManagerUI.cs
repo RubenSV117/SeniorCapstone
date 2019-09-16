@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class RecipeManagerUI : MonoBehaviour
 {
-    public static Recipe thisRecipe;
+    public static Recipe currentRecipe;
     public static RecipeManagerUI Instance;
     [SerializeField] private GameObject canvas;
     
@@ -27,12 +27,10 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject loadingObject;
 
-    [SerializeField] private GameObject ratingThing;
-
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
 
-    [SerializeField] private GameObject reviewPanel;
+    [SerializeField] private ReviewController reviewPanel;
 
     private Sprite currentRecipeSprite;
     
@@ -50,7 +48,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void InitRecipeUI(Recipe newRecipe)
     {
-        thisRecipe = newRecipe;
+        currentRecipe = newRecipe;
         dishImage.sprite = newRecipe.ImageSprite;
 
         // update text elements
@@ -116,12 +114,14 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void ShowReviewPanel()
     {
-        reviewPanel.SetActive(true);
+        reviewPanel.Reset();
+        reviewPanel.recipe = currentRecipe;
+        reviewPanel.gameObject.SetActive(true);
     }
 
-    public void HideRewiewgPanel()
+    public void HideRewiewPanel()
     {
-        reviewPanel.SetActive(false);
+        reviewPanel.gameObject.SetActive(false);
     }
 
     public void Enable()
@@ -142,7 +142,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void SetFavorited(List<string> favorites)
     {
-        if(favorites.Contains(thisRecipe.Key))
+        if(favorites.Contains(currentRecipe.Key))
             HandleFavorite();
 
         else
@@ -153,7 +153,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void HandleFavorite()
     {
-        bool worked = DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
+        bool worked = DatabaseManager.Instance.favoriteRecipe(currentRecipe.Key);
 
         if (worked)
         {
@@ -169,7 +169,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void HandleUnfavorite()
     {
-        bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
+        bool worked = DatabaseManager.Instance.unfavoriteRecipe(currentRecipe.Key);
         if (worked)
         {
             unfavoriteButton.SetActive(false);

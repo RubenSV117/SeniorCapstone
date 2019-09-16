@@ -8,6 +8,8 @@ using UnityEngine.UI;
 /// </summary>
 public class ColorToggle : MonoBehaviour
 {
+    #region Properties
+
     public delegate void Toggle(ColorToggle colorToggle);
     public event Toggle OnToggle;
 
@@ -29,8 +31,12 @@ public class ColorToggle : MonoBehaviour
 
     [SerializeField] private Color onColor;
     [SerializeField] private Color offColor;
-    
+
     private Image image;
+
+    #endregion
+
+    #region MonoBehavior Callbacks
 
     private void Awake()
     {
@@ -40,6 +46,10 @@ public class ColorToggle : MonoBehaviour
             image.color = onColor;
         }
     }
+
+    #endregion
+
+    #region Public Methods
 
     public void ToggleColor()
     {
@@ -56,4 +66,6 @@ public class ColorToggle : MonoBehaviour
     {
         IsOff = true;
     }
+
+    #endregion
 }

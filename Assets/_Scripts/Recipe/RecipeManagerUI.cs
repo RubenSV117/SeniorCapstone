@@ -32,6 +32,8 @@ public class RecipeManagerUI : MonoBehaviour
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
 
+    [SerializeField] private GameObject reviewPanel;
+
     private Sprite currentRecipeSprite;
     
     private void Awake()
@@ -96,10 +98,13 @@ public class RecipeManagerUI : MonoBehaviour
         }
 
         // create rating prompt
-        Text ratingText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-            verticalGroupTrans).GetComponentInChildren<Text>();
+        Button ratingButton = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+            verticalGroupTrans).GetComponentInChildren<Button>();
 
-        ratingText.text = "What did you think?";
+        ratingButton.enabled = true;
+        ratingButton.interactable = true;
+        ratingButton.GetComponent<Text>().text = "What did you think?";
+        ratingButton.onClick.AddListener(ShowReviewPanel);
 
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
@@ -107,6 +112,16 @@ public class RecipeManagerUI : MonoBehaviour
         DatabaseManager.Instance.getFavorites();
 
         canvas.SetActive(true);
+    }
+
+    public void ShowReviewPanel()
+    {
+        reviewPanel.SetActive(true);
+    }
+
+    public void HideRewiewgPanel()
+    {
+        reviewPanel.SetActive(false);
     }
 
     public void Enable()

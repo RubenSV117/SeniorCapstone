@@ -27,10 +27,14 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject loadingObject;
 
-    [SerializeField] private GameObject ratingThing;
+    [SerializeField] private GameObject ratingPrefab;
 
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
+
+
+    [SerializeField] private GameObject ingredients;
+    [SerializeField] private GameObject directions;
 
     private Sprite currentRecipeSprite;
     
@@ -64,48 +68,82 @@ public class RecipeManagerUI : MonoBehaviour
         for (int i = 0; i < newRecipe.StarRating && i < starRatingTrans.childCount; i++)
             starRatingTrans.GetChild(i).gameObject.SetActive(true);
 
-        // remove any previous ingredients and directions
-        if (verticalGroupTrans.childCount > 1)
+        //// remove any previous ingredients and directions
+        //if (verticalGroupTrans.childCount > 1)
+        //{
+        //    for (int i = 1; i < verticalGroupTrans.childCount; i++)
+        //        Destroy(verticalGroupTrans.GetChild(i).gameObject);
+        //}
+
+        //foreach (Transform child in ingredients.transform)
+        //{
+        //    Destroy(child.gameObject);
+        //}
+
+        //foreach (Transform child in directions.transform)
+        //{
+        //    Destroy(child.gameObject);
+        //}
+
+        if (ingredients.transform.childCount > 1)
         {
-            for (int i = 1; i < verticalGroupTrans.childCount; i++)
-                Destroy(verticalGroupTrans.GetChild(i).gameObject);
+            for (int i = 1; i < ingredients.transform.childCount; i++)
+            {
+                Destroy(ingredients.transform.GetChild(i).gameObject);
+            }
+        }
+
+        if (directions.transform.childCount > 1)
+        {
+            for (int i = 1; i < directions.transform.childCount; i++)
+            {
+                Destroy(directions.transform.GetChild(i).gameObject);
+            }
         }
 
         // update ingredients
         for (int i = 0; i < newRecipe.Ingredients.Length; i++)
         {
-            Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-                verticalGroupTrans).GetComponentInChildren<Text>();
+            Text infoText = Instantiate(infoPrefab, ingredients.transform.position, infoPrefab.transform.rotation,
+                ingredients.transform).GetComponentInChildren<Text>();
 
             infoText.text = newRecipe.Ingredients[i].ToString();
         }
 
-        // create directions label
-        Text labelText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-            verticalGroupTrans).GetComponentInChildren<Text>();
+        //// create directions label
+        //Text labelText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+        //    verticalGroupTrans).GetComponentInChildren<Text>();
 
-        labelText.text = "Directions";
+        //labelText.text = "Directions";
 
         // update directions
         for (int i = 0; i < newRecipe.Steps.Length; i++)
         {
-            Text infoText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-                verticalGroupTrans).GetComponentInChildren<Text>();
+            Text infoText = Instantiate(infoPrefab, directions.transform.position, infoPrefab.transform.rotation,
+                directions.transform).GetComponentInChildren<Text>();
 
             infoText.text = newRecipe.Steps[i];
         }
 
-        // create rating prompt
-        Text ratingText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-            verticalGroupTrans).GetComponentInChildren<Text>();
+        //// create rating prompt
+        //Text ratingText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+        //    verticalGroupTrans).GetComponentInChildren<Text>();
 
-        ratingText.text = "What did you think?";
+        //ratingText.text = "What did you think?";
+
+        //Instantiate(ratingPrefab, verticalGroupTrans.transform.position, ratingPrefab.transform.rotation, verticalGroupTrans);
+
+        // if user already rated this, remember rating
+        // ...
+
+
 
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
 
         DatabaseManager.Instance.getFavorites();
-
+        DatabaseManager.Instance.GetPreviousSurveyRating(thisRecipe.Key);
+        UpdateCommunityRating( (int)DatabaseManager.Instance.GetCommunityRating(thisRecipe.Key) );
         canvas.SetActive(true);
     }
 
@@ -165,6 +203,71 @@ public class RecipeManagerUI : MonoBehaviour
         {
             //NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
         }
+    }
+
+    /// <summary>
+    /// Updates the rating survey UI with the number of stars tapped.
+    /// </summary>
+    /// <param name="ratingStar">The star tapped.</param>
+    public void RateRecipe(GameObject ratingStar)
+    {
+        int rating = ratingStar.transform.GetSiblingIndex() + 1;
+        //if (rating <= ratingPrefab.transform.childCount) {
+        //    for (int i = 0; i < rating; i++)
+        //    {
+        //        var star = ratingPrefab.transform.GetChild(i);
+        //        star.gameObject.SetActive(true);
+        //    }
+        //}
+
+        DatabaseManager.Instance.getUserRating(thisRecipe.Key, rating);
+    }
+
+    /// <summary>
+    /// Draws the user's previous star rating or their new rating on the rating survey.
+    /// </summary>
+    /// <param name="rating">The number of stars to enable.</param>
+    public void UpdateSurveyRating(int rating)
+    {
+        if (rating > ratingPrefab.transform.childCount)
+            throw new UnityException($"Rating {rating} was higher than stars available ({ratingPrefab.transform.childCount}).");
+
+        // Clear previous rating
+        foreach (Transform child in ratingPrefab.transform)
+            child.gameObject.SetActive(false);
+
+        // Display new rating
+        for (int i = 0; i < rating; i++)
+        {
+            var star = ratingPrefab.transform.GetChild(i);
+            star.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Draws the community star rating in the info header.
+    /// </summary>
+    /// <param name="rating"></param>
+    public void UpdateCommunityRating(int rating)
+    {
+        if (rating > starRatingTrans.childCount)
+            throw new UnityException($"Rating {rating} was higher than stars available ({ratingPrefab.transform.childCount}).");
+
+        // Clear previous rating
+        foreach (Transform child in starRatingTrans)
+            child.gameObject.SetActive(false);
+
+        // Display new rating
+        for (int i = 0; i < rating; i++)
+        {
+            var star = starRatingTrans.GetChild(i);
+            star.gameObject.SetActive(true);
+        }
+    }
+
+    public void RetrievePreviousRating()
+    {
+           
     }
 
     public void Test()

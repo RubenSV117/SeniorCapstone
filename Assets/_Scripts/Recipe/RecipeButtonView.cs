@@ -28,13 +28,6 @@ public class RecipeButtonView : MonoBehaviour
     /// <param name="newRecipe">Recipe whose info will be used to initialize the button</param>
     public void InitRecipeButton(Recipe newRecipe)
     {
-        print("RecipeButtonView>InitRecipeBtutton: " + newRecipe);
-        print("RecipeButtonView>InitRecipeBtutton: Null?: ");
-        print( newRecipe == null);
-
-        if (newRecipe == null)
-            return;
-
         // turn on loading panel until the image is retrieved
         loadingPanelObject.SetActive(true);
         recipeName.text = newRecipe.Name;

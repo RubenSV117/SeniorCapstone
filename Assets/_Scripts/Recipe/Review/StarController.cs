@@ -62,8 +62,6 @@ public class StarController : MonoBehaviour
 
         foreach (var star in stars)
         {
-            print("star: " + star.transform.GetSiblingIndex());
-
             if (colorToggle.IsOff
                 && star.transform.GetSiblingIndex() > indexOfToggledStar)
                 star.TurnOff();

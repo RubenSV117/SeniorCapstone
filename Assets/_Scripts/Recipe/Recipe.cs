@@ -51,4 +51,28 @@ public class Recipe
 
         Key = key;
     }
+
+
+    public override string ToString()
+    {
+        String recipeString = "";
+
+        recipeString += "Name: " + Name;
+        recipeString += "\nCalories: " + Calories;
+        recipeString += "\nPrep Time: " + PrepTimeMinutes + " minutes";
+        recipeString += "\n\nIngredients: ";
+
+        foreach (var ingredient in Ingredients)
+            recipeString += "\n" + ingredient;
+
+        recipeString += "\n\nSteps: ";
+
+        foreach (var step in Steps)
+            recipeString += "\n\n" + step;
+
+        recipeString += "\n\n" + ImageReferencePath;
+
+
+        return recipeString;
+    }
 }

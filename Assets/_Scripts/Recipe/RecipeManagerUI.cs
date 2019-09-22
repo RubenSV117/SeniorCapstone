@@ -101,6 +101,35 @@ public class RecipeManagerUI : MonoBehaviour
 
         ratingText.text = "What did you think?";
 
+        //view reviews
+        Text reviewView = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+            verticalGroupTrans).GetComponentInChildren<Text>();
+
+        reviewView.text = "Reviews";
+
+        //update reviews
+        if(newRecipe.Reviews.Length > 5)
+        {
+            for (int i = newRecipe.Reviews.Length - 1; i >= newRecipe.Reviews.Length - 5; i--)
+            {
+                Text reviewText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+                    verticalGroupTrans).GetComponentInChildren<Text>();
+
+                reviewText.text = newRecipe.Reviews[i];
+            }
+        }
+        else
+        {
+            for (int i = newRecipe.Reviews.Length - 1; i >= 0; i--)
+            {
+                Text reviewText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+                    verticalGroupTrans).GetComponentInChildren<Text>();
+
+                reviewText.text = newRecipe.Reviews[i];
+            }
+        }
+        
+
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
 

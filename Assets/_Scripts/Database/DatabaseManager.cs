@@ -19,7 +19,7 @@ using System.Text;
 public class DatabaseManager : MonoBehaviour
 {
     //Database endpoint
-    public static string Endpoint = "https://regen-66cf8-249e1.firebaseio.com/";
+    public static string Endpoint = "https://regen-66cf8.firebaseio.com/";
 
     //Here is the backend handling most database calls
 

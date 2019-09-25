@@ -17,6 +17,13 @@ namespace Tests
 {
     public class UserStory7 : UITest
     {   
+        [SetUp]
+        public void SetUp()
+        {
+            Debug.Log("Setting up");
+            Common.Database.Setup();
+        }
+
         [UnityTest]
         public IEnumerator PublishRecipeWithValidInputs()
         {
@@ -27,7 +34,7 @@ namespace Tests
             data.IngredientsList = TEST_RECIPE_INGREDIENTS.ToList();
             data.Directions = TEST_RECIPE_DIRECTIONS.ToList();
             data.Tags = TEST_RECIPE_TAGS.ToList();
-            data.NotificationText = "Recipe Uploaded";
+            data.Message = "Publish Successful";
             yield return RunPublishRecipeTest(data);
         }
 
@@ -36,13 +43,13 @@ namespace Tests
         {
             var data = new TestData();
             var err = "An image must be provided.";
+            data.HasImage = false;
             data.Name = TEST_RECIPE_NAME;
             data.Calories = TEST_RECIPE_CALORIES;
             data.Minutes = TEST_RECIPE_MINUTES;
             data.IngredientsList = TEST_RECIPE_INGREDIENTS.ToList();
             data.Directions = TEST_RECIPE_DIRECTIONS.ToList();
-            data.ErrorCode = 404;
-            data.ErrorMsg = err;
+            data.Message = err;
             yield return RunPublishRecipeTest(data);
         }
 
@@ -50,13 +57,12 @@ namespace Tests
         public IEnumerator PublishRecipeWithoutIngredients()
         {
             var data = new TestData();
-            var err = "At least one ingredient must be provided.";
+            var err = "Ingredients must be set for the recipe.";
             data.Name = TEST_RECIPE_NAME;
             data.Calories = TEST_RECIPE_CALORIES;
             data.Minutes = TEST_RECIPE_MINUTES;
             data.Directions = TEST_RECIPE_DIRECTIONS.ToList();
-            data.ErrorCode = 404;
-            data.ErrorMsg = err;
+            data.Message = err;
             yield return RunPublishRecipeTest(data);
         }
 
@@ -64,13 +70,12 @@ namespace Tests
         public IEnumerator PublishRecipeWithoutSteps()
         {
             var data = new TestData();
-            var err = "At least one step must be provided.";
+            var err = "Directions must be set for the recipe.";
             data.Name = TEST_RECIPE_NAME;
             data.Calories = TEST_RECIPE_CALORIES;
             data.Minutes = TEST_RECIPE_MINUTES;
             data.IngredientsList = TEST_RECIPE_INGREDIENTS.ToList();
-            data.ErrorCode = 404;
-            data.ErrorMsg = err;
+            data.Message = err;
             yield return RunPublishRecipeTest(data);
         }
 
@@ -91,8 +96,23 @@ namespace Tests
             yield return WaitFor(new ObjectAppeared<PublishingManagerUI>());
             yield return WaitFor(new ObjectAppeared("PublishButton"));
 
-            yield return Press("AddImageButton");
-            yield return Press("CameraRollButton");
+
+            if (data.HasImage)
+            {
+                //yield return Press("AddImageButton");
+                //yield return Press("CameraRollButton");
+
+                var png = Texture2D.blackTexture.EncodeToPNG();
+                string path = Application.temporaryCachePath + "/blackTexture2Dtemp.png";
+                if (!System.IO.File.Exists(path))
+                    System.IO.File.WriteAllBytes(path, png);
+
+                CameraManager camera = UnityEngine.Object.FindObjectOfType<CameraManager>();
+                Assert.NotNull(camera);
+                camera.OnImagePicked(Texture2D.blackTexture, path);
+            }
+
+
             yield return TypeInto("NameInputField", data.Name);
             yield return TypeInto("CaloriesInputField", data.Calories);
             yield return TypeInto("PrepTimeInputField", data.Minutes);
@@ -129,7 +149,14 @@ namespace Tests
                     yield return Press("KetogenicToggle/Background/Checkmark");
             }
 
-            //yield return Press("PublishButton");
+
+            yield return Press("PublishingManager/Canvas/RecipePanel/Scroll View/Viewport/Content/PublishButton");
+            //PublishingManagerUI.Instance.BuildRecipe();
+
+            yield return WaitFor(new ObjectAppeared("NotificationManager/Canvas/PopUpPanel"));
+            yield return AssertLabel("NotificationManager/Canvas/PopUpPanel/Text", data.Message);
+
+
         }
     
         internal class TestData
@@ -140,9 +167,8 @@ namespace Tests
             public List<string> IngredientsList = new List<string>();
             public List<string> Directions = new List<string>();
             public List<string> Tags = new List<string>() ;
-            public string NotificationText;
-            public int ErrorCode = 0;
-            public string ErrorMsg;
+            public bool HasImage = true;
+            public string Message;
 
             
         }

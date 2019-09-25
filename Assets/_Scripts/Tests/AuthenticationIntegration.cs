@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using static Tests.Common.Auth;
 using static Tests.Constants;
+using Firebase.Unity.Editor;
 
 namespace Tests.Misc
 {
@@ -20,6 +21,7 @@ namespace Tests.Misc
 
         static FirebaseAuthIntegration()
         {
+            Tests.Common.Database.Setup();
             Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
                 var dependencyStatus = task.Result;
                 if (dependencyStatus == Firebase.DependencyStatus.Available)
@@ -43,6 +45,7 @@ namespace Tests.Misc
         [SetUp]
         public void SetUp()
         {
+            Tests.Common.Database.Setup();
             auth = new LoginService();
         }
 
@@ -55,6 +58,7 @@ namespace Tests.Misc
         [UnityTest]
         public IEnumerator CreateAccountEmail()
         {
+            Debug.Log(FirebaseApp.DefaultInstance.GetEditorDatabaseUrl());
             yield return EnsureTestUserDoesNotExist();
 
             // test event handler 

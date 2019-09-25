@@ -489,7 +489,7 @@ public class DatabaseManager : MonoBehaviour
         // Check that user is logged in first
         if (user != null)
         {
-            StartCoroutine(WaitForRating(ratingNum));
+            StartCoroutine(WaitForSurveyRating(ratingNum));
             FirebaseDatabase.DefaultInstance
                             .GetReference("recipeRatings")
                             .Child($"{recipeKey}")
@@ -580,7 +580,7 @@ public class DatabaseManager : MonoBehaviour
     public void getUserRating(string recipeKey, int rating)
     {
         ratingNum = rating;
-
+        hasAttemptFinished = false;
 
         Debug.Log($"Rating the recipe a {rating}...");
 
@@ -623,8 +623,10 @@ public class DatabaseManager : MonoBehaviour
                                             // Update recipe rating then send it back to Firebase as json
                                             
                                             recipeRating.UpdateRecipeRating(user.UserId, rating);
-                                            RecipeManagerUI.Instance.UpdateCommunityRating((int)recipeRating.avgRating);
-                                            RecipeManagerUI.Instance.UpdateSurveyRating(rating);
+                                            StartCoroutine(WaitForCommunityRating( (int)recipeRating.avgRating) );
+                                            StartCoroutine(WaitForSurveyRating(rating));
+                                            //RecipeManagerUI.Instance.UpdateCommunityRating(rating);
+                                            //RecipeManagerUI.Instance.UpdateSurveyRating(rating);
                                             databaseReference.Child(path).SetRawJsonValueAsync(JsonConvert.SerializeObject(recipeRating));
                                         }
                                     });
@@ -636,7 +638,14 @@ public class DatabaseManager : MonoBehaviour
 
     }
 
-    private IEnumerator WaitForRating(int rating)
+    private IEnumerator WaitForCommunityRating(int rating)
+    {
+        yield return new WaitUntil(() => hasAttemptFinished);
+
+    RecipeManagerUI.Instance.UpdateCommunityRating(rating);
+    }
+
+    private IEnumerator WaitForSurveyRating(int rating)
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 

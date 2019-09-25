@@ -27,7 +27,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject loadingObject;
 
-    [SerializeField] private GameObject ratingPrefab;
+    [SerializeField] private GameObject rateStars;
 
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
@@ -229,17 +229,17 @@ public class RecipeManagerUI : MonoBehaviour
     /// <param name="rating">The number of stars to enable.</param>
     public void UpdateSurveyRating(int rating)
     {
-        if (rating > ratingPrefab.transform.childCount)
-            throw new UnityException($"Rating {rating} was higher than stars available ({ratingPrefab.transform.childCount}).");
+        if (rating > rateStars.transform.childCount)
+            throw new UnityException($"Rating {rating} was higher than stars available ({rateStars.transform.childCount}).");
 
         // Clear previous rating
-        foreach (Transform child in ratingPrefab.transform)
+        foreach (Transform child in rateStars.transform)
             child.gameObject.SetActive(false);
 
         // Display new rating
         for (int i = 0; i < rating; i++)
         {
-            var star = ratingPrefab.transform.GetChild(i);
+            var star = rateStars.transform.GetChild(i);
             star.gameObject.SetActive(true);
         }
     }
@@ -251,7 +251,7 @@ public class RecipeManagerUI : MonoBehaviour
     public void UpdateCommunityRating(int rating)
     {
         if (rating > starRatingTrans.childCount)
-            throw new UnityException($"Rating {rating} was higher than stars available ({ratingPrefab.transform.childCount}).");
+            throw new UnityException($"Rating {rating} was higher than stars available ({rateStars.transform.childCount}).");
 
         // Clear previous rating
         foreach (Transform child in starRatingTrans)

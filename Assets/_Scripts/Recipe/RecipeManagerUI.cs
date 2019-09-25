@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class RecipeManagerUI : MonoBehaviour
 {
-    public static Recipe thisRecipe;
+    public static Recipe currentRecipe;
     public static RecipeManagerUI Instance;
     [SerializeField] private GameObject canvas;
     
@@ -27,10 +27,10 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject loadingObject;
 
-    [SerializeField] private GameObject ratingThing;
-
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
+
+    [SerializeField] private ReviewController reviewPanel;
 
     private Sprite currentRecipeSprite;
     
@@ -48,7 +48,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void InitRecipeUI(Recipe newRecipe)
     {
-        thisRecipe = newRecipe;
+        currentRecipe = newRecipe;
         dishImage.sprite = newRecipe.ImageSprite;
 
         // update text elements
@@ -96,10 +96,13 @@ public class RecipeManagerUI : MonoBehaviour
         }
 
         // create rating prompt
-        Text ratingText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-            verticalGroupTrans).GetComponentInChildren<Text>();
+        Button ratingButton = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+            verticalGroupTrans).GetComponentInChildren<Button>();
 
-        ratingText.text = "What did you think?";
+        ratingButton.enabled = true;
+        ratingButton.interactable = true;
+        ratingButton.GetComponent<Text>().text = "What did you think?";
+        ratingButton.onClick.AddListener(ShowReviewPanel);
 
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
@@ -107,6 +110,18 @@ public class RecipeManagerUI : MonoBehaviour
         DatabaseManager.Instance.getFavorites();
 
         canvas.SetActive(true);
+    }
+
+    public void ShowReviewPanel()
+    {
+        reviewPanel.Reset();
+        reviewPanel.recipe = currentRecipe;
+        reviewPanel.gameObject.SetActive(true);
+    }
+
+    public void HideRewiewPanel()
+    {
+        reviewPanel.gameObject.SetActive(false);
     }
 
     public void Enable()
@@ -127,7 +142,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void SetFavorited(List<string> favorites)
     {
-        if(favorites.Contains(thisRecipe.Key))
+        if(favorites.Contains(currentRecipe.Key))
             HandleFavorite();
 
         else
@@ -138,7 +153,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void HandleFavorite()
     {
-        bool worked = DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
+        bool worked = DatabaseManager.Instance.favoriteRecipe(currentRecipe.Key);
 
         if (worked)
         {
@@ -154,7 +169,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void HandleUnfavorite()
     {
-        bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
+        bool worked = DatabaseManager.Instance.unfavoriteRecipe(currentRecipe.Key);
         if (worked)
         {
             unfavoriteButton.SetActive(false);

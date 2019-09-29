@@ -18,6 +18,9 @@ using System.Text;
 
 public class DatabaseManager : MonoBehaviour
 {
+    //Database endpoint
+    public static string Endpoint = "https://regen-66cf8.firebaseio.com/";
+
     //Here is the backend handling most database calls
 
     public static DatabaseManager Instance;
@@ -42,7 +45,7 @@ public class DatabaseManager : MonoBehaviour
     {
         if (Instance == null)
             Instance = this;
-        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://regen-66cf8.firebaseio.com/");
+        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(Endpoint);
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 

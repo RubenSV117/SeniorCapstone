@@ -7,6 +7,8 @@ using Tests.Util;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Firebase;
+using Firebase.Unity.Editor;
 
 namespace Tests
 {
@@ -41,6 +43,15 @@ namespace Tests
 
     namespace Common
     {
+        public class Database
+        {
+            public static void Setup()
+            {
+                DatabaseManager.Endpoint = "https://regen-66cf8-automated-tests.firebaseio.com/";
+                FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DatabaseManager.Endpoint);
+            }
+        }
+
         public class Auth
         {
             public static IEnumerator EnsureTestUserDoesNotExist()

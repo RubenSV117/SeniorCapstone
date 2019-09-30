@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Firebase.Storage;
 
 /// <summary>
 /// Manages recipe sharing
@@ -30,7 +31,8 @@ public class RecipeShare : MonoBehaviour
 
     private IEnumerator ShareAndroidText(Recipe recipe)
     {
-        yield return new WaitForEndOfFrame();
+        yield return StartCoroutine(GetImageURL(recipe));
+
         AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
         AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
         intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
@@ -41,4 +43,21 @@ public class RecipeShare : MonoBehaviour
         AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, "Share Via");
         currentActivity.Call("startActivity", jChooser);
     }
+
+    private IEnumerator GetImageURL(Recipe recipe)
+    {
+        StorageReference reference = StorageManager.storageReference.GetReferenceFromUrl(recipe.ImageReferencePath);
+
+        reference.GetDownloadUrlAsync().ContinueWith((task) =>
+        {
+            if (!task.IsFaulted && !task.IsCanceled)
+            {
+                recipe.RootImagePath = task.Result.ToString();
+            }
+        });
+
+        yield return new WaitUntil(() => recipe.RootImagePath != null);
+
+    }
+
 }

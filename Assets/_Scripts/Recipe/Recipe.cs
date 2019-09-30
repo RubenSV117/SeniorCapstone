@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using Firebase.Storage;
 using System.Collections.Generic;
 
 /// <summary>
@@ -21,6 +21,7 @@ public class Recipe
     public string ImageReferencePath;
     public Sprite ImageSprite;
     public string Key;
+    public string RootImagePath;
 
     /// <summary>
     /// Creates a new instance of Recipe
@@ -50,6 +51,8 @@ public class Recipe
             Reviews = reviews.ToArray();
 
         Key = key;
+
+
     }
 
 
@@ -69,9 +72,8 @@ public class Recipe
 
         foreach (var step in Steps)
             recipeString += "\n\n" + step;
-
-        recipeString += "\n\n" + ImageReferencePath;
-
+            
+        recipeString += "\n\n" + RootImagePath;
 
         return recipeString;
     }

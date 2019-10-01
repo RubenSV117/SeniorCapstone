@@ -1,7 +1,20 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Firebase;
+using Firebase.Database;
+using Firebase.Unity.Editor;
 using UnityEngine;
-using UnityEngine.UI;
-
+using Object = System.Object;
+using RestSharp;
+using System;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Linq;
+using Firebase.Storage;
+using System.Threading.Tasks;
+using Firebase.Auth;
+using UnityEngine.Networking;
+using System.Text;
 /// <summary>
 /// Manages recipe reviews
 ///
@@ -9,6 +22,7 @@ using UnityEngine.UI;
 /// </summary>
 public class ReviewController : MonoBehaviour
 {
+
     #region Properties
 
     public Recipe recipe
@@ -21,7 +35,17 @@ public class ReviewController : MonoBehaviour
     [SerializeField] private Text recipeNameText;
 
     #endregion
+    //Database endpoint
+    public static string Endpoint = "https://regen-66cf8.firebaseio.com/";
 
+    //Here is the backend handling most database calls
+
+    public static DatabaseManager Instance;
+
+    //firebase object
+    private DatabaseReference databaseReference;
+    private bool hasAttemptFinished;
+    list<Review> reviewList = new list<Review>();
     #region Public Methods
 
     public void DidTapSubmit()
@@ -38,6 +62,45 @@ public class ReviewController : MonoBehaviour
     }
 
     #endregion
+    public void getReviews(string recipeID)
+    {
+        hasAttemptFinished = false;
+        favoriteRecipes.Clear();
+        StartCoroutine(WaitForReviews());
+        FirebaseDatabase.DefaultInstance
+               .GetReference("recipes").Child("reviews").Child(recipeID)
+               .GetValueAsync().ContinueWith(task =>
+               {
+                   if (task.IsFaulted)
+                   {
+                       print("faulted");
+                       hasAttemptFinished = true;
+
+                   }
+                   else if (task.IsCompleted)
+                   {
+                       if (task.Result.ChildrenCount == 0)
+                           return;
+
+                       DataSnapshot snapshot = task.Result;
+
+                       foreach (var s in snapshot.Children)
+                       {
+                           Review newReview = JsonUtility.FromJson<Recipe>(s.GetRawJsonValue());
+                           reviewList.Add(newReview);
+                       }
+
+
+                   }
+               });
+    }
+    private IEnumerator WaitForReviews()
+    {
+        yield return new WaitUntil(() => hasAttemptFinished);
+
+        searchFavorites(userFavorites);
+
+    }
 }
 
 struct Review

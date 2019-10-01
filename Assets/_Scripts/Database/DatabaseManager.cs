@@ -79,6 +79,7 @@ public class DatabaseManager : MonoBehaviour
     }
 
 
+
     /**
      * Method for getting favorites of a user, used for favorites list and
      * for checking if the user already favorited a recipe

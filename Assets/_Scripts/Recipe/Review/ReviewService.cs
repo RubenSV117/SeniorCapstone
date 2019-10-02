@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 /// <summary>
 /// This class interacts with the database for queries related to Reviews.
 /// This GameObject contains no visible elements.
 /// </summary>
-public abstract class ReviewService : MonoBehaviour
+public abstract class ReviewService
 {
     private ReviewService instance;
     
@@ -20,8 +21,9 @@ public abstract class ReviewService : MonoBehaviour
     /// 
     /// Either paramter may be nullable but not both.
     /// </summary>
-    /// <param name="content">This parameter represents the review content. If this parameter is null, no review will be submitted but a rating still may.</param>
-    /// <param name="stars">This is the integer rating of the recipe submitted by the user. If this parameter is -1, no rating will be submited but a review still may.</param>
-    public abstract void SubmitReview(string content, int stars);
+    /// <param name="recipeId">The id of the recipe to attach this review to.</param>
+    /// <param name="content">This parameter represents the review content.</param> 
+    /// <returns>A Task that represents the async execution of this database update operation.</returns>
+    public abstract Task SubmitReview(string recipeId, string content);
 
 }

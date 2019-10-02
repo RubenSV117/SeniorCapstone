@@ -1,23 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using Firebase.Database;
+using System.Threading.Tasks;
+using Firebase;
+using UnityEngine;
 
 public class ReviewServiceImpl : ReviewService
 {
 
-    // Use this for initialization
-    void Start()
+    public override Task SubmitReview(string recipeId, string content)
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public override void SubmitReview(string content, int stars)
-    {
-        throw new System.NotImplementedException();
+        return FirebaseDatabase.DefaultInstance
+               .GetReference("reviews")
+               .Child(recipeId)
+               .Child(LoginService.Instance.User.UserId)
+               .Child("content")
+               .SetValueAsync(content.Trim())
+               .WithFailure<FirebaseException>(e => Debug.LogException(e))
+               .WithSuccess(() => Debug.Log("Review Successfully submitted."));
     }
 }

@@ -14,6 +14,8 @@ public class RecipeManagerUI : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject labelPrefab;
     [SerializeField] private GameObject infoPrefab;
+    [SerializeField] private GameObject reviewPrefab;
+    [SerializeField] private GameObject moreReviewsButton;
 
     [Header("Dish Info")]
     [SerializeField] private Image dishImage;
@@ -31,6 +33,10 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
+
+    
+
+
 
     private Sprite currentRecipeSprite;
     
@@ -117,6 +123,9 @@ public class RecipeManagerUI : MonoBehaviour
 
                 reviewText.text = newRecipe.Reviews[i];
             }
+            Text test = Instantiate(moreReviewsButton, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+                    verticalGroupTrans).GetComponentInChildren<Text>();
+            
         }
         else
         {
@@ -194,6 +203,12 @@ public class RecipeManagerUI : MonoBehaviour
         {
             //NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
         }
+    }
+
+    public void ShowMoreReviews()
+    {
+        canvas.SetActive(false);
+        ReviewManagerUI.Instance.Enable();
     }
 
     public void Test()

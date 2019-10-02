@@ -129,6 +129,11 @@ public class RecipeManagerUI : MonoBehaviour
         canvas.SetActive(true);
     }
 
+    public void ShareRecipe()
+    {
+        RecipeShare.Instance.ShareRecipe(currentRecipe);
+    }
+
     public void Disable()
     {
         canvas.SetActive(false);

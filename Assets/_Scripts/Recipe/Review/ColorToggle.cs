@@ -44,6 +44,8 @@ public class ColorToggle : MonoBehaviour
         {
             image = gameObject.GetComponent<Image>();
             image.color = onColor;
+            image.type = Image.Type.Filled;
+            image.fillMethod = Image.FillMethod.Horizontal;
         }
     }
 
@@ -65,6 +67,11 @@ public class ColorToggle : MonoBehaviour
     public void TurnOff()
     {
         IsOff = true;
+    }
+
+    public void SetFill(float fillAmount)
+    {
+        image.fillAmount = fillAmount;
     }
 
     #endregion

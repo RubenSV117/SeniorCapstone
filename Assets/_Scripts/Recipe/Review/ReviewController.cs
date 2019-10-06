@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using UnityEngine.Networking;
 using System.Text;
+using UnityEngine.UI;
 /// <summary>
 /// Manages recipe reviews
 ///
@@ -45,7 +46,7 @@ public class ReviewController : MonoBehaviour
     //firebase object
     private DatabaseReference databaseReference;
     private bool hasAttemptFinished;
-    list<Review> reviewList = new list<Review>();
+    //list<Review> reviewList = new list<Review>();
     #region Public Methods
 
     public void DidTapSubmit()
@@ -64,41 +65,41 @@ public class ReviewController : MonoBehaviour
     #endregion
     public void getReviews(string recipeID)
     {
-        hasAttemptFinished = false;
-        favoriteRecipes.Clear();
-        StartCoroutine(WaitForReviews());
-        FirebaseDatabase.DefaultInstance
-               .GetReference("recipes").Child("reviews").Child(recipeID)
-               .GetValueAsync().ContinueWith(task =>
-               {
-                   if (task.IsFaulted)
-                   {
-                       print("faulted");
-                       hasAttemptFinished = true;
+        //hasAttemptFinished = false;
+        //favoriteRecipes.Clear();
+        //StartCoroutine(WaitForReviews());
+        //FirebaseDatabase.DefaultInstance
+        //       .GetReference("recipes").Child("reviews").Child(recipeID)
+        //       .GetValueAsync().ContinueWith(task =>
+        //       {
+        //           if (task.IsFaulted)
+        //           {
+        //               print("faulted");
+        //               hasAttemptFinished = true;
 
-                   }
-                   else if (task.IsCompleted)
-                   {
-                       if (task.Result.ChildrenCount == 0)
-                           return;
+        //           }
+        //           else if (task.IsCompleted)
+        //           {
+        //               if (task.Result.ChildrenCount == 0)
+        //                   return;
 
-                       DataSnapshot snapshot = task.Result;
+        //               DataSnapshot snapshot = task.Result;
 
-                       foreach (var s in snapshot.Children)
-                       {
-                           Review newReview = JsonUtility.FromJson<Recipe>(s.GetRawJsonValue());
-                           reviewList.Add(newReview);
-                       }
+        //               foreach (var s in snapshot.Children)
+        //               {
+        //                   Review newReview = JsonUtility.FromJson<Recipe>(s.GetRawJsonValue());
+        //                   reviewList.Add(newReview);
+        //               }
 
 
-                   }
-               });
+        //           }
+        //       });
     }
     private IEnumerator WaitForReviews()
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 
-        searchFavorites(userFavorites);
+        //searchFavorites(userFavorites);
 
     }
 }

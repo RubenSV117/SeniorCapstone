@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using UnityEngine.Networking;
 using System.Text;
+using Firebase.Extensions;
+using Assets._Scripts.Misc;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -119,7 +121,6 @@ public class DatabaseManager : MonoBehaviour
 
                                    hasAttemptFinished = true;
                                }
-
                            });
         }
     }
@@ -444,5 +445,151 @@ public class DatabaseManager : MonoBehaviour
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
- 
+    public void GetCommunityRating(string recipeKey, Action<double> callback)
+    {
+        double communityRating = 0;
+        FirebaseDatabase.DefaultInstance
+                        .GetReference("recipeRatings")
+                        .Child($"{recipeKey}")
+                        .GetValueAsync()
+                        .ContinueWithOnMainThread(task =>
+                        {
+                            try
+                            {
+                                if (task.IsFaulted)
+                                {
+
+                                }
+                                else if (task.IsCompleted)
+                                {
+                                    var snapshot = task.Result;
+                                    if (snapshot.Exists)
+                                    {
+                                        communityRating = (double)((IDictionary)snapshot.Value)["avgRating"];
+                                        //RecipeManagerUI.Instance.DrawCommunityRating()
+                                        callback(communityRating);
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                var error = e.Message;
+                            }
+                        });
+    }
+
+    public void GetPreviousSurveyRating(string recipeKey, Action<int> callback)
+    {
+        int rating = 0;
+        //ratingNum = 0;
+        //hasAttemptFinished = false;
+
+
+        // Check that user is logged in first
+        if (user != null)
+        {
+            //StartCoroutine(WaitForSurveyRating(ratingNum));
+            FirebaseDatabase.DefaultInstance
+                            .GetReference("recipeRatings")
+                            .Child($"{recipeKey}")
+                            .Child("users")
+                            .Child($"{user.UserId}")
+                            .GetValueAsync()
+                            .ContinueWithOnMainThread(task =>
+                            {
+                                try
+                                {
+                                    if (task.IsFaulted)
+                                    {
+                                        Debug.Log("A problem occurred.");
+                                    }
+                                    else if (task.IsCompleted)
+                                    {
+                                        DataSnapshot snapshot = task.Result;
+
+                                        if (snapshot.Exists)
+                                        {
+                                            rating = JsonConvert.DeserializeObject<int>(snapshot.GetRawJsonValue());
+                                            callback(rating);
+                                        }
+                                    }
+                                    hasAttemptFinished = true;
+                                }
+                                catch (Exception e)
+                                {
+                                    var error = e.Message;
+                                }
+                            });
+        }
+    }
+
+    public void UpdateUserRatingForRecipe(string recipeKey, int rating)
+    {
+        //ratingNum = rating;
+        //hasAttemptFinished = false;
+
+        Debug.Log($"Rating the recipe a {rating}...");
+
+        // Check that user is logged in first
+        if (user != null)
+        {
+            try
+            {
+                string path = $"/recipeRatings/{recipeKey}";
+                FirebaseDatabase.DefaultInstance
+                                .GetReference("recipeRatings")
+                                        .Child($"{recipeKey}")
+                                        .GetValueAsync()
+                                        .ContinueWithOnMainThread(task =>
+                                        {
+                                            if (task.IsFaulted)
+                                            {
+                                                Debug.Log("A problem occurred.");
+                                            }
+                                            else if (task.IsCompleted)
+                                            {
+                                                DataSnapshot snapshot = task.Result;
+
+                                                // Update the existing recipe rating metadata
+                                                Rating recipeRating;
+                                                if (snapshot.Exists)
+                                                {
+                                                    recipeRating = JsonConvert.DeserializeObject<Rating>(snapshot.GetRawJsonValue());
+
+                                                    // Just return if user tapped the same rating they already gave
+                                                    int oldRating = recipeRating?.users?[$"{user.UserId}"] ?? 0;
+                                                    if (rating == oldRating)
+                                                        return;
+                                                }
+                                                // Otherwise, create rating metadata for the recipe
+                                                else
+                                                {
+                                                    recipeRating = new Rating();
+                                                }
+
+                                                // Update recipe rating then send it back to Firebase as json
+                                                recipeRating.UpdateRecipeRating(user.UserId, rating);
+
+                                                // Note: Calls to game objects are only available through the main thread. This section only works because The task extension method Task.ContinueWithOnMainThread() is called.
+                                                #region 
+                                                //RecipeManagerUI.Instance.UpdateCommunityRating(rating);
+
+
+                                                RecipeManagerUI.Instance.DrawSurveyRating(rating);
+                                                #endregion
+
+                                                databaseReference.Child(path).SetRawJsonValueAsync(JsonConvert.SerializeObject(recipeRating));
+                                            }
+                                        });
+            }
+            catch (Exception e)
+            {
+            }
+        }
+        else
+        {
+            NotificationManager.Instance.ShowNotification("You must be logged in to rate recipes.");
+        }
+
+    }
 }

@@ -142,8 +142,19 @@ public class RecipeManagerUI : MonoBehaviour
         StartCoroutine(WaitForImage());
 
         DatabaseManager.Instance.getFavorites();
-        DatabaseManager.Instance.GetPreviousSurveyRating(thisRecipe.Key);
-        UpdateCommunityRating( (int)DatabaseManager.Instance.GetCommunityRating(thisRecipe.Key) );
+        // To-do: Call drawing methods in this class instead of creating a circular reference 
+        //(RecipeManagerUI calls DatabaseManager which calls RecipeManagerUI again).
+        DatabaseManager.Instance
+            .GetPreviousSurveyRating(thisRecipe.Key, rating =>
+            {
+                DrawSurveyRating(rating);
+            });
+        DatabaseManager.Instance
+            .GetCommunityRating(thisRecipe.Key, rating => 
+            {
+                DrawCommunityRating( (int)rating );
+            });
+
         canvas.SetActive(true);
     }
 
@@ -211,23 +222,24 @@ public class RecipeManagerUI : MonoBehaviour
     /// <param name="ratingStar">The star tapped.</param>
     public void RateRecipe(GameObject ratingStar)
     {
-        int rating = ratingStar.transform.GetSiblingIndex() + 1;
-        //if (rating <= ratingPrefab.transform.childCount) {
-        //    for (int i = 0; i < rating; i++)
-        //    {
-        //        var star = ratingPrefab.transform.GetChild(i);
-        //        star.gameObject.SetActive(true);
-        //    }
-        //}
+        try
+        {
+            int rating = ratingStar.transform.GetSiblingIndex() + 1;
 
-        DatabaseManager.Instance.getUserRating(thisRecipe.Key, rating);
+            // The DB method makes a circular reference to this class and runs UpdateSurveyRating()
+            // to update the survey UI.
+            DatabaseManager.Instance.UpdateUserRatingForRecipe(thisRecipe.Key, rating);
+        }
+        catch (System.Exception)
+        {
+        }
     }
 
     /// <summary>
-    /// Draws the user's previous star rating or their new rating on the rating survey.
+    /// Draws the gold stars on the rating survey.
     /// </summary>
     /// <param name="rating">The number of stars to enable.</param>
-    public void UpdateSurveyRating(int rating)
+    public void DrawSurveyRating(int rating)
     {
         if (rating > rateStars.transform.childCount)
             throw new UnityException($"Rating {rating} was higher than stars available ({rateStars.transform.childCount}).");
@@ -248,7 +260,7 @@ public class RecipeManagerUI : MonoBehaviour
     /// Draws the community star rating in the info header.
     /// </summary>
     /// <param name="rating"></param>
-    public void UpdateCommunityRating(int rating)
+    public void DrawCommunityRating(int rating)
     {
         if (rating > starRatingTrans.childCount)
             throw new UnityException($"Rating {rating} was higher than stars available ({rateStars.transform.childCount}).");

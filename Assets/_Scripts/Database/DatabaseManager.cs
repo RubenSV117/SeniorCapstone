@@ -38,7 +38,7 @@ public class DatabaseManager : MonoBehaviour
     private List<string> userFavorites = new List<string>();
     private List<Recipe> currentRecipes = new List<Recipe>();
     private List<Recipe> favoriteRecipes = new List<Recipe>();
-
+    private List<Review> reviewList = new List<Review>();
     //Firebase.Auth object for user and authentication 
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;

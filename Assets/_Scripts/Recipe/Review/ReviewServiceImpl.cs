@@ -11,7 +11,7 @@ public class ReviewServiceImpl : ReviewService
         return FirebaseDatabase.DefaultInstance
                .GetReference("reviews")
                .Child(recipeId)
-               .Child(LoginService.Instance.User.UserId)
+               .Child("N9DLoQ1TAvXLWxvdLZxtc7KcMzl1")
                .Child("content")
                .SetValueAsync(content.Trim())
                .WithFailure<FirebaseException>(e => Debug.LogException(e))

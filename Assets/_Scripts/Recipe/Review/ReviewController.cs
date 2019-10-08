@@ -46,12 +46,12 @@ public class ReviewController : MonoBehaviour
     //firebase object
     private DatabaseReference databaseReference;
     private bool hasAttemptFinished;
-    //list<Review> reviewList = new list<Review>();
+    private List<Review> reviewList = new List<Review>();
     #region Public Methods
 
     public void DidTapSubmit()
     {
-        Review review = new Review(stars.GetNumberOfActiveStars(), inputField.text, RecipeManagerUI.currentRecipe);
+        RatingReviewing review = new RatingReviewing(stars.GetNumberOfActiveStars(), inputField.text, RecipeManagerUI.currentRecipe);
         gameObject.SetActive(false);
         // TODO: Send review to backend service for publishing
     }
@@ -65,56 +65,62 @@ public class ReviewController : MonoBehaviour
     #endregion
     public void getReviews(string recipeID)
     {
-        //hasAttemptFinished = false;
-        //favoriteRecipes.Clear();
-        //StartCoroutine(WaitForReviews());
-        //FirebaseDatabase.DefaultInstance
-        //       .GetReference("recipes").Child("reviews").Child(recipeID)
-        //       .GetValueAsync().ContinueWith(task =>
-        //       {
-        //           if (task.IsFaulted)
-        //           {
-        //               print("faulted");
-        //               hasAttemptFinished = true;
+        hasAttemptFinished = false;
+        reviewList.Clear();
+        StartCoroutine(WaitForReviews());
+        FirebaseDatabase.DefaultInstance
+               .GetReference("reviews").Child(recipeID)
+               .GetValueAsync().ContinueWith(task =>
+               {
+                   if (task.IsFaulted)
+                   {
+                       print("faulted");
+                       hasAttemptFinished = true;
 
-        //           }
-        //           else if (task.IsCompleted)
-        //           {
-        //               if (task.Result.ChildrenCount == 0)
-        //                   return;
+                   }
+                   else if (task.IsCompleted)
+                   {
+                       if (task.Result.ChildrenCount == 0)
+                           return;
 
-        //               DataSnapshot snapshot = task.Result;
+                       DataSnapshot snapshot = task.Result;
 
-        //               foreach (var s in snapshot.Children)
-        //               {
-        //                   Review newReview = JsonUtility.FromJson<Recipe>(s.GetRawJsonValue());
-        //                   reviewList.Add(newReview);
-        //               }
+                       foreach (var s in snapshot.Children)
+                       {
+                           Debug.Log(s.GetRawJsonValue());
+                           Review newReview = JsonUtility.FromJson<Review>(s.GetRawJsonValue());
+                           newReview.userId = s.Key;
+                           Console.WriteLine(newReview.content);
+                           reviewList.Add(newReview);
+                       }
 
-
-        //           }
-        //       });
+                       hasAttemptFinished = true;
+                   }
+               });
     }
     private IEnumerator WaitForReviews()
     {
         yield return new WaitUntil(() => hasAttemptFinished);
-
-        //searchFavorites(userFavorites);
+        foreach (Review r in reviewList)
+        {
+            Debug.Log(r.userId);
+        }
 
     }
 }
 
-struct Review
+struct RatingReviewing
 {
-    int starRating;
     string review;
     Recipe recipe;
-
-    public Review(int stars, string review, Recipe recipe)
+    int stars;
+    public RatingReviewing(int stars, string review, Recipe recipe)
     {
-        this.starRating = stars;
         this.review = review;
+        this.stars = stars;
         this.recipe = recipe;
     }
 }
+
+
 

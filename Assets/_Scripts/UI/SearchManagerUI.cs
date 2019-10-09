@@ -14,6 +14,7 @@ public class SearchManagerUI : MonoBehaviour
     [SerializeField] private Transform recipeListTrans;
     [SerializeField] private Transform recipeListTransFavorites;
     [SerializeField] private GameObject buttonViewPrefab;
+    [SerializeField] private GameObject loadingPanel;
 
     //[Header("Test variables")]
     //[SerializeField] private ToggleGroup test;
@@ -77,6 +78,8 @@ public class SearchManagerUI : MonoBehaviour
 
             recipeView.InitRecipeButton(recipe);
         }
+
+        loadingPanel.SetActive(false);
     }
 
     public void ToggleTag(string newTag)

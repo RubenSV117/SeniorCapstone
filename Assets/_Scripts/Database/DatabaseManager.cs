@@ -1,23 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Firebase;
 using Firebase.Database;
 using Firebase.Unity.Editor;
 using UnityEngine;
 using Object = System.Object;
 using RestSharp;
-using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.Linq;
 using Firebase.Storage;
 using System.Threading.Tasks;
 using Firebase.Auth;
 using UnityEngine.Networking;
-using System.Text;
 using Firebase.Extensions;
 using Assets._Scripts.Misc;
-
 public class DatabaseManager : MonoBehaviour
 {
     //Database endpoint
@@ -26,7 +26,7 @@ public class DatabaseManager : MonoBehaviour
     //Here is the backend handling most database calls
 
     public static DatabaseManager Instance;
-    
+
     //firebase object
     private DatabaseReference databaseReference;
 
@@ -171,7 +171,7 @@ public class DatabaseManager : MonoBehaviour
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 
-        SearchManagerUI.Instance.RefreshRecipeList(favoriteRecipes,true);
+        SearchManagerUI.Instance.RefreshRecipeList(favoriteRecipes, true);
 
     }
 
@@ -206,7 +206,7 @@ public class DatabaseManager : MonoBehaviour
                                    {
                                        userFavorites.Add(s.Key);
                                    }
-                   
+
 
                                    hasAttemptFinished = true;
                                }
@@ -243,7 +243,7 @@ public class DatabaseManager : MonoBehaviour
             print("No user logged in.");
             return false;
         }
-        
+
     }
     //Same as favorite but removes
     public bool unfavoriteRecipe(string recipeID)
@@ -278,7 +278,8 @@ public class DatabaseManager : MonoBehaviour
         Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
         // Create a reference to the file you want to upload
         storage_ref.PutFileAsync("file://" + local_file)
-          .ContinueWith((Task<StorageMetadata> task) => {
+          .ContinueWith((Task<StorageMetadata> task) =>
+          {
               if (task.IsFaulted || task.IsCanceled)
               {
                   Debug.Log(task.Exception.ToString());
@@ -301,7 +302,7 @@ public class DatabaseManager : MonoBehaviour
      * an HTTP get request using RestSharp, then the resulting json is then parsed and the IDs are sent to the search() function
      * there it takes the full information of those recipes
      */
-    public void elasticSearchExclude(string name,string[] includeTags, string[] excludeTags)
+    public void elasticSearchExclude(string name, string[] includeTags, string[] excludeTags)
     {
         //clear the UI
         currentRecipes.Clear();
@@ -311,7 +312,7 @@ public class DatabaseManager : MonoBehaviour
         string must = "\"must\":[";
         string must_not = "\"must_not\":[";
         string searchTag = "{\"term\": {\"tags.keyword\": \"";
-        string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name +"*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \""+name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
+        string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name + "*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \"" + name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
         //checks if tags are being used
         if (excludeTags.Length > 0 || includeTags.Length > 0)
         {
@@ -369,7 +370,7 @@ public class DatabaseManager : MonoBehaviour
         //save the response
         Debug.Log("Sending request");
         var sending = request.SendWebRequest();
-        
+
         StartCoroutine(WaitForElasticSearch(sending));
     }
 
@@ -386,7 +387,7 @@ public class DatabaseManager : MonoBehaviour
             Debug.Log($"root = {root}");
             Debug.Log($"root.hits.hits = {root.hits.hits}");
             Debug.Log($"root.hits.hits.Lnegth = {root.hits.hits.Length}");
-             foreach(var hit in root.hits.hits)
+            foreach (var hit in root.hits.hits)
             {
                 Debug.Log(hit._id);
             }
@@ -430,18 +431,60 @@ public class DatabaseManager : MonoBehaviour
                     }
 
                 });
-         
-           
+
+
         }
     }
+    //public void update(Recipe recipe)
+    //{
+    //    if (user != null)
+    //    {
+    //        try
+    //        {
+    //            string path = $"/recipes/{recipe.key}";
+    //            FirebaseDatabase.DefaultInstance
+    //                            .GetReference("recipes")
+    //                                    .Child($"{recipe.key}")
+    //                                    .GetValueAsync()
+    //                                    .ContinueWithOnMainThread(task =>
+    //                                    {
+    //                                        if (task.IsFaulted)
+    //                                        {
+    //                                            Debug.Log("A problem occurred.");
+    //                                        }
+    //                                        else if (task.IsCompleted)
+    //                                        {
+    //                                            DataSnapshot snapshot = task.Result;
+    //                                            Recipe temp;
+    //                                            if (snapshot.Exists)
+    //                                            {
+    //                                                temp = JsonConvert.DeserializeObject<Recipe>(snapshot.GetRawJsonValue());
 
+    //                                                // Just return if user tapped the same rating they already gave
+    //                                                string userID = temp.key;
+    //                                                if (user.UserId != userID)
+    //                                                    return;
+    //                                            }
+    //                                            databaseReference.Child(path).SetRawJsonValueAsync(JsonConvert.SerializeObject(recipeRating));
+    //                                        }
+    //                                    });
+    //        }
+    //        catch (Exception e)
+    //        {
+    //        }
+    //    }
+    //    else
+    //    {
+    //        NotificationManager.Instance.ShowNotification("You must be logged in to edit Recipes.");
+    //    }
+    //}
     //coroutine that waits for search to be finished fully before updating the UI
-    private IEnumerator WaitForRecipes ()
+    private IEnumerator WaitForRecipes()
     {
         yield return new WaitUntil(() => hasAttemptFinished);
 
         // if search has yielded results, update the recipe list in the ui
-        if(currentRecipes.Count > 0)
+        if (currentRecipes.Count > 0)
             SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
     }
 
@@ -577,7 +620,6 @@ public class DatabaseManager : MonoBehaviour
 
                                                 RecipeManagerUI.Instance.DrawSurveyRating(rating);
                                                 #endregion
-
                                                 databaseReference.Child(path).SetRawJsonValueAsync(JsonConvert.SerializeObject(recipeRating));
                                             }
                                         });

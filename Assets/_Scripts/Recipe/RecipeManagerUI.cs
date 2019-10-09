@@ -324,7 +324,7 @@ public class RecipeManagerUI : MonoBehaviour
     public void ShowMoreReviews()
     {
         canvas.SetActive(false);
-        ReviewManagerUI.Instance.InitReviewUI(thisRecipe);
+        ReviewManagerUI.Instance.InitReviewUI(currentRecipe);
         ReviewManagerUI.Instance.Enable();
     }
 

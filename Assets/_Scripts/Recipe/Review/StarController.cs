@@ -52,6 +52,26 @@ public class StarController : MonoBehaviour
             star.TurnOn();
     }
 
+    public void SetStarValue(float value)
+    {
+        int fullStars = (int)value;
+        float partialValue = value - fullStars;
+
+        if (fullStars > stars.Count || fullStars <= 0)
+            return;
+
+        for (int i = 0; i < fullStars; i++)
+            stars[i].TurnOn();
+
+
+        if (partialValue == 0)
+            return;
+
+        int indexToFill = Mathf.CeilToInt(value) - 1;
+
+        stars[indexToFill].SetFill(partialValue);
+    }
+
     #endregion
 
     #region Private Methods

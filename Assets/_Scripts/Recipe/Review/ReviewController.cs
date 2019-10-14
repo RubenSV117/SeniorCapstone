@@ -56,6 +56,14 @@ public class ReviewController : MonoBehaviour
         // TODO: Send review to backend service for publishing
     }
 
+    public void PrefilReview(RatingReviewing review)
+    {
+        stars.SetStarValue(review.stars);
+        inputField.text = review.review;
+        recipeNameText.text = review.recipe.Name;
+    }
+
+
     public void Reset()
     {
         inputField.text = "";
@@ -109,11 +117,11 @@ public class ReviewController : MonoBehaviour
     }
 }
 
-struct RatingReviewing
+public struct RatingReviewing
 {
-    string review;
-    Recipe recipe;
-    int stars;
+    public string review;
+    public Recipe recipe;
+    public float stars;
     public RatingReviewing(int stars, string review, Recipe recipe)
     {
         this.review = review;

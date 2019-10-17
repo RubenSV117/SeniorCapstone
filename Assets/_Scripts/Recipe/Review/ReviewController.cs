@@ -52,8 +52,9 @@ public class ReviewController : MonoBehaviour
     public void DidTapSubmit()
     {
         RatingReviewing review = new RatingReviewing(stars.GetNumberOfActiveStars(), inputField.text, RecipeManagerUI.currentRecipe);
+        ReviewServiceImpl reviewService = new ReviewServiceImpl();
+        reviewService.SubmitReview(review.recipe.Key, review.review);
         gameObject.SetActive(false);
-        // TODO: Send review to backend service for publishing
     }
 
     public void PrefilReview(RatingReviewing review)

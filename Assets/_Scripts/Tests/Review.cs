@@ -50,9 +50,9 @@ namespace Tests
             Common.Auth.EnsureUserExists(true, Constants.TEST_EMAIL, Constants.TEST_PASSWORD);
             var userid = LoginService.Instance.User.UserId;
             var task = ReviewService.Instance.SubmitReview("1", content);
-            yield return task;
-            Assert.AreEqual(task.Status, TaskStatus.RanToCompletion);
-            Assert.AreNotEqual(task.Status, TaskStatus.Faulted);
+            yield return task.AsCoroutine();
+            Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
+            Assert.AreNotEqual(TaskStatus.Faulted, task.Status);
             var validation = FirebaseDatabase.DefaultInstance.GetReference("reviews").Child("1").Child(userid).GetValueAsync().AsCoroutine();
             yield return validation;
             var data = validation.Result;

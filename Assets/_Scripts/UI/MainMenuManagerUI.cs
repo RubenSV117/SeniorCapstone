@@ -20,6 +20,18 @@ public class MainMenuManagerUI : MonoBehaviour, IPanel
         if (Instance == null)
             Instance = this;
     }
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        canvas?.SetActive(false);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 
     public void Enable()
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using Firebase.Storage;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
@@ -21,7 +21,6 @@ public class Recipe
     public string ImageReferencePath;
     public Sprite ImageSprite;
     public string Key;
-    public string RootImagePath;
 
     /// <summary>
     /// Creates a new instance of Recipe
@@ -51,30 +50,5 @@ public class Recipe
             Reviews = reviews.ToArray();
 
         Key = key;
-
-
-    }
-
-
-    public override string ToString()
-    {
-        String recipeString = "";
-
-        recipeString += "Name: " + Name;
-        recipeString += "\nCalories: " + Calories;
-        recipeString += "\nPrep Time: " + PrepTimeMinutes + " minutes";
-        recipeString += "\n\nIngredients: ";
-
-        foreach (var ingredient in Ingredients)
-            recipeString += "\n" + ingredient;
-
-        recipeString += "\n\nSteps: ";
-
-        foreach (var step in Steps)
-            recipeString += "\n\n" + step;
-            
-        recipeString += "\n\n" + RootImagePath;
-
-        return recipeString;
     }
 }

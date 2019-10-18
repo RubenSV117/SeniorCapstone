@@ -345,7 +345,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     private void Start()
     {
-
-        canvas?.SetActive(LoginService.Instance.User == null);
+        canvas?.SetActive(true);
+        ;
     }
 }

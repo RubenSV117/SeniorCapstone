@@ -102,14 +102,7 @@ namespace Tests
                 //yield return Press("AddImageButton");
                 //yield return Press("CameraRollButton");
 
-                var png = Texture2D.blackTexture.EncodeToPNG();
-                string path = Application.temporaryCachePath + "/blackTexture2Dtemp.png";
-                if (!System.IO.File.Exists(path))
-                    System.IO.File.WriteAllBytes(path, png);
-
-                CameraManager camera = UnityEngine.Object.FindObjectOfType<CameraManager>();
-                Assert.NotNull(camera);
-                camera.OnImagePicked(Texture2D.blackTexture, path);
+                TestImages.CameraPickBlackTexture();
             }
 
 

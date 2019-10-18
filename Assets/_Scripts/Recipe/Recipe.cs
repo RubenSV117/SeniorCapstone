@@ -46,7 +46,7 @@ public class Recipe
         Ingredients = ingredients.ToArray();
         Steps = steps.ToArray();
         StarRating = starRating;
-        UID = UID;
+        this.UID = UID;
         if(reviews != null)
             Reviews = reviews.ToArray();
 

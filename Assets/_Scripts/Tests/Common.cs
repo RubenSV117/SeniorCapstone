@@ -3,10 +3,13 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using System;
 using NUnit.Framework;
-using Tests.Util;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Firebase;
+using Firebase.Unity.Editor;
+using Firebase.Database;
+using Tests.Util;
 
 namespace Tests
 {
@@ -36,11 +39,73 @@ namespace Tests
                 "dairyFree"
             }
             );
+
+        public static Recipe[] RECIPES = new[]
+            {
+                new Recipe("Comforting Chicken Casserole with Green Beans",
+                    TestImages.BlackTexturePath,
+                    0,
+                    45,
+                    new List<string>(){"glutenFree", "dairyFree"},
+                    new List<Ingredient>()
+                    {
+                        new Ingredient("Lime", "1"),
+                        new Ingredient("Lime Zest", "3 Tablespoons"),
+                        new Ingredient("Unsalted Peanuts", "2 Tablespoons")
+                    },
+                    new List<string>()
+                    {
+                        "If using the Grilled Chicken Chunks, you may want to chop them into bite sized pieces",
+                        "Place chicken, slaw, red pepper, cucumber, cilantro, green onion and peanuts into a bowl",
+                        "Drizzle with dressing and sriracha",
+                        "Toss together using tongs",
+                        "Put into containers to take on the go or inside a large tortilla to make a wrap",
+                        "Serve with lime wedges"
+                    })
+            };
     }
+
+    public class TestImages
+    {
+        public static readonly string BlackTexturePath;
+        public static readonly Texture2D BlackTexture = Texture2D.blackTexture;
+        static TestImages()
+        {
+            var png = BlackTexture.EncodeToPNG();
+            string path = Application.temporaryCachePath + "/blackTexture2Dtemp.png";
+            if (!System.IO.File.Exists(path))
+                System.IO.File.WriteAllBytes(path, png);
+            BlackTexturePath = path;
+        }
+
+        public static void CameraPickBlackTexture()
+        {
+            CameraManager camera = UnityEngine.Object.FindObjectOfType<CameraManager>();
+            Assert.NotNull(camera);
+            camera.OnImagePicked(BlackTexture, BlackTexturePath);
+        }
+    }
+
 
 
     namespace Common
     {
+        public class Database
+        {
+            public static void Setup()
+            {
+                DatabaseManager.Endpoint = "https://regen-66cf8-automated-tests.firebaseio.com/";
+                FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DatabaseManager.Endpoint);
+                var recipe0 = JsonUtility.ToJson(Constants.RECIPES[0]);
+                FirebaseDatabase.DefaultInstance.RootReference.SetRawJsonValueAsync("{}")
+                    .WithSuccess(() => FirebaseDatabase.DefaultInstance.RootReference.Child("recipes").Child("0").SetRawJsonValueAsync(recipe0))
+                    .WithSuccess(() => Debug.Log("Initial Test Data set."))
+                    .WithFailure<FirebaseException>(e => Debug.LogException(e));
+            }
+            
+         
+        }
+
         public class Auth
         {
             public static IEnumerator EnsureTestUserDoesNotExist()

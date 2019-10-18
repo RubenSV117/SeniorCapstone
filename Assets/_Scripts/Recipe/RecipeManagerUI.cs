@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class RecipeManagerUI : MonoBehaviour
 {
-    public static Recipe thisRecipe;
+    public static Recipe currentRecipe;
     public static RecipeManagerUI Instance;
     [SerializeField] private GameObject canvas;
     
@@ -27,10 +27,12 @@ public class RecipeManagerUI : MonoBehaviour
 
     [SerializeField] private GameObject loadingObject;
 
-    [SerializeField] private GameObject ratingThing;
-
     [SerializeField] private GameObject favoriteButton;
     [SerializeField] private GameObject unfavoriteButton;
+
+    [SerializeField] private ReviewController reviewPanel;
+
+    [SerializeField] private GameObject surveyGoldStars;
 
     private Sprite currentRecipeSprite;
     
@@ -40,7 +42,6 @@ public class RecipeManagerUI : MonoBehaviour
             Instance = this;
     }
 
-
     public void SetSprite(Sprite newSprite)
     {
         currentRecipeSprite = newSprite;
@@ -48,8 +49,10 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void InitRecipeUI(Recipe newRecipe)
     {
-        thisRecipe = newRecipe;
+        currentRecipe = newRecipe;
         dishImage.sprite = newRecipe.ImageSprite;
+
+        #region Update recipe header info
 
         // update text elements
         dishNameText.text = newRecipe.Name;
@@ -57,12 +60,7 @@ public class RecipeManagerUI : MonoBehaviour
         calorieCountText.text = newRecipe.Calories.ToString("N0");
         prepTimeText.text = newRecipe.PrepTimeMinutes.ToString("N0");
 
-        // update star rating
-        for (int i = 0; i < starRatingTrans.childCount; i++)
-            starRatingTrans.GetChild(i).gameObject.SetActive(false);
-
-        for (int i = 0; i < newRecipe.StarRating && i < starRatingTrans.childCount; i++)
-            starRatingTrans.GetChild(i).gameObject.SetActive(true);
+        #endregion
 
         // remove any previous ingredients and directions
         if (verticalGroupTrans.childCount > 1)
@@ -70,6 +68,8 @@ public class RecipeManagerUI : MonoBehaviour
             for (int i = 1; i < verticalGroupTrans.childCount; i++)
                 Destroy(verticalGroupTrans.GetChild(i).gameObject);
         }
+
+        #region Load ingredients
 
         // update ingredients
         for (int i = 0; i < newRecipe.Ingredients.Length; i++)
@@ -80,10 +80,13 @@ public class RecipeManagerUI : MonoBehaviour
             infoText.text = newRecipe.Ingredients[i].ToString();
         }
 
+        #endregion
+
+        #region Load directions
+
         // create directions label
         Text labelText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
             verticalGroupTrans).GetComponentInChildren<Text>();
-
         labelText.text = "Directions";
 
         // update directions
@@ -95,23 +98,63 @@ public class RecipeManagerUI : MonoBehaviour
             infoText.text = newRecipe.Steps[i];
         }
 
-        // create rating prompt
-        Text ratingText = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
-            verticalGroupTrans).GetComponentInChildren<Text>();
+        #endregion
 
-        ratingText.text = "What did you think?";
+        #region  Create rating prompt
+
+        Button ratingButton = Instantiate(labelPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
+            verticalGroupTrans).GetComponentInChildren<Button>();
+
+        ratingButton.enabled = true;
+        ratingButton.interactable = true;
+        ratingButton.GetComponent<Text>().text = "What did you think?";
+        ratingButton.onClick.AddListener(ShowReviewPanel);
 
         loadingObject.SetActive(true);
         StartCoroutine(WaitForImage());
 
+        #endregion
+
+        #region Load saved user inputs (if recipe was favorited, rated, reviewed, etc.)
+
         DatabaseManager.Instance.getFavorites();
 
+        DatabaseManager.Instance
+            .GetPreviousSurveyRating(currentRecipe.Key, rating =>
+            {
+                DrawSurveyRating(rating);
+            });
+        DatabaseManager.Instance
+            .GetCommunityRating(currentRecipe.Key, rating =>
+            {
+                DrawCommunityRating((int)rating);
+            });
+
+        #endregion
+
         canvas.SetActive(true);
+    }
+
+    public void ShowReviewPanel()
+    {
+        reviewPanel.Reset();
+        reviewPanel.recipe = currentRecipe;
+        reviewPanel.gameObject.SetActive(true);
+    }
+
+    public void HideRewiewPanel()
+    {
+        reviewPanel.gameObject.SetActive(false);
     }
 
     public void Enable()
     {
         canvas.SetActive(true);
+    }
+
+    public void ShareRecipe()
+    {
+        RecipeShare.Instance.ShareRecipe(currentRecipe);
     }
 
     public void Disable()
@@ -127,18 +170,16 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void SetFavorited(List<string> favorites)
     {
-        if(favorites.Contains(thisRecipe.Key))
+        if(favorites.Contains(currentRecipe.Key))
             HandleFavorite();
 
         else
             HandleUnfavorite();
     }
 
-
-
     public void HandleFavorite()
     {
-        bool worked = DatabaseManager.Instance.favoriteRecipe(thisRecipe.Key);
+        bool worked = DatabaseManager.Instance.favoriteRecipe(currentRecipe.Key);
 
         if (worked)
         {
@@ -154,7 +195,7 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void HandleUnfavorite()
     {
-        bool worked = DatabaseManager.Instance.unfavoriteRecipe(thisRecipe.Key);
+        bool worked = DatabaseManager.Instance.unfavoriteRecipe(currentRecipe.Key);
         if (worked)
         {
             unfavoriteButton.SetActive(false);
@@ -166,6 +207,71 @@ public class RecipeManagerUI : MonoBehaviour
             //NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
         }
     }
+
+    #region Rating system methods
+
+    /// <summary>
+    /// Updates the rating survey UI with the number of stars tapped.
+    /// </summary>
+    /// <param name="ratingStar">The star tapped.</param>
+    public void RateRecipe(GameObject ratingStar)
+    {
+        try
+        {
+            int rating = ratingStar.transform.GetSiblingIndex() + 1;
+
+            // The DB method makes a circular reference to this class and runs UpdateSurveyRating()
+            // to update the survey UI.
+            DatabaseManager.Instance.UpdateUserRatingForRecipe(currentRecipe.Key, rating);
+        }
+        catch (System.Exception)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Draws the gold stars on the rating survey.
+    /// </summary>
+    /// <param name="rating">The number of stars to enable.</param>
+    public void DrawSurveyRating(int rating)
+    {
+        if (rating > surveyGoldStars.transform.childCount)
+            throw new UnityException($"Rating {rating} was higher than stars available ({surveyGoldStars.transform.childCount}).");
+
+        // Clear previous rating
+        foreach (Transform child in surveyGoldStars.transform)
+            child.gameObject.SetActive(false);
+
+        // Display new rating
+        for (int i = 0; i < rating; i++)
+        {
+            var star = surveyGoldStars.transform.GetChild(i);
+            star.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Draws the community star rating in the info header.
+    /// </summary>
+    /// <param name="rating"></param>
+    public void DrawCommunityRating(int rating)
+    {
+        if (rating > starRatingTrans.childCount)
+            throw new UnityException($"Rating {rating} was higher than stars available ({surveyGoldStars.transform.childCount}).");
+
+        // Clear previous rating
+        foreach (Transform child in starRatingTrans)
+            child.gameObject.SetActive(false);
+
+        // Display new rating
+        for (int i = 0; i < rating; i++)
+        {
+            var star = starRatingTrans.GetChild(i);
+            star.gameObject.SetActive(true);
+        }
+    } 
+
+    #endregion
 
     public void Test()
     {

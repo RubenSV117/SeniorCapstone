@@ -6,5 +6,6 @@
   <projectSetting name="GooglePlayServices.PatchAndroidManifest" value="True" />
   <projectSetting name="GooglePlayServices.PromptBeforeAutoResolution" value="False" />
   <projectSetting name="GooglePlayServices.UseGradleDaemon" value="False" />
-  <projectSetting name="GooglePlayServices.VerboseLogging" value="False" />
+  <projectSetting name="GooglePlayServices.UseJetifier" value="True" />
+  <projectSetting name="GooglePlayServices.VerboseLogging" value="True" />
 </projectSettings>

@@ -96,11 +96,9 @@ namespace Tests
             {
                 DatabaseManager.Endpoint = "https://regen-66cf8-automated-tests.firebaseio.com/";
                 FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DatabaseManager.Endpoint);
-                var tree = new Dictionary<string, object>();
-                tree.Add("recipes", Constants.RECIPES);
-                var root = JsonUtility.ToJson(tree);
-                Debug.Log(root);
-                FirebaseDatabase.DefaultInstance.RootReference.SetRawJsonValueAsync(root)
+                var recipe0 = JsonUtility.ToJson(Constants.RECIPES[0]);
+                FirebaseDatabase.DefaultInstance.RootReference.SetRawJsonValueAsync("{}")
+                    .WithSuccess(() => FirebaseDatabase.DefaultInstance.RootReference.Child("recipes").Child("0").SetRawJsonValueAsync(recipe0))
                     .WithSuccess(() => Debug.Log("Initial Test Data set."))
                     .WithFailure<FirebaseException>(e => Debug.LogException(e));
             }

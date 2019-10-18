@@ -272,6 +272,7 @@ public class DatabaseManager : MonoBehaviour
      */
     public void PublishNewRecipe(Recipe recipe, string local_file)
     {
+        recipe.UID = auth.CurrentUser.UserId;
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         string key = databaseReference.Child("recipes").Push().Key;
         // File located on disk

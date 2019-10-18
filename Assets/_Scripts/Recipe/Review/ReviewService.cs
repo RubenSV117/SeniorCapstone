@@ -3,16 +3,13 @@ using UnityEngine;
 
 /// <summary>
 /// This class interacts with the database for queries related to Reviews.
-/// This GameObject contains no visible elements.
 /// </summary>
 public abstract class ReviewService
 {
-    private ReviewService instance;
-    
     /// <summary>
-    /// The field contains the ReviewManager instance that is active in the scene.
+    /// The field contains the ReviewService implementation.
     /// </summary>
-    public ReviewService Instance { get => instance; protected set => instance = value; }
+    public static ReviewService Instance { get; protected set; } = new ReviewServiceImpl();
 
     /// <summary>
     /// Submits a review attributed to the currently logged in user.

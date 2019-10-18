@@ -20,4 +20,25 @@ public class ReviewServiceImpl : ReviewService
                 .WithFailure<FirebaseException>(e => Debug.LogException(e))
                 .WithSuccess(() => Debug.Log("Review Successfully submitted."));
     }
+
+    public override Task<List<Review>> GetReviews(string recipeId)
+    {
+        return FirebaseDatabase.DefaultInstance
+            .GetReference("reviews")
+            .Child(recipeId)
+            .GetValueAsync()
+            .WithFailure<DataSnapshot, FirebaseException>(e => Debug.LogException(e))
+            .WithSuccess<DataSnapshot, List<Review>>(data =>
+            {
+                var reviews = new List<Review>((int)data.ChildrenCount);
+                foreach (var r in data.Children)
+                {
+                    reviews.Add(new Review(
+                        (string)r.Child("content").GetValue(false),
+                        System.DateTime.FromBinary((long)r.Child("timestamp").GetValue(false)),
+                        r.Key));
+                }
+                return reviews;
+            });
+    }
 }

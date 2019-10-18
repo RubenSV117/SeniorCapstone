@@ -64,7 +64,12 @@ public static class TaskCallbackExtensions
     {
         return WithCallback<R, Exception>(task, successCallback, null);
     }
-    
+
+    public static Task<T> WithSuccess<R, T>(this Task<R> task, Func<R, T> successCallback)
+    {
+        return task.ContinueWith(t => successCallback(t.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+    }
+
     public static Task<R> WithFailure<R, E>(this Task<R> task, Action<E> failureCallback) where E : Exception
     {
         return WithCallback(task, null, failureCallback);

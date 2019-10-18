@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -22,5 +23,12 @@ public abstract class ReviewService
     /// <param name="content">This parameter represents the review content.</param> 
     /// <returns>A Task that represents the async execution of this database update operation.</returns>
     public abstract Task SubmitReview(string recipeId, string content);
+
+    /// <summary>
+    /// Retrieves all reviews for the current recipe
+    /// </summary>
+    /// <param name="recipeId">the id of the recipe</param>
+    /// <returns>A Task that represents the async execution of this query and allows access to the result</returns>
+    public abstract Task<List<Review>> GetReviews(string recipeId);
 
 }

@@ -10,7 +10,7 @@ public class ReviewServiceImpl : ReviewService
     {
         var values = new Dictionary<string, object>();
         values["content"] = content.Trim();
-        values["timestamp"] = System.DateTime.UtcNow;
+        values["timestamp"] = System.DateTime.UtcNow.ToBinary();
 
         return FirebaseDatabase.DefaultInstance
                 .GetReference("reviews")

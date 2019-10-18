@@ -187,7 +187,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
             return;
 
         // create recipe 
-        Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions);
+        Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions, LoginService.Instance.User.UserId);
 
         // send for publish
         DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);

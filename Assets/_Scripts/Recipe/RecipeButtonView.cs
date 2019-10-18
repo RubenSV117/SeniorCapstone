@@ -109,7 +109,7 @@ public class RecipeButtonView : MonoBehaviour
             "This was pretty ok."
         };
 
-        Recipe newRecipe = new Recipe("Garlic Salmon", "gs://regen-66cf8.appspot.com/Recipes/garlicsalmon.jpg", 450, 50, tags, ingredients, steps, reviews, 4);
+        Recipe newRecipe = new Recipe("Garlic Salmon", "gs://regen-66cf8.appspot.com/Recipes/garlicsalmon.jpg", 450, 50, tags, ingredients, steps, "21123", reviews: reviews, starRating: 4);
 
         InitRecipeButton(newRecipe);
     }

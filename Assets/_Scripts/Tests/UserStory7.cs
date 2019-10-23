@@ -16,13 +16,25 @@ using static Tests.Constants;
 namespace Tests
 {
     public class UserStory7 : UITest
-    {   
-        [SetUp]
-        public void SetUp()
+    {
+        bool onetime = false;
+
+        [UnitySetUp]
+        public IEnumerator SetUp()
         {
-            Debug.Log("Setting up");
-            Common.Database.Setup();
+            if (!onetime)
+            {
+                Debug.Log("Already Set Up!");
+            }
+            else
+            {
+                onetime = true;
+                Debug.Log("Setting up");
+                yield return Common.Database.Setup();
+            }
+            yield return 0;
         }
+
 
         [UnityTest]
         public IEnumerator PublishRecipeWithValidInputs()

@@ -63,6 +63,10 @@ namespace Tests
                         "Serve with lime wedges"
                     }, "preset_data")
             };
+        public static Review[] REVIEWS = new[]
+        {
+            new Review("example_content", DateTime.Now, "preset_data")
+        };
     }
 
     public class TestImages
@@ -92,18 +96,26 @@ namespace Tests
     {
         public class Database
         {
-            public static void Setup()
+
+            public static IEnumerator Setup()
             {
                 DatabaseManager.Endpoint = "https://regen-66cf8-automated-tests.firebaseio.com/";
                 FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DatabaseManager.Endpoint);
                 var recipe0 = JsonUtility.ToJson(Constants.RECIPES[0]);
-                FirebaseDatabase.DefaultInstance.RootReference.SetRawJsonValueAsync("{}")
-                    .WithSuccess(() => FirebaseDatabase.DefaultInstance.RootReference.Child("recipes").Child("0").SetRawJsonValueAsync(recipe0))
-                    .WithSuccess(() => Debug.Log("Initial Test Data set."))
-                    .WithFailure<FirebaseException>(e => Debug.LogException(e));
+                yield return FirebaseDatabase.DefaultInstance.RootReference.SetRawJsonValueAsync("{}").WithFailure<FirebaseException>(e => Debug.LogException(e));
+                
+                var ref0 = FirebaseDatabase.DefaultInstance.RootReference.Child("recipes").Child("0");
+                yield return ref0.SetRawJsonValueAsync(recipe0);
+
+                var reviewRef = FirebaseDatabase.DefaultInstance.RootReference.Child("reviews").Child("0");
+                foreach (var r in Constants.REVIEWS)
+                {
+                    var ra = reviewRef.Child(r.userId);
+                    yield return ra.Child("content").SetValueAsync(r.content);
+                    yield return ra.Child("timestamp").SetValueAsync(r.timestamp.ToBinary());
+                }
+                 
             }
-            
-         
         }
 
         public class Auth

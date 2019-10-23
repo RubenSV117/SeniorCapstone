@@ -30,9 +30,11 @@ public class ReviewServiceImpl : ReviewService
             .WithFailure<DataSnapshot, FirebaseException>(e => Debug.LogException(e))
             .WithSuccess<DataSnapshot, List<Review>>(data =>
             {
+                Debug.Log(data.GetRawJsonValue());
                 var reviews = new List<Review>((int)data.ChildrenCount);
                 foreach (var r in data.Children)
                 {
+                    Debug.Log(r.GetRawJsonValue());
                     reviews.Add(new Review(
                         (string)r.Child("content").GetValue(false),
                         System.DateTime.FromBinary((long)r.Child("timestamp").GetValue(false)),

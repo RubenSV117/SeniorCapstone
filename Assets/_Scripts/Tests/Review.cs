@@ -11,11 +11,22 @@ namespace Tests
 {
     public class ReviewUI
     {
-        [SetUp]
-        public void SetUp()
+        bool onetime = false;
+
+        [UnitySetUp]
+        public IEnumerator SetUp()
         {
-            Debug.Log("Setting up");
-            Common.Database.Setup();
+            if (!onetime)
+            {
+                Debug.Log("Already Set Up!");
+            } else
+            {
+
+                onetime = true;
+                Debug.Log("Setting up");
+                yield return Common.Database.Setup();
+            }
+            yield return 0;
         }
 
         private static readonly ReviewData[] reviewData;
@@ -33,13 +44,25 @@ namespace Tests
         } */
     }
 
-    public class Review
+    public class ReviewApi
     {
-        [SetUp]
-        public void SetUp()
+        bool onetime = false;
+
+        [UnitySetUp]
+        public IEnumerator SetUp()
         {
-            Debug.Log("Setting up");
-            Common.Database.Setup();
+            if (onetime)
+            {
+                Debug.Log("Already Set Up!");
+            }
+            else
+            {
+
+                onetime = true;
+                Debug.Log("Setting up");
+                yield return Common.Database.Setup();
+            }
+            yield return 0;
         }
 
         [UnityTest]
@@ -62,7 +85,29 @@ namespace Tests
             Assert.IsTrue(data.HasChild("content"));
             Assert.IsTrue(data.HasChild("timestamp"));
             Assert.AreEqual(data.Child("content").GetValue(false), content);
+            yield return 0;
+        }
 
+        [UnityTest]
+        public IEnumerator GetReview()
+        {
+            /* Common.Auth.EnsureUserExists(true, Constants.TEST_EMAIL, Constants.TEST_PASSWORD);
+            var review = Constants.REVIEWS[0];
+            var task = ReviewService.Instance.GetReviews("0");
+            yield return task.AsCoroutine();
+            Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
+            Assert.AreNotEqual(TaskStatus.Faulted, task.Status);
+
+            var list = task.Result;
+            Assert.NotNull(list);
+            Assert.AreEqual(1, list.Count, "Expected 1 review");
+
+            var actual = list[0];
+            Assert.NotNull(actual);
+            Assert.Equals(review.userId, actual.userId);
+            Assert.Equals(review.content, actual.content);
+            Assert.NotNull(review.timestamp); */
+            yield return 0;
 
         }
     }

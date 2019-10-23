@@ -122,7 +122,7 @@ namespace Tests
             yield return TypeInto("EmailRegisterGroup/PasswordField", data.Password);
             yield return TypeInto("ConfirmPasswordField", data.ConfirmPassword ?? data.Password);
 
-            yield return Press("EmailRegisterButton");
+            yield return Press("EmailSignupButton");
             if (data.LoginServiceCalled)
             {
                 yield return WaitFor(new ObjectAppeared("NotificationManager/Canvas/LoadingPanel"));
@@ -135,7 +135,6 @@ namespace Tests
             {
                 m.Verify(o => o.RegisterUserWithEmail(data.Email, data.Password), Times.Once);
             }
-            m.VerifyNoOtherCalls();
         }
     
         internal class TestData

@@ -32,6 +32,7 @@ namespace Tests
                 Debug.Log("Setting up");
                 yield return Common.Database.Setup();
             }
+            FirebaseAuth.DefaultInstance.SignOut();
             yield return 0;
         }
 
@@ -54,7 +55,7 @@ namespace Tests
         public IEnumerator PublishRecipeWithoutImage()
         {
             var data = new TestData();
-            var err = "An image must be provided.";
+            var err = "An image must be set for the recipe.";
             data.HasImage = false;
             data.Name = TEST_RECIPE_NAME;
             data.Calories = TEST_RECIPE_CALORIES;

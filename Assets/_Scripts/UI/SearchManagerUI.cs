@@ -35,7 +35,22 @@ public class SearchManagerUI : MonoBehaviour
 
         TagsToInclude = new HashSet<string>();
         TagsToExclude = new HashSet<string>();
+
+        FillWithRandomSearch();
     }
+
+    private void FillWithRandomSearch()
+    {
+        SearchForRecipes(RandomLetter());
+    }
+
+    private string RandomLetter()
+    {
+        int num = Random.RandomRange(0, 25);
+        char randomLetter = (char)('a' + num);
+        return "" + randomLetter; 
+    }
+
 
     /// <summary>
     /// Call database class and receive the list of recipes 

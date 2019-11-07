@@ -566,6 +566,29 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    public void deleteReview(string recipeKey)
+    {
+        if (user != null)
+        {
+            try
+            {
+                FirebaseDatabase.DefaultInstance
+                    .GetReference("reviews")
+                    .Child($"{recipeKey}")
+                    .Child($"{user.UserId}")
+                    .RemoveValueAsync();
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        else
+        {
+            NotificationManager.Instance.ShowNotification("You must be logged in to delete a review.");
+        }
+    }
+
     public void UpdateUserRatingForRecipe(string recipeKey, int rating)
     {
         //ratingNum = rating;

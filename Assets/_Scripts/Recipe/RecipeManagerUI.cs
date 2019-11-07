@@ -420,20 +420,13 @@ public class RecipeManagerUI : MonoBehaviour
 
         List<string> tags = new List<string>() {"Fish"};
 
-        List<string> reviews =
-            new List<string>()
+        List<Review> reviews =
+            new List<Review>()
             {
-                "pretty good",
-                "pretty good",
-                "pretty good",
-                "pretty good",
-                "pretty good",
-                "pretty good",
-                "pretty good",
-                "pretty good"
+
             };
 
-        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, "0", reviews: reviews, starRating: 3);
+        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, reviews, 3);
 
         InitRecipeUI(recipe);
     }

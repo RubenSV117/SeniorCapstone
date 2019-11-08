@@ -79,7 +79,23 @@ public class DatabaseManager : MonoBehaviour
             }
         }
     }
+    public bool checkRecipeAuthorID(Recipe R)
+    {
 
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        if (user != null)
+        {
+            if (user == R.AuthorID)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            print("No user logged in.");
+            return false;
+        }
+    }
 
 
     /**

@@ -41,6 +41,8 @@ public class _Source
     public string name { get; set; }
     public ingredients[] ingredients { get; set; }
     public string[] tags { get; set; }
+    public string Key { get; set; }
+    public string AuthorID { get; set; }
 }
 [Serializable]
 public class ingredients

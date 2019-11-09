@@ -85,7 +85,7 @@ public class DatabaseManager : MonoBehaviour
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
-            if (user.UserId == R.UID)
+            if (user.UserId == R.AuthorID)
             {
                 return true;
             }

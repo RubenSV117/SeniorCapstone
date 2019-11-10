@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using Firebase;
-using System;
-using UnityEngine.UI;
+﻿using System;
+using System.Threading.Tasks;
+using ReGenSDK;
+using ReGenSDK.Tasks;
+using UnityEngine;
 
 /// <summary>
 /// Manages Login UI
@@ -15,24 +15,26 @@ using UnityEngine.UI;
 public class LoginManagerUI : MonoBehaviour, IPanel
 {
     public delegate void AccountAction(string message);
+
     public event AccountAction OnAccountActionAttempt;
 
     public static LoginManagerUI Instance;
 
     [SerializeField] private GameObject canvas;
 
-    [Header("Initial Screen UI")]
-    [SerializeField] private GameObject initialGroup; // initial log in, sign up buttons
+    [Header("Initial Screen UI")] [SerializeField]
+    private GameObject initialGroup; // initial log in, sign up buttons
     //[SerializeField] private Button signUpButton;
     //[SerializeField] private Button loginButton;
 
 
-    [Header("Registration Options UI")]
-    [SerializeField] private GameObject signupOptionsGroup; // ui group to register new user
+    [Header("Registration Options UI")] [SerializeField]
+    private GameObject signupOptionsGroup; // ui group to register new user
+
     [SerializeField] private GameObject emailRegisterGroup;
 
-    [Header("Login Options UI")]
-    [SerializeField] private GameObject emailLoginGroup;
+    [Header("Login Options UI")] [SerializeField]
+    private GameObject emailLoginGroup;
 
 
     //[SerializeField] private Button emailLoginButton;
@@ -43,13 +45,9 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     private string email;
     private string password;
-	private string confirmPassword;
+    private string confirmPassword;
 
-    private bool attemptFinished;
-    private bool attemptSuccess;
-    private string errorMessage;
-
-    private Coroutine attemptCo;
+    private Task loginAttempt;
 
     public void UpdateEmail(string value)
     {
@@ -60,8 +58,8 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     {
         password = value;
     }
-	
-	public void UpdateConfirmPassword(string value)
+
+    public void UpdateConfirmPassword(string value)
     {
         confirmPassword = value;
     }
@@ -72,41 +70,21 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void LogInWithEmail()
     {
         // start coruoutine to handle attempt result ui notification
-        if(attemptCo != null)
-        {
-            StopCoroutine(attemptCo);
-            attemptCo = null;
-        }
+        if (loginAttempt != null && loginAttempt.Status == TaskStatus.Running)
+            return;
 
-        attemptCo = StartCoroutine(HandleLoginAttempt());
-
-        attemptFinished = false;
-
-        LoginService.Instance.SignInUserWithEmailAndPassword(email, password).WithSuccess(user =>
-        {
-            attemptSuccess = true;
-
-            attemptFinished = true;
-        })
-        .WithFailure((FirebaseException exception) =>
-        {
-            // parse error code to send to ui notification
-            //string errorStr = exception.GetAuthError().ToString();
-
-            //errorMessage = "";
-
-            //for (int i = 0; i < errorStr.Length; i++)
-            //{
-            //    errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
-            //    ? " " + errorStr[i].ToString()
-            //    : errorStr[i].ToString());
-            //}
-            errorMessage = exception.Message;
-
-            attemptSuccess = false;
-            attemptFinished = true;
-
-        });
+        NotificationManager.Instance.SetLoadingPanel(true);
+        loginAttempt = ReGenClient.Instance.Authentication.SignInUserWithEmail(email, password)
+            .Success(user =>
+            {
+                NotificationManager.Instance.SetLoadingPanel(false);
+                SwitchToMainMenu("Login Successful");
+            })
+            .Failure(exception =>
+            {
+                NotificationManager.Instance.SetLoadingPanel(true);
+                OnAccountActionAttempt?.Invoke(exception.Message);
+            });
     }
 
 
@@ -117,103 +95,49 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     {
         if (confirmPassword != password)
         {
-            errorMessage = "Confirmation password must match first password.";
-            OnAccountActionAttempt?.Invoke(errorMessage);
+            OnAccountActionAttempt?.Invoke("Confirmation password must match first password.");
             return;
         }
 
-        // start coruoutine to handle attempt result ui notification
-        if (attemptCo != null)
-        {
-            StopCoroutine(attemptCo);
-            attemptCo = null;
-        }
+        if (loginAttempt != null && loginAttempt.Status == TaskStatus.Running)
+            return;
 
-        attemptCo = StartCoroutine(HandleSignupAttempt());
-
-        attemptFinished = false;
-
-        LoginService.Instance.RegisterUserWithEmail(email, password).WithSuccess(user =>
-        {
-            attemptSuccess = true;
-            attemptFinished = true;
-        })
-        .WithFailure((FirebaseException exception) =>
-        {
-            
-            // parse error code to send to ui notification
-            string errorStr = exception.GetAuthError().ToString();
-
-            //errorMessage = "";
-
-            //for (int i = 0; i < errorStr.Length; i++)
-            //{
-            //    errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
-            //    ? " " + errorStr[i].ToString()
-            //    : errorStr[i].ToString());
-            //}
-
-            errorMessage = exception.Message;
-
-            attemptSuccess = false;
-            attemptFinished = true;
-        });
+        NotificationManager.Instance.SetLoadingPanel(true);
+        loginAttempt = ReGenClient.Instance.Authentication.RegisterUserWithEmail(email, password)
+            .Success(user =>
+            {
+                NotificationManager.Instance.SetLoadingPanel(false);
+                SwitchToMainMenu("Account registered");
+            })
+            .Failure(exception =>
+            {
+                NotificationManager.Instance.SetLoadingPanel(true);
+                OnAccountActionAttempt?.Invoke(exception.Message);
+            });
     }
 
-    /// <summary>
-    /// Send ui event to show account action attempt result
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator HandleLoginAttempt()
+
+    public void LogInWithFB()
     {
-        NotificationManager.Instance.SetLoadingPanel(true);
-
-        // wait until firebase finishes (had really unpredictable behavior if handled from within the WithFailure callback)
-        yield return new WaitUntil(() => attemptFinished);
-
-        NotificationManager.Instance.SetLoadingPanel(false);
-
-        // send success notification or error message
-        if (OnAccountActionAttempt != null)
+        FacebookManager.Instance.Login(token =>
         {
-            if (attemptSuccess)
+            ReGenClient.Instance.Authentication.SignInUserWithFacebook(token).Success(user =>
             {
-                //OnAccountActionAttempt.Invoke("Login Successful");
-                //Disable();
+                NotificationManager.Instance.SetLoadingPanel(false);
                 SwitchToMainMenu("Login Successful");
-            }
-            else
+            }).Failure(error =>
             {
-                OnAccountActionAttempt.Invoke(errorMessage);
-            }
-        }
-
-        attemptFinished = false;
-        attemptSuccess = false;
-    }
-
-    /// <summary>
-    /// Display a popup for event success or failure.
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator HandleSignupAttempt()
-    {
-        NotificationManager.Instance.SetLoadingPanel(true);
-
-        // wait until firebase finishes (had really unpredictable behavior if handled from within the WithFailure callback)
-        yield return new WaitUntil(() => attemptFinished);
-
-        NotificationManager.Instance.SetLoadingPanel(false);
-
-        // send success notification or error message
-        if (OnAccountActionAttempt != null)
+                NotificationManager.Instance.SetLoadingPanel(false);
+                OnAccountActionAttempt?.Invoke(error.Message);
+            });
+        }, error =>
         {
-            OnAccountActionAttempt.Invoke(
-                ( attemptSuccess ? 
-                "Account registered" : errorMessage ));
-        }
-        attemptFinished = false;
-        attemptSuccess = false;
+            MainThreadTask.Run(async () =>
+            {
+                NotificationManager.Instance.SetLoadingPanel(false);
+                OnAccountActionAttempt?.Invoke(error);
+            });
+        });
     }
 
     public void EnableLogin()
@@ -237,29 +161,6 @@ public class LoginManagerUI : MonoBehaviour, IPanel
         emailRegisterGroup.SetActive(false);
     }
 
-    public void SetAttempt(bool finished, bool succeeded, string message)
-    {
-        attemptFinished = finished;
-        attemptSuccess = succeeded;
-        errorMessage = message;
-    }
-
-    public void LogInWithFB()
-    {
-        // start coruoutine to handle attempt result ui notification
-        if (attemptCo != null)
-        {
-            StopCoroutine(attemptCo);
-            attemptCo = null;
-        }
-
-        attemptCo = StartCoroutine(HandleLoginAttempt());
-
-        attemptFinished = false;
-
-        FacebookManager.Instance.Login();
-    }
-
     public void RecoverEmailPassword()
     {
         //LoginService.Instance.
@@ -267,7 +168,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void Logout()
     {
-        LoginService.Instance.SignOut();
+        ReGenClient.Instance.Authentication.SignOut();
     }
 
     public void SkipLogIn()
@@ -278,9 +179,8 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void SwitchToMainMenu(string transitionMessage)
     {
-        OnAccountActionAttempt.Invoke(transitionMessage);
-        this.Disable();
-
+        OnAccountActionAttempt?.Invoke(transitionMessage);
+        Disable();
         /** 
         * To-do: remove dependency on MainMenuManagerUI
         * (this class shouldn't know about other UI classes).
@@ -329,12 +229,12 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     public void Init()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void Refresh()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     private void Awake()
@@ -345,7 +245,6 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
     private void Start()
     {
-
-        canvas?.SetActive(LoginService.Instance.User == null);
+        canvas?.SetActive(ReGenClient.Instance.Authentication.User == null);
     }
 }

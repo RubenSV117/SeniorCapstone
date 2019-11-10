@@ -1,8 +1,6 @@
-﻿using Facebook.Unity;
-using Firebase;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using Facebook.Unity;
 using UnityEngine;
 
 /// <summary>
@@ -23,55 +21,39 @@ public class FacebookManager : MonoBehaviour
         if (!FB.IsInitialized)
         {
             FB.Init(() =>
-            {
-                if (FB.IsInitialized)
-                    FB.ActivateApp();
-                else
-                    Debug.LogError("Couldn't initialize");
-            },
-            isGameShown =>
-            {
-                if (!isGameShown)
-                    Time.timeScale = 0;
-                else
-                    Time.timeScale = 1;
-            });
+                {
+                    if (FB.IsInitialized)
+                        FB.ActivateApp();
+                    else
+                        Debug.LogError("Couldn't initialize");
+                },
+                isGameShown =>
+                {
+                    if (!isGameShown)
+                        Time.timeScale = 0;
+                    else
+                        Time.timeScale = 1;
+                });
         }
 
         else
             FB.ActivateApp();
     }
 
-    public void Login()
+    public void Login(Action<string> success, Action<string> failure)
     {
-        var permissions = new List<string>() { "public_profile", "email" };
+        var permissions = new List<string>() {"public_profile", "email"};
 
-        FB.LogInWithReadPermissions(permissions, (result) => 
+        FB.LogInWithReadPermissions(permissions, (result) =>
         {
-            print(string.Format("Logged in with token {0}, sending token to LoginService", result.AccessToken.TokenString));
-
-            LoginService.Instance.SignInUserWithFacebook(result.AccessToken.TokenString).WithSuccess(user =>
+            if (result.Cancelled)
+                failure(result.Error);
+            else
             {
-                LoginManagerUI.Instance.SetAttempt(true, true, "Login Successful");
-            })
-        .WithFailure((FirebaseException exception) =>
-        {
-            // parse error code to send to ui notification
-            string errorStr = ((Firebase.Auth.AuthError)exception.ErrorCode).ToString();
-
-            string errorMessage = "";
-
-            for (int i = 0; i < errorStr.Length; i++)
-            {
-                errorMessage += (Char.IsUpper(errorStr[i]) && i > 0
-                ? " " + errorStr[i].ToString()
-                : errorStr[i].ToString());
+                print($"Logged in with token {result.AccessToken.TokenString}, sending token to LoginService");
+                success(result.AccessToken.TokenString);
             }
-
-            LoginManagerUI.Instance.SetAttempt(true, false, errorMessage);
         });
-        }
-        );
     }
 
     public void Logout()
@@ -81,11 +63,9 @@ public class FacebookManager : MonoBehaviour
 
     public void ShareRecipe()
     {
-      
     }
 
     public void ShareApp()
     {
-
     }
 }

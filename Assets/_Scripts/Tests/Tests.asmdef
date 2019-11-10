@@ -3,7 +3,6 @@
     "references": [
         "Scripts",
         "Packages",
-        "AsyncAwaitUtil",
         "_Scripts"
     ],
     "optionalUnityReferences": [

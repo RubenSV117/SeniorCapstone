@@ -584,6 +584,56 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    public void GetPreviousReview(string recipeKey, Action<string> callback)
+    {
+        string content;
+        if (user != null)
+        {
+            try
+            {
+                FirebaseDatabase.DefaultInstance
+                    .GetReference("reviews")
+                    .Child($"{recipeKey}")
+                    .Child($"{user.UserId}")
+                    .Child($"content")
+                    .GetValueAsync()
+                    .ContinueWithOnMainThread(task =>
+                    {
+                        try
+                        {
+                            if (task.IsFaulted)
+                            {
+                                Debug.Log("A problem occurred.");
+                            }
+                            else if (task.IsCompleted)
+                            {
+                                DataSnapshot snapshot = task.Result;
+
+                                if (snapshot.Exists)
+                                {
+                                    content = JsonConvert.DeserializeObject<string>(snapshot.GetRawJsonValue());
+                                    callback(content);
+                                }
+                            }
+                            hasAttemptFinished = true;
+                        }
+                        catch (Exception e)
+                        {
+                            var error = e.Message;
+                        }
+                    });
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        else
+        {
+            NotificationManager.Instance.ShowNotification("You must be logged in to update or write a review.");
+        }
+    }
+
     public void deleteReview(string recipeKey)
     {
         if (user != null)

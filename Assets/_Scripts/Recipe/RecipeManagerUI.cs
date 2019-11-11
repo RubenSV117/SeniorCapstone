@@ -402,32 +402,32 @@ public class RecipeManagerUI : MonoBehaviour
         ReviewManagerUI.Instance.Enable();
     }
 
-    public void Test()
-    {
-        List<Ingredient> ingredients = new List<Ingredient>();
+    //public void Test()
+    //{
+    //    List<Ingredient> ingredients = new List<Ingredient>();
 
-        for (int i = 0; i < 10; i++)
-        {
-            ingredients.Add(new Ingredient($"Ingredient {i}", "1/2 cup"));
-        }
+    //    for (int i = 0; i < 10; i++)
+    //    {
+    //        ingredients.Add(new Ingredient($"Ingredient {i}", "1/2 cup"));
+    //    }
 
-        List<string> directions = new List<string>();
+    //    List<string> directions = new List<string>();
 
-        for (int i = 0; i < 50; i++)
-        {
-            directions.Add($"{i}. do the thing");
-        }
+    //    for (int i = 0; i < 50; i++)
+    //    {
+    //        directions.Add($"{i}. do the thing");
+    //    }
 
-        List<string> tags = new List<string>() {"Fish"};
+    //    List<string> tags = new List<string>() {"Fish"};
 
-        List<Review> reviews =
-            new List<Review>()
-            {
+    //    List<Review> reviews =
+    //        new List<Review>()
+    //        {
 
-            };
+    //        };
 
-        Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, reviews, 3);
+    //    Recipe recipe = new Recipe("Butter Salmon", "", 560, 45, tags, ingredients, directions, reviews, 3);
 
-        InitRecipeUI(recipe);
-    }
+    //    InitRecipeUI(recipe);
+    //}
 }

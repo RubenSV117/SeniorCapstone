@@ -78,41 +78,41 @@ public class RecipeButtonView : MonoBehaviour
         recipe.ImageSprite = recipeImage.sprite;
     }
 
-    private void Test()
-    {
-        List<Ingredient> ingredients = new List<Ingredient>()
-        {
-            new Ingredient("flour", "1/2 cup"),
-            new Ingredient("marinara", "1/2 cup"),
-            new Ingredient("mozzerella", "2 cups"),
-            new Ingredient("ham", "1/3 cup"),
-            new Ingredient("pineapple", "1/4 cup")
-        };
+    //private void Test()
+    //{
+    //    List<Ingredient> ingredients = new List<Ingredient>()
+    //    {
+    //        new Ingredient("flour", "1/2 cup"),
+    //        new Ingredient("marinara", "1/2 cup"),
+    //        new Ingredient("mozzerella", "2 cups"),
+    //        new Ingredient("ham", "1/3 cup"),
+    //        new Ingredient("pineapple", "1/4 cup")
+    //    };
 
-        List<string> steps = new List<string>()
-        {
-            "Knead the dough.",
-            "Add the marinara sauce.",
-            "Add the mozerrella cheese.",
-            "Add the ham.",
-            "Add the pineapple.",
-            "Bake at 360F for 45 minutes."
-        };
+    //    List<string> steps = new List<string>()
+    //    {
+    //        "Knead the dough.",
+    //        "Add the marinara sauce.",
+    //        "Add the mozerrella cheese.",
+    //        "Add the ham.",
+    //        "Add the pineapple.",
+    //        "Bake at 360F for 45 minutes."
+    //    };
 
-        List<string> tags = new List<string>()
-        {
-            "dairy"
-        };
+    //    List<string> tags = new List<string>()
+    //    {
+    //        "dairy"
+    //    };
 
-        List<Review> reviews = new List<Review>()
-        {
+    //    List<Review> reviews = new List<Review>()
+    //    {
             
-        };
+    //    };
 
-        Recipe newRecipe = new Recipe("Garlic Salmon", "gs://regen-66cf8.appspot.com/Recipes/garlicsalmon.jpg", 450, 50, tags, ingredients, steps,  reviews, 4);
+    //    Recipe newRecipe = new Recipe("Garlic Salmon", "gs://regen-66cf8.appspot.com/Recipes/garlicsalmon.jpg", 450, 50, tags, ingredients, steps,  reviews, 4);
 
-        InitRecipeButton(newRecipe);
-    }
+    //    InitRecipeButton(newRecipe);
+    //}
 
 
 }

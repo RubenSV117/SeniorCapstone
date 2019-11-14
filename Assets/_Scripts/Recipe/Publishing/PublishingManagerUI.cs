@@ -73,6 +73,27 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
     #region Public Methods
 
+    public void prefillWithRecipe(Recipe recipe)
+    {
+        recipeImage.sprite = recipe.ImageSprite;
+        caloriesInputField.text = recipe.Calories.ToString();
+        prepTimeInputField.text = recipe.PrepTimeMinutes.ToString();
+        ingredientAmount.text = recipe.Ingredients.Length.ToString();
+
+        foreach (var ingredient in recipe.Ingredients)
+        {
+            IngredientBuilderView view = AddIngredientBuilderView();
+            view.UpdateName(ingredient.IngredientName);
+            view.UpdateAmount(ingredient.IngredientAmount);
+        }
+
+        foreach (var step in recipe.Steps)
+        {
+            DirectionBuilderView view = AddDirectiontBuilderView();
+            view.SetDirection(step);
+        }
+    }
+
     public void UpdateRecipeImage(Sprite newSprite)
     {
         if (newSprite == null)
@@ -141,6 +162,20 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         Invoke("UpdateIngredientCount", .1f);
     }
 
+    public IngredientBuilderView AddIngredientBuilderView()
+    {
+        // make a new ingredient builder item
+        IngredientBuilderView ingredientView = Instantiate(ingedientBuilderPrefab, ingedientVerticalGroupTrans).GetComponent<IngredientBuilderView>();
+
+        // fire event for ui element change
+        OnUIElementAdded?.Invoke();
+
+        // update the ingredient count text
+        Invoke("UpdateIngredientCount", .1f);
+
+        return ingredientView;
+    }
+
     public void AddDirectiontBuilder()
     {
         // make a new ingredient builder item
@@ -148,6 +183,17 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
         // fire event for ui element change
         OnUIElementAdded?.Invoke();
+    }
+
+    public DirectionBuilderView AddDirectiontBuilderView()
+    {
+        // make a new ingredient builder item
+        DirectionBuilderView directionView = Instantiate(directionBuilderPrefab, directionVerticalGroupTrans).GetComponent<DirectionBuilderView>();
+
+        // fire event for ui element change
+        OnUIElementAdded?.Invoke();
+
+        return directionView;
     }
 
     public void RemoveBuilder(GameObject obj)
@@ -198,6 +244,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         Disable();
         Refresh();
     }
+
     #endregion
 
     #region Private Methods
@@ -215,13 +262,6 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     private bool CheckForFinishedRecipe()
     {
         bool isFinished = true;
-
-        // check if image has been seet
-        if (recipeImage.sprite == null)
-        {
-            NotificationManager.Instance.ShowNotification("An image must be set for the recipe.");
-            return false;
-        }
 
         // check if name has been seet
         if (string.IsNullOrEmpty(nameInputField.text))

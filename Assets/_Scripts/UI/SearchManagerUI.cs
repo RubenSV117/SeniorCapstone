@@ -15,6 +15,7 @@ public class SearchManagerUI : MonoBehaviour
     [SerializeField] private Transform recipeListTransFavorites;
     [SerializeField] private GameObject buttonViewPrefab;
     [SerializeField] private GameObject loadingPanel;
+    [SerializeField] private GameObject favoritesPanel;
 
     //[Header("Test variables")]
     //[SerializeField] private ToggleGroup test;
@@ -148,4 +149,10 @@ public class SearchManagerUI : MonoBehaviour
         }
         
     }
+
+    public void EnableFavoritesPanel() 
+    {
+        favoritesPanel.SetActive(true);
+    }
+
 }

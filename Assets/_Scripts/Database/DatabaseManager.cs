@@ -613,6 +613,7 @@ public class DatabaseManager : MonoBehaviour
                                 {
                                     content = JsonConvert.DeserializeObject<string>(snapshot.GetRawJsonValue());
                                     callback(content);
+                                    ReviewManagerUI.Instance.EnableDeleteButton();
                                 }
                             }
                             hasAttemptFinished = true;

@@ -36,7 +36,6 @@ public class SearchManagerUI : MonoBehaviour
 
         TagsToInclude = new HashSet<string>();
         TagsToExclude = new HashSet<string>();
-
         FillWithRandomSearch();
     }
 
@@ -47,7 +46,7 @@ public class SearchManagerUI : MonoBehaviour
 
     private string RandomLetter()
     {
-        int num = Random.RandomRange(0, 25);
+        int num = (int) Random.RandomRange(0, 26);
         char randomLetter = (char)('a' + num);
         return "" + randomLetter; 
     }

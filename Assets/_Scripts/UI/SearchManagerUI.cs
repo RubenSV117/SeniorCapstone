@@ -36,7 +36,6 @@ public class SearchManagerUI : MonoBehaviour
 
         TagsToInclude = new HashSet<string>();
         TagsToExclude = new HashSet<string>();
-        FillWithRandomSearch();
     }
 
     private void FillWithRandomSearch()

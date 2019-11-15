@@ -16,6 +16,7 @@ public class ReviewManagerUI : MonoBehaviour
     [SerializeField] private GameObject labelPrefab;
     [SerializeField] private GameObject infoPrefab;
     [SerializeField] private GameObject moreReviewsButton;
+    [SerializeField] private GameObject deleteButton;
 
     [SerializeField] private Transform verticalGroupTrans;
     private ReviewController rc;
@@ -61,6 +62,11 @@ public class ReviewManagerUI : MonoBehaviour
 
         GenerateReviews();
 
+    }
+
+    public void EnableDeleteButton()
+    {
+        deleteButton.SetActive(true);
     }
 
 

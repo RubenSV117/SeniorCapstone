@@ -237,13 +237,11 @@
             <e p="Util.cs" t="Include" />
           </e>
           <e p="Recipe" t="Include">
-            <e p="Ingredient.cs" t="Include" />
             <e p="Publishing" t="Include">
               <e p="DirectionBuilderView.cs" t="Include" />
               <e p="IngredientBuilderView.cs" t="Include" />
               <e p="PublishingManagerUI.cs" t="Include" />
             </e>
-            <e p="Recipe.cs" t="Include" />
             <e p="RecipeButtonView.cs" t="Include" />
             <e p="RecipeManagerUI.cs" t="Include" />
             <e p="RecipeShare.cs" t="Include" />

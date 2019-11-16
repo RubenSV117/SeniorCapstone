@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ReGenSDK.Model;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -44,7 +45,11 @@ public class IngredientBuilderView : MonoBehaviour
     public void BuildIngredient()
     {
         // update the ingredient
-        ingredient = new Ingredient(name, amount);
+        ingredient = new Ingredient
+        {
+            IngredientName = name,
+            IngredientAmount = amount
+        };
 
         // if ingredient is complete, auto add another builder
         if (!string.IsNullOrEmpty(amount) && !string.IsNullOrEmpty(name) && !hasAddedIngredient)

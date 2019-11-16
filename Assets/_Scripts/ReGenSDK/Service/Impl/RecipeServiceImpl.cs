@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ReGenSDK.Service.Api;
+using ReGenSDK.Model;
+using UnityEngine;
 
 namespace ReGenSDK.Service.Impl
 {
@@ -8,27 +9,29 @@ namespace ReGenSDK.Service.Impl
     {
         public RecipeServiceImpl(string endpoint, Func<Task<string>> authorizationProvider): base(endpoint, authorizationProvider)
         {
-            throw new System.NotImplementedException();
         }
 
         public override Task<Recipe> Get(string recipeId)
         {
-            throw new System.NotImplementedException();
+            return Get()
+                .Path(recipeId)
+                .ParseJson<Recipe>()
+                .Execute();
         }
 
         public override Task Update(string recipeId, Recipe recipe)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override Task Delete(string recipeId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override Task Create(Recipe recipe)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

@@ -79,7 +79,7 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
         recipeImage.sprite = recipe.ImageSprite;
         caloriesInputField.text = recipe.Calories.ToString();
         prepTimeInputField.text = recipe.PrepTimeMinutes.ToString();
-        ingredientAmount.text = recipe.Ingredients.Length.ToString();
+        ingredientAmount.text = recipe.Ingredients.Count.ToString();
 
         foreach (var ingredient in recipe.Ingredients)
         {
@@ -236,7 +236,16 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
             return;
 
         // create recipe 
-        Recipe newRecipe = new Recipe(recipeName, "", calories, minutesPrep, tags, ingredients, directions, reviews, starRating);
+        Recipe newRecipe = new Recipe()
+        {
+            Name = recipeName,
+            AuthorId = "",
+            Calories = calories,
+            PrepTimeMinutes = minutesPrep,
+            Tags = tags,
+            Ingredients = ingredients
+        };
+           
 
         // send for publish
         DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);

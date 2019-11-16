@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -21,10 +22,11 @@ namespace ReGenSDK.Service
         private bool needsAuth;
 
         public RequestBuilder(string endpoint, Func<Task<string>> authorizationProvider,
-            Func<UnityWebRequest, T> op)
+            Func<UnityWebRequest, T> mapping)
         {
             this.endpoint = endpoint;
             this.authorizationProvider = authorizationProvider;
+            this.mapping = mapping;
         }
 
         public RequestBuilder<T> Path([NotNull] string param)
@@ -93,7 +95,7 @@ namespace ReGenSDK.Service
                 method = method,
                 isQuery = isQuery,
                 body = body,
-                needsAuth = needsAuth
+                needsAuth = needsAuth,
             };
         }
 
@@ -118,6 +120,7 @@ namespace ReGenSDK.Service
             var task = new TaskCompletionSource<UnityWebRequest>();
             return MainThreadTask.Run(async () =>
             {
+                Debug.Log($"Creating Web Request: {method} {endpoint}");
                 var unityWebRequest = new UnityWebRequest(endpoint, method);
                 unityWebRequest.SetRequestHeader("Accept", "application/json");
                 if (needsAuth)
@@ -157,7 +160,9 @@ namespace ReGenSDK.Service
                     }
                 };
                 await task.Task;
-                return mapping(task.Task.Result);
+                var map = mapping(task.Task.Result);
+                Debug.Log($"Mapping Result: {map}");
+                return map;
             });
         }
     }
@@ -186,15 +191,40 @@ namespace ReGenSDK.Service
                         Debug.Log("Error detected with status code: " + x.responseCode);
                         return default;
                     }
-                    if (x.responseCode == 204) 
+
+                    if (x.responseCode == 204)
                         return default;
                     var text = x.downloadHandler.text;
                     if (string.IsNullOrWhiteSpace(text))
                         return default;
                     Debug.Log($"Parsing results to {typeof(T)}");
-                    return JsonUtility.FromJson<T>(text);
+                    try
+                    {
+                        T results;
+                        if (typeof(IList).IsAssignableFrom(typeof(T)))
+                        {
+                            results = JsonUtility.FromJson<Wrapper<T>>("{ \"value\": " + text + "}").value;
+                        }
+                        else
+                        {
+                            results = JsonUtility.FromJson<T>(text);
+                        }
+                        Debug.Log(results);
+                        return results;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                        throw;
+                    }
                 }
             );
         }
+    }
+    
+    [Serializable]
+    class Wrapper<T>
+    {
+        public T value;
     }
 }

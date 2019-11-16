@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
+using ReGenSDK.Model;
 
 namespace ReGenSDK.Service.Api
 {

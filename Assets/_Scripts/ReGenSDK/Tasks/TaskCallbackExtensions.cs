@@ -28,10 +28,7 @@ namespace ReGenSDK.Tasks
                         success?.Invoke(task.Result);
                         return task.Result;
                     case TaskStatus.Faulted:
-                        if (failure != null)
-                        {
-                            failure(task.Exception as E);
-                        }
+                        failure?.Invoke(task.Exception as E);
 
                         Debug.Assert(task.Exception != null, "task.Exception != null");
                         throw task.Exception;

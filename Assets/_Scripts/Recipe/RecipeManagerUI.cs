@@ -71,9 +71,9 @@ public class RecipeManagerUI : MonoBehaviour
 
         // update text elements
         dishNameText.text = newRecipe.Name;
-        ingredientCountText.text = newRecipe.Ingredients.Length.ToString("N0");
-        calorieCountText.text = newRecipe.Calories.ToString("N0");
-        prepTimeText.text = newRecipe.PrepTimeMinutes.ToString("N0");
+        ingredientCountText.text = newRecipe.Ingredients.Count.ToString("N0");
+        calorieCountText.text = newRecipe.Calories?.ToString("N0");
+        prepTimeText.text = newRecipe.PrepTimeMinutes?.ToString("N0");
 
         #endregion
 
@@ -95,7 +95,7 @@ public class RecipeManagerUI : MonoBehaviour
         #region Load ingredients
 
         // update ingredients
-        for (int i = 0; i < newRecipe.Ingredients.Length; i++)
+        for (int i = 0; i < newRecipe.Ingredients.Count; i++)
         {
             GameObject ingredientInfo = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                 verticalGroupTrans);
@@ -119,7 +119,7 @@ public class RecipeManagerUI : MonoBehaviour
         labelDRText.text = "Directions";
 
         // update directions
-        for (int i = 0; i < newRecipe.Steps.Length; i++)
+        for (int i = 0; i < newRecipe.Steps.Count; i++)
         {
             GameObject directionInfo = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                 verticalGroupTrans);

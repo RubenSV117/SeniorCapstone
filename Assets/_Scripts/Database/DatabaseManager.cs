@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Firebase;
-using Firebase.Database;
-using Firebase.Unity.Editor;
-using UnityEngine;
-using Object = System.Object;
-using RestSharp;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using Firebase.Storage;
-using System.Threading.Tasks;
-using Firebase.Auth;
-using UnityEngine.Networking;
-using Firebase.Extensions;
 using Assets._Scripts.Misc;
+using Firebase;
+using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Extensions;
+using Firebase.Storage;
+using Firebase.Unity.Editor;
+using Newtonsoft.Json;
 using ReGenSDK;
 using ReGenSDK.Model;
+using UnityEngine;
+using UnityEngine.Networking;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -43,20 +37,19 @@ public class DatabaseManager : MonoBehaviour
     private List<Recipe> favoriteRecipes = new List<Recipe>();
     private List<Review> reviewList = new List<Review>();
     //Firebase.Auth object for user and authentication 
-    Firebase.Auth.FirebaseAuth auth;
-    Firebase.Auth.FirebaseUser user;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
-        ReGenClient.Initialize("");
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(Endpoint);
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
         Debug.Log("Setting up Firebase Auth");
-        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+        auth = FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
         AuthStateChanged(this, null);
 
@@ -68,7 +61,7 @@ public class DatabaseManager : MonoBehaviour
      * for finding the users favorites
      * 
      **/
-    void AuthStateChanged(object sender, System.EventArgs eventArgs)
+    void AuthStateChanged(object sender, EventArgs eventArgs)
     {
         if (auth.CurrentUser != user)
         {
@@ -86,7 +79,7 @@ public class DatabaseManager : MonoBehaviour
     public bool checkRecipeAuthorID(Recipe R)
     {
 
-        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
             if (user.UserId == R.AuthorID)
@@ -112,7 +105,7 @@ public class DatabaseManager : MonoBehaviour
     public void populateFavorites()
     {
         userFavorites.Clear();
-        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
             hasAttemptFinished = false;
@@ -201,7 +194,7 @@ public class DatabaseManager : MonoBehaviour
     public void getFavorites()
     {
         userFavorites = new List<string>();
-        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        FirebaseUser user = auth.CurrentUser;
         if (user != null)
         {
             hasAttemptFinished = false;
@@ -251,7 +244,7 @@ public class DatabaseManager : MonoBehaviour
     public bool favoriteRecipe(string recipeID)
     {
 
-        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        FirebaseUser user = auth.CurrentUser;
 
         if (user != null)
         {
@@ -271,7 +264,7 @@ public class DatabaseManager : MonoBehaviour
     public bool unfavoriteRecipe(string recipeID)
     {
 
-        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+        FirebaseUser user = auth.CurrentUser;
 
         if (user != null)
         {
@@ -297,7 +290,7 @@ public class DatabaseManager : MonoBehaviour
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         string key = databaseReference.Child("recipes").Push().Key;
         // File located on disk
-        Firebase.Storage.StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
+        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
         // Create a reference to the file you want to upload
         storage_ref.PutFileAsync("file://" + local_file)
           .ContinueWith((Task<StorageMetadata> task) =>

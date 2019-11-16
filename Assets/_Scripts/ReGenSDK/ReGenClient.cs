@@ -22,7 +22,7 @@ namespace ReGenSDK
 
         private readonly string endpoint;
         private readonly Func<Task<string>> authorizationProvider;
-        private static ReGenClient _instance;
+        private static ReGenClient _instance = Initialize("https://regenapi.azurewebsites.net");
 
 
         public static ReGenClient Initialize([NotNull] string endpoint)

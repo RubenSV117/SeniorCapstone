@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Firebase.Storage;
+using ReGenSDK.Model;
 
 /// <summary>
 /// Manages recipe sharing

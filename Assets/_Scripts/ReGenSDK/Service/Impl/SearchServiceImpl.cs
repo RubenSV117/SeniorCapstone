@@ -37,7 +37,8 @@ namespace ReGenSDK.Service.Impl
             return Get()
                 .Query("q", query)
                 .Body(tags)
-                .ParseJson<List<RecipeLite>>()
+                .ParseJson<List<RecipeLiteJson>>()
+                .Map(jsonList => jsonList?.ConvertAll(j => j.ToActual()))
                 .Execute();
         }
     }

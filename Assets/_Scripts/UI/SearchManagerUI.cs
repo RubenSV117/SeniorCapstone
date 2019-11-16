@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using System.Linq;
 using System.Threading.Tasks;
 using ReGenSDK;
+using ReGenSDK.Model;
 using ReGenSDK.Tasks;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Manages UI for searching and sends input to the DatabaseManager instance
@@ -75,7 +75,20 @@ public class SearchManagerUI : MonoBehaviour
             .IncludeTag(TagsToInclude).Execute().Success(async list =>
             {
                 Debug.Log("SearchResults Received " + list);
-                var tasks = list.ConvertAll(result => ReGenClient.Instance.Recipes.Get(result.Key));
+                var tasks = new List<Task<Recipe>>();
+                foreach (var result in list) {
+                    Debug.Log("Retrieving recipe for result: " + result);
+                    try
+                    {
+                        tasks.Add(ReGenClient.Instance.Recipes.Get(result.Key));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                        throw;
+                    }
+
+                }
                 var recipes = new List<Recipe>();
                 foreach (var task in tasks)
                 {

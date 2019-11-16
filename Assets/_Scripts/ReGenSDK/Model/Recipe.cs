@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ReGenSDK.Model
 {
@@ -12,23 +13,8 @@ namespace ReGenSDK.Model
         public List<string> Steps;
         public string ImageReferencePath;
         public string RootImagePath;
-
-//        public Recipe(string key, string authorId, string name, int? calories, int? prepTimeMinutes,
-//            List<Ingredient> ingredients, List<string> steps, List<string> tags,
-//            string imageReferencePath, string rootImagePath)
-//        {
-//            Key = key;
-//            AuthorId = authorId;
-//            Name = name;
-//            Calories = calories;
-//            PrepTimeMinutes = prepTimeMinutes;
-//            Ingredients = ingredients;
-//            Steps = steps;
-//            Tags = tags;
-//            ImageReferencePath = imageReferencePath;
-//            RootImagePath = rootImagePath;
-//        }
-
+        
+        [NonSerialized] public Sprite ImageSprite;
 
         public override string ToString()
         {

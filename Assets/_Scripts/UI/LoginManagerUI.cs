@@ -48,6 +48,8 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     private string confirmPassword;
 
     private Task loginAttempt;
+    
+    
 
     public void UpdateEmail(string value)
     {

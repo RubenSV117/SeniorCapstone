@@ -20,12 +20,12 @@ public class NotificationManager : MonoBehaviour
 
     private void OnEnable()
     {
-        LoginManagerUI.Instance.OnAccountActionAttempt += ShowNotification;
+        if (LoginManagerUI.Instance != null) LoginManagerUI.Instance.OnAccountActionAttempt += ShowNotification;
     }
 
     private void OnDisable()
     {
-        LoginManagerUI.Instance.OnAccountActionAttempt -= ShowNotification;
+        if (LoginManagerUI.Instance != null) LoginManagerUI.Instance.OnAccountActionAttempt -= ShowNotification;
     }
 
     public void SetLoadingPanel(bool isActive)

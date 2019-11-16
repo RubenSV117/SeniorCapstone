@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ReGenSDK.Model;
 using ReGenSDK.Service.Api;
 
 namespace ReGenSDK.Service

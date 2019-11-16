@@ -1,9 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using ReGenSDK.Model;
 using UnityEngine;
 using UnityEngine.UI;
-
 
 public class RecipeManagerUI : MonoBehaviour
 {
@@ -202,7 +202,7 @@ public class RecipeManagerUI : MonoBehaviour
 
                 Text reviewText = reviewInfo.GetComponentInChildren<Text>();
 
-                reviewText.text = reviewList[i].content;
+                reviewText.text = reviewList[i].Content;
             }
             Text test = Instantiate(moreReviewsButton, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                     verticalGroupTrans).GetComponentInChildren<Text>();
@@ -218,7 +218,7 @@ public class RecipeManagerUI : MonoBehaviour
 
                 Text reviewText = reviewInfo.GetComponentInChildren<Text>();
 
-                reviewText.text = reviewList[i].content;
+                reviewText.text = reviewList[i].Content;
             }
         }
     }
@@ -346,7 +346,7 @@ public class RecipeManagerUI : MonoBehaviour
             // to update the survey UI.
             DatabaseManager.Instance.UpdateUserRatingForRecipe(currentRecipe.Key, rating);
         }
-        catch (System.Exception)
+        catch (Exception)
         {
         }
     }

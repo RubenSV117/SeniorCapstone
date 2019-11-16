@@ -18,6 +18,9 @@ using Firebase.Auth;
 using UnityEngine.Networking;
 using Firebase.Extensions;
 using Assets._Scripts.Misc;
+using ReGenSDK;
+using ReGenSDK.Model;
+
 public class DatabaseManager : MonoBehaviour
 {
     //Database endpoint
@@ -47,6 +50,7 @@ public class DatabaseManager : MonoBehaviour
     {
         if (Instance == null)
             Instance = this;
+        ReGenClient.Initialize("");
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(Endpoint);
         // Get the root databaseReference location of the database.
         databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
@@ -315,187 +319,17 @@ public class DatabaseManager : MonoBehaviour
         NotificationManager.Instance.ShowNotification("Publish Successful");
     }
 
-    /*
-     * Our search function, checks an elastic search VM that holds minor information about recipes by building
-     * an HTTP get request using RestSharp, then the resulting json is then parsed and the IDs are sent to the search() function
-     * there it takes the full information of those recipes
-     */
-    public void elasticSearchExclude(string name, string[] includeTags, string[] excludeTags)
-    {
-        //clear the UI
-        currentRecipes.Clear();
-
-        //Here is where we start building a query with the tags
-        string param = "{\"source\":{\"query\": {\"bool\": {";
-        string must = "\"must\":[";
-        string must_not = "\"must_not\":[";
-        string searchTag = "{\"term\": {\"tags.keyword\": \"";
-        string should = "\"should\": [\n{\n\"wildcard\": {\n\"name\": \"*" + name + "*\"\n}\n}\n,\n{\n\"fuzzy\": {\n\"name\": {\n\"value\": \"" + name + "\"\n}\n}\n}\n]\n}\n},\n\"size\": 10";
-        //checks if tags are being used
-        if (excludeTags.Length > 0 || includeTags.Length > 0)
-        {
-            //if exclude tags are being used
-            if (excludeTags.Length > 0)
-            {
-                param = param + must;
-                for (int i = 0; i < excludeTags.Length; i++)
-                {
-                    if (i != 0)
-                    {
-                        param += ",";
-                    }
-                    param = param + searchTag + excludeTags[i] + "\"}}";
-                }
-                param += "],";
-            }
-            //if include tags are being used
-            if (includeTags.Length > 0)
-            {
-                param = param + must_not;
-                for (int i = 0; i < includeTags.Length; i++)
-                {
-                    if (i != 0)
-                    {
-                        param += ",";
-
-                    }
-                    param = param + searchTag + includeTags[i] + "\"}}";
-
-                }
-                param += "],";
-            }
-            //add the should clause for the names 
-            param = param + should + "}}";
-        }
-        //This area is for if no tags 
-        else
-        {
-            param = "{\"source\": { \"query\": {\"bool\": {\"should\": [ {\"wildcard\": " +
-                "{\"{{my_field1}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field1}}\": \"{{my_value}}\"}}, {\"wildcard\": " +
-                "{\"{{my_field2}}\": \"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field2}}\": \"{{my_value}}\"}},{\"wildcard\": {\"{{my_field3}}\": " +
-                "\"*{{my_value}}*\"}},{\"fuzzy\": {\"{{my_field3}}\": \"{{my_value}}\"}}]}},\"size\": \"{{my_size}}\"},\"params\": {\"my_field1\": " +
-                "\"name\",\"my_field2\": \"ingredients.IngredientName\",\"my_field3\": \"tags\",\"my_value\": \"" + name +
-                "\",\"my_size\": 100}}";
-        }
-        var request = new UnityWebRequest("http://104.154.53.212/elasticsearch/_search/template", UnityWebRequest.kHttpVerbPOST);
-        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(param));
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Postman-Token", "f1918e1d-0cbd-4373-b9e6-353291796dd6");
-        request.SetRequestHeader("cache-control", "no-cache");
-        //:monkaS: password on github
-        request.SetRequestHeader("Authorization", "Basic dXNlcjpYNE1keTVXeGFrbVY=");
-        request.SetRequestHeader("Content-Type", "application/json");
-        //save the response
-        Debug.Log("Sending request");
-        var sending = request.SendWebRequest();
-
-        StartCoroutine(WaitForElasticSearch(sending));
-    }
-
     private IEnumerator WaitForElasticSearch(UnityWebRequestAsyncOperation operation)
     {
-        yield return operation;
-        var response = ((UnityWebRequestAsyncOperation)operation).webRequest.downloadHandler.text;
-        Debug.Log(response.ToString());
-        if (!response.Contains("\"total\":0"))
-        {
-            //convert it to rootObject
-            Rootobject root = JsonConvert.DeserializeObject<Rootobject>(response);
-            //send the hits of IDs to the search function
-            Debug.Log($"root = {root}");
-            Debug.Log($"root.hits.hits = {root.hits.hits}");
-            Debug.Log($"root.hits.hits.Lnegth = {root.hits.hits.Length}");
-            foreach (var hit in root.hits.hits)
-            {
-                Debug.Log(hit._id);
-            }
-            Search(root.hits.hits);
-        }
-        else
-        {
-            //SearchManagerUI.Instance.RefreshRecipeList(currentRecipes);
-        }
+        yield return 0;
     }
 
     //Search function for firebase using ID's found.
-    public void Search(Hit[] hits)
+    public void Search(object hits)
     {
-        hasAttemptFinished = false;
-        currentRecipes.Clear();
-        StartCoroutine(WaitForRecipes());
-        for (int i = 0; i < hits.Length; i++)
-        {
-            FirebaseDatabase.DefaultInstance
-                .GetReference("recipes").Child(hits[i]._id)
-                .GetValueAsync().ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                    {
-                        print("faulted");
-                    }
-                    else if (task.IsCompleted)
-                    {
-                        if (task.Result.ChildrenCount == 0)
-                            return;
-
-                        DataSnapshot snapshot = task.Result;
-
-                        Recipe newRecipe = JsonUtility.FromJson<Recipe>(snapshot.GetRawJsonValue());
-                        newRecipe.Key = task.Result.Key;
-                        currentRecipes.Add(newRecipe);
-
-                        if (currentRecipes.Count == hits.Length)
-                            hasAttemptFinished = true;
-                    }
-
-                });
-
-
-        }
+       
     }
-    //public void update(Recipe recipe)
-    //{
-    //    if (user != null)
-    //    {
-    //        try
-    //        {
-    //            string path = $"/recipes/{recipe.key}";
-    //            FirebaseDatabase.DefaultInstance
-    //                            .GetReference("recipes")
-    //                                    .Child($"{recipe.key}")
-    //                                    .GetValueAsync()
-    //                                    .ContinueWithOnMainThread(task =>
-    //                                    {
-    //                                        if (task.IsFaulted)
-    //                                        {
-    //                                            Debug.Log("A problem occurred.");
-    //                                        }
-    //                                        else if (task.IsCompleted)
-    //                                        {
-    //                                            DataSnapshot snapshot = task.Result;
-    //                                            Recipe temp;
-    //                                            if (snapshot.Exists)
-    //                                            {
-    //                                                temp = JsonConvert.DeserializeObject<Recipe>(snapshot.GetRawJsonValue());
-
-    //                                                // Just return if user tapped the same rating they already gave
-    //                                                string userID = temp.key;
-    //                                                if (user.UserId != userID)
-    //                                                    return;
-    //                                            }
-    //                                            databaseReference.Child(path).SetRawJsonValueAsync(JsonConvert.SerializeObject(recipeRating));
-    //                                        }
-    //                                    });
-    //        }
-    //        catch (Exception e)
-    //        {
-    //        }
-    //    }
-    //    else
-    //    {
-    //        NotificationManager.Instance.ShowNotification("You must be logged in to edit Recipes.");
-    //    }
-    //}
+    
     //coroutine that waits for search to be finished fully before updating the UI
     private IEnumerator WaitForRecipes()
     {

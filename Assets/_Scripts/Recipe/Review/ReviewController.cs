@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using UnityEngine.Networking;
 using System.Text;
+using ReGenSDK.Model;
 using UnityEngine.UI;
 /// <summary>
 /// Manages recipe reviews
@@ -55,8 +56,8 @@ public class ReviewController : MonoBehaviour
     public void DidTapSubmit()
     {
         RatingReviewing review = new RatingReviewing(stars.GetNumberOfActiveStars(), inputField.text, RecipeManagerUI.currentRecipe);
-        ReviewServiceImpl reviewService = new ReviewServiceImpl();
-        reviewService.SubmitReview(review.recipe.Key, review.review);
+//        ReviewServiceImpl reviewService = new ReviewServiceImpl();
+//        reviewService.SubmitReview(review.recipe.Key, review.review);
         gameObject.SetActive(false);
     }
 
@@ -77,39 +78,7 @@ public class ReviewController : MonoBehaviour
     #endregion
     public void getReviews(string recipeID, Action callback)
     {
-        ReviewCallback = callback;
-        hasAttemptFinished = false;
-        reviewList.Clear();
-        StartCoroutine(WaitForReviews());
-        FirebaseDatabase.DefaultInstance
-               .GetReference("reviews").Child(recipeID)
-               .GetValueAsync().ContinueWith(task =>
-               {
-                   if (task.IsFaulted)
-                   {
-                       print("faulted");
-                       hasAttemptFinished = true;
-
-                   }
-                   else if (task.IsCompleted)
-                   {
-                       if (task.Result.ChildrenCount == 0)
-                           return;
-
-                       DataSnapshot snapshot = task.Result;
-
-                       foreach (var s in snapshot.Children)
-                       {
-                           Debug.Log(s.GetRawJsonValue());
-                           Review newReview = JsonUtility.FromJson<Review>(s.GetRawJsonValue());
-                           newReview.userId = s.Key;
-                           Console.WriteLine(newReview.content);
-                           reviewList.Add(newReview);
-                       }
-
-                       hasAttemptFinished = true;
-                   }
-               });
+       
     }
     private IEnumerator WaitForReviews()
     {
@@ -119,7 +88,7 @@ public class ReviewController : MonoBehaviour
 
         foreach (Review r in reviewList)
         {
-            Debug.Log(r.userId);
+            Debug.Log(r.UserId);
         }
 
     }

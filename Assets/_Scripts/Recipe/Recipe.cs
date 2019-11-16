@@ -2,6 +2,7 @@
 using UnityEngine;
 using Firebase.Storage;
 using System.Collections.Generic;
+using ReGenSDK.Model;
 
 /// <summary>
 /// Data container for a recipe

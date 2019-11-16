@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ReGenSDK.Model;
 using UnityEngine;
 using UnityEngine.UI;
 

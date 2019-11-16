@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Threading.Tasks;
+using ReGenSDK;
+using ReGenSDK.Tasks;
 
 /// <summary>
 /// Manages UI for searching and sends input to the DatabaseManager instance
@@ -68,7 +71,18 @@ public class SearchManagerUI : MonoBehaviour
         Debug.Log($"'Exclude' preferences: ({string.Join(", ", TagsToExclude)})");
         Debug.Log($"'Include' preferences: ({string.Join(", ", TagsToInclude)})");
 
-        DatabaseManager.Instance.elasticSearchExclude(recipeName, TagsToExclude.ToArray(), TagsToInclude.ToArray());
+        ReGenClient.Instance.Search.Builder().Add(recipeName).ExcludeTag(TagsToExclude)
+            .IncludeTag(TagsToInclude).Execute().Success(async list =>
+            {
+                Debug.Log("SearchResults Received " + list);
+                var tasks = list.ConvertAll(result => ReGenClient.Instance.Recipes.Get(result.Key));
+                var recipes = new List<Recipe>();
+                foreach (var task in tasks)
+                {
+                    recipes.Add(await task);
+                }
+                RefreshRecipeList(recipes);
+            });
     }
 
     public void RefreshRecipeList(List<Recipe> recipes, bool favoriteSearch = false)

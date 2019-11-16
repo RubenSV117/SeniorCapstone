@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using System.Collections.Generic;
+using ReGenSDK.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,7 +76,7 @@ public class ReviewManagerUI : MonoBehaviour
                 Text reviewText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                     verticalGroupTrans).GetComponentInChildren<Text>();
 
-                reviewText.text = reviewList[i].content;
+                reviewText.text = reviewList[i].Content;
             }
             moreReviewsButton.GetComponentInChildren<Button>().transform.SetAsLastSibling();
             moreReviewsButton.GetComponent<Button>().enabled = false;
@@ -91,7 +90,7 @@ public class ReviewManagerUI : MonoBehaviour
                 Text reviewText = Instantiate(infoPrefab, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,
                     verticalGroupTrans).GetComponentInChildren<Text>();
 
-                reviewText.text = rc.reviewList[i].content;
+                reviewText.text = rc.reviewList[i].Content;
             }
             reviewCounter -= 5;
             moreReviewsButton.GetComponentInChildren<Button>().transform.SetAsLastSibling();

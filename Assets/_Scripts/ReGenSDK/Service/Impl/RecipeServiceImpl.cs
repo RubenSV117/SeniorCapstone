@@ -21,17 +21,28 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Update(string recipeId, Recipe recipe)
         {
-            throw new NotImplementedException();
+            return Post()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Body(recipe)
+                .Execute();
+
         }
 
         public override Task Delete(string recipeId)
         {
-            throw new NotImplementedException();
+            return Delete()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Execute();
         }
 
         public override Task Create(Recipe recipe)
         {
-            throw new NotImplementedException();
+            return Put()
+                .RequireAuthentication()
+                .Body(recipe)
+                .Execute();
         }
     }
 }

@@ -188,6 +188,7 @@
           </e>
           <e p="ReGenSDK" t="Include">
             <e p="Exceptions" t="Include">
+              <e p="HttpResponseException.cs" t="Include" />
               <e p="RegenApiException.cs" t="Include" />
               <e p="RegenAuthenticationException.cs" t="Include" />
               <e p="RegenException.cs" t="Include" />

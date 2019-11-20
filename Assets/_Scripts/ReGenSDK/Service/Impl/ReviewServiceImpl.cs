@@ -21,7 +21,7 @@ namespace ReGenSDK.Service.Impl
                 .Path(recipeId)
                 .Query("start", start)
                 .Query("size", size.ToString())
-                .ParseJson<ReviewsPage>()
+                .Parse<ReviewsPage>()
                 .Execute();
         }
 
@@ -31,7 +31,7 @@ namespace ReGenSDK.Service.Impl
                 .Path(recipeId)
                 .Path("self")
                 .RequireAuthentication()
-                .ParseJson<Review>()
+                .Parse<Review>()
                 .Execute();
         }
 

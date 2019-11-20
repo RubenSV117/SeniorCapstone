@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using ReGenSDK.Exceptions;
 using ReGenSDK.Tasks;
+using RestSharp.Extensions;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -152,7 +152,7 @@ namespace ReGenSDK.Service
                     }
                     else if (r.isHttpError)
                     {
-                        task.SetException(new HttpResponseException(r.responseCode, r.error, r.GetResponseHeaders()));
+                        task.SetException(new HttpResponseException("Encountered Http Error", r));
                     }
                     else
                     {
@@ -167,21 +167,9 @@ namespace ReGenSDK.Service
         }
     }
 
-    public class HttpResponseException : RegenApiException
-    {
-        public readonly long Code;
-        public readonly Dictionary<string, string> Headers;
-
-        public HttpResponseException(long code, string message, Dictionary<string, string> headers) : base(message)
-        {
-            Code = code;
-            Headers = headers;
-        }
-    }
-
     public static class RequestBuilderExtension
     {
-        public static RequestBuilder<T> ParseJson<T>(this RequestBuilder<UnityWebRequest> builder)
+        public static RequestBuilder<T> Parse<T>(this RequestBuilder<UnityWebRequest> builder)
         {
             return builder.Map(x =>
                 {
@@ -197,11 +185,49 @@ namespace ReGenSDK.Service
                     var text = x.downloadHandler.text;
                     if (string.IsNullOrWhiteSpace(text))
                         return default;
-                    Debug.Log($"Parsing results to {typeof(T)}");
+                    var type = typeof(T);
+                    Debug.Log($"Parsing results to {type}");
                     try
                     {
                         T results;
-                        if (typeof(IList).IsAssignableFrom(typeof(T)))
+                        if (type.IsPrimitive && type == typeof(int))
+                        {
+                            if (int.TryParse(text, out var attempt))
+                                results = (T) Convert.ChangeType(attempt, type);
+                            else
+                            {
+                                Debug.LogException(
+                                    new HttpResponseException($"Failed to parse response to {type} from '{text}'", x));
+                                results = default;
+                            }
+                        }
+                        else if (type.IsPrimitive && type == typeof(float))
+                        {
+                            if (float.TryParse(text, out var attempt))
+                            {
+                                results = (T) Convert.ChangeType(attempt, type);
+                            }
+                            else
+                            {
+                                Debug.LogException(
+                                    new HttpResponseException($"Failed to parse response to {type} from '{text}'", x));
+                                results = default;
+                            }
+                        }
+                        else if (type.IsPrimitive && type == typeof(double))
+                        {
+                            if (double.TryParse(text, out var attempt))
+                            {
+                                results = (T) Convert.ChangeType(attempt, type);
+                            }
+                            else
+                            {
+                                Debug.LogException(
+                                    new HttpResponseException($"Failed to parse response to {type} from '{text}'", x));
+                                results = default;
+                            }
+                        }
+                        else if (typeof(IList).IsAssignableFrom(type))
                         {
                             results = JsonUtility.FromJson<Wrapper<T>>("{ \"value\": " + text + "}").value;
                         }
@@ -209,6 +235,7 @@ namespace ReGenSDK.Service
                         {
                             results = JsonUtility.FromJson<T>(text);
                         }
+
                         Debug.Log(results);
                         return results;
                     }
@@ -221,7 +248,7 @@ namespace ReGenSDK.Service
             );
         }
     }
-    
+
     [Serializable]
     class Wrapper<T>
     {

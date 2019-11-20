@@ -8,27 +8,54 @@ namespace ReGenSDK.Service.Impl
     {
         public RatingServiceImpl(string endpoint, Func<Task<string>> authorizationProvider) : base(endpoint, authorizationProvider)
         {
-            throw new NotImplementedException();
         }
 
         public override Task<double> GetAverage(string recipeId)
         {
-            throw new NotImplementedException();
+            return Get()
+                .Path(recipeId)
+                .Path("average")
+                .Parse<double>()
+                .Execute();
         }
 
         public override Task<int> Get(string recipeId)
         {
-            throw new System.NotImplementedException();
+            return Get()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Parse<int>()
+                .Execute();
         }
 
         public override Task Create(string recipeId, int rating)
         {
-            throw new System.NotImplementedException();
+            return Put()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Body(new RatingBody
+                {
+                    Rating = rating
+                })
+                .Execute();
         }
 
         public override Task Update(string recipeId, int rating)
         {
-            throw new System.NotImplementedException();
+            return Post()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Body(new RatingBody
+                {
+                    Rating = rating
+                })
+                .Execute();
+        }
+
+        [Serializable]
+        class RatingBody
+        {
+            public int Rating;
         }
     }
 }

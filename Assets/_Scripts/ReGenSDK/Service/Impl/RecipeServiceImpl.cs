@@ -15,7 +15,7 @@ namespace ReGenSDK.Service.Impl
         {
             return Get()
                 .Path(recipeId)
-                .ParseJson<Recipe>()
+                .Parse<Recipe>()
                 .Execute();
         }
 

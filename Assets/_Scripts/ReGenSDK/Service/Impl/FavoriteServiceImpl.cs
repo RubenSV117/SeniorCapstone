@@ -20,19 +20,24 @@ namespace ReGenSDK.Service.Impl
 
         public override Task<Dictionary<string, bool>> Get()
         {
-//            UnityWebRequest.Get(endpoint).SetRequestHeader("Authorization", authorizationProvider);
             throw new NotImplementedException();
-
+            //TODO
         }
 
         public override Task Create(string recipeId)
         {
-            throw new NotImplementedException();
+            return Put()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Execute();
         }
 
         public override Task Delete(string recipeId)
         {
-            throw new NotImplementedException();
+            return Delete()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Execute();
         }
     }
 }

@@ -37,17 +37,28 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Create(string recipeId, Review review)
         {
-            throw new NotImplementedException();
+            return Put()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Body(review)
+                .Execute();
         }
 
         public override Task Update(string recipeId, Review review)
         {
-            throw new NotImplementedException();
+            return Post()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Body(review)
+                .Execute();
         }
 
         public override Task Delete(string recipeId)
         {
-            throw new NotImplementedException();
+            return Delete()
+                .Path(recipeId)
+                .RequireAuthentication()
+                .Execute();
         }
     }
 }

@@ -268,6 +268,8 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     public void Logout()
     {
         LoginService.Instance.SignOut();
+        SearchManagerUI.Instance.Reset();
+        MainMenuManagerUI.Instance.Reset();
     }
 
     public void SkipLogIn()

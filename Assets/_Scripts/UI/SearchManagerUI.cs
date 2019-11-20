@@ -153,4 +153,11 @@ public class SearchManagerUI : MonoBehaviour
         favoritesPanel.SetActive(true);
     }
 
+    public void Reset()
+    {
+        for (int i = 0; i < recipeListTrans.transform.childCount; i++)
+            Destroy(recipeListTrans.transform.GetChild(i).gameObject);
+        for (int i = 0; i < recipeListTransFavorites.transform.childCount; i++)
+            Destroy(recipeListTransFavorites.transform.GetChild(i).gameObject);
+    }
 }

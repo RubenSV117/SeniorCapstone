@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuManagerUI : MonoBehaviour, IPanel
 {
@@ -12,6 +13,7 @@ public class MainMenuManagerUI : MonoBehaviour, IPanel
     [Header("Main Display UI Elements")]
     [SerializeField] private GameObject header; // bar at the top
     [SerializeField] private GameObject navigationPanel;
+    [SerializeField] private InputField inputField;
 
     public event EventHandler CloseablePanels; // Panels that implement the IPanel interface so they can be closed.
 
@@ -88,5 +90,10 @@ public class MainMenuManagerUI : MonoBehaviour, IPanel
     public void CloseAllPanels()
     {
         CloseablePanels?.Invoke(this, null);
+    }
+
+    public void Reset()
+    {
+        inputField.text = "";
     }
 }

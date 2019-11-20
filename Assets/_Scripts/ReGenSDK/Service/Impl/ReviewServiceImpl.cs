@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using ReGenSDK.Model;
+using RestSharp.Validation;
 
 namespace ReGenSDK.Service.Impl
 {
@@ -37,6 +38,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Create(string recipeId, Review review)
         {
+            ValidateReview(review.Content, review.Rating);
             return Put()
                 .Path(recipeId)
                 .RequireAuthentication()
@@ -46,11 +48,18 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Update(string recipeId, Review review)
         {
+            ValidateReview(review.Content, review.Rating);
             return Post()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Body(review)
                 .Execute();
+        }
+
+        private void ValidateReview([NotNull] string reviewContent, int reviewRating)
+        {
+            if (reviewContent == null) throw new ArgumentNullException(nameof(reviewContent));
+            if (reviewRating <= 0 || reviewRating > 5) throw new ArgumentOutOfRangeException(nameof(reviewRating));
         }
 
         public override Task Delete(string recipeId)

@@ -8,8 +8,8 @@ namespace ReGenSDK.Model
     public class Recipe : RecipeLite
     {
         public string AuthorId;
-        public int? Calories;
-        public int? PrepTimeMinutes;
+        public int Calories;
+        public int PrepTimeMinutes;
         public List<string> Steps;
         public string ImageReferencePath;
         public string RootImagePath;

@@ -72,8 +72,8 @@ public class RecipeManagerUI : MonoBehaviour
         // update text elements
         dishNameText.text = newRecipe.Name;
         ingredientCountText.text = newRecipe.Ingredients.Count.ToString("N0");
-        calorieCountText.text = newRecipe.Calories?.ToString("N0");
-        prepTimeText.text = newRecipe.PrepTimeMinutes?.ToString("N0");
+        calorieCountText.text = newRecipe.Calories != default ? newRecipe.Calories.ToString("N0") : "N/A";
+        prepTimeText.text =  newRecipe.PrepTimeMinutes != default ? newRecipe.PrepTimeMinutes.ToString("N0") : "N/A";
 
         #endregion
 

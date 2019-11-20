@@ -19,29 +19,29 @@ namespace ReGenSDK.Service
             this.authorizationProvider = authorizationProvider;
         }
         
-        protected RequestBuilder<UnityWebRequest> WebRequest()
+        protected RequestBuilder<UnityWebRequest> HttpRequest()
         {
             return new RequestBuilder<UnityWebRequest>(endpoint, authorizationProvider, op => op);
         }
 
-        protected RequestBuilder<UnityWebRequest> Get()
+        protected RequestBuilder<UnityWebRequest> HttpGet()
         {
-            return new RequestBuilder<UnityWebRequest>(endpoint, authorizationProvider, op => op).Method("GET");
+            return HttpRequest().Method("GET");
         }
         
-        protected RequestBuilder<UnityWebRequest> Post()
+        protected RequestBuilder<UnityWebRequest> HttpPost()
         {
-            return new RequestBuilder<UnityWebRequest>(endpoint, authorizationProvider, op => op).Method("POST");
+            return HttpRequest().Method("POST");
         }
         
-        protected RequestBuilder<UnityWebRequest> Put()
+        protected RequestBuilder<UnityWebRequest> HttpPut()
         {
-            return new RequestBuilder<UnityWebRequest>(endpoint, authorizationProvider, op => op).Method("PUT");
+            return HttpRequest().Method("PUT");
         }
         
-        protected RequestBuilder<UnityWebRequest> Delete()
+        protected RequestBuilder<UnityWebRequest> HttpDelete()
         {
-            return new RequestBuilder<UnityWebRequest>(endpoint, authorizationProvider, op => op).Method("DELETE");
+            return HttpRequest().Method("DELETE");
         }
     }
 }

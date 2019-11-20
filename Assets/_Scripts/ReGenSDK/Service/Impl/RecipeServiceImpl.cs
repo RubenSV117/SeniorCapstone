@@ -17,7 +17,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task<Recipe> Get(string recipeId)
         {
-            return Get()
+            return HttpGet()
                 .Path(recipeId)
                 .Parse<Recipe>()
                 .Execute();
@@ -26,8 +26,8 @@ namespace ReGenSDK.Service.Impl
         public override Task Update(string recipeId, Recipe recipe)
         {
             ValidateRecipe(recipe.Name, recipe.Ingredients, recipe.Steps,
-                recipe.Tags, recipe.ImageReferencePath, recipe.RootImagePath);
-            return Post()
+                recipe.Tags);
+            return HttpPost()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Body(recipe)
@@ -37,7 +37,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Delete(string recipeId)
         {
-            return Delete()
+            return HttpDelete()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Execute();
@@ -46,8 +46,8 @@ namespace ReGenSDK.Service.Impl
         public override Task<Recipe> Create(Recipe recipe)
         {
             ValidateRecipe(recipe.Name, recipe.Ingredients, recipe.Steps,
-                recipe.Tags, recipe.ImageReferencePath, recipe.RootImagePath);
-            return Put()
+                recipe.Tags);
+            return HttpPut()
                 .RequireAuthentication()
                 .Body(recipe)
                 .Parse<Recipe>()
@@ -55,15 +55,12 @@ namespace ReGenSDK.Service.Impl
         }
 
         private void ValidateRecipe([NotNull] string recipeName,
-            [NotNull] List<Ingredient> recipeIngredients, [NotNull] List<string> recipeSteps, [NotNull] List<string> recipeTags,
-            [NotNull] string recipeImageReferencePath, [NotNull] string recipeRootImagePath)
+            [NotNull] List<Ingredient> recipeIngredients, [NotNull] List<string> recipeSteps, [NotNull] List<string> recipeTags)
         {
             if (recipeName.IsNullOrEmpty()) throw new ArgumentNullException(nameof(recipeName));
             if (recipeIngredients == null) throw new ArgumentNullException(nameof(recipeIngredients));
             if (recipeSteps == null) throw new ArgumentNullException(nameof(recipeSteps));
             if (recipeTags == null) throw new ArgumentNullException(nameof(recipeTags));
-            if (recipeImageReferencePath == null) throw new ArgumentNullException(nameof(recipeImageReferencePath));
-            if (recipeRootImagePath == null) throw new ArgumentNullException(nameof(recipeRootImagePath));
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task<double> GetAverage(string recipeId)
         {
-            return Get()
+            return HttpGet()
                 .Path(recipeId)
                 .Path("average")
                 .Parse<double>()
@@ -21,7 +21,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task<int> Get(string recipeId)
         {
-            return Get()
+            return HttpGet()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Parse<int>()
@@ -30,7 +30,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Create(string recipeId, int rating)
         {
-            return Put()
+            return HttpPut()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Body(new RatingBody
@@ -42,7 +42,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Update(string recipeId, int rating)
         {
-            return Post()
+            return HttpPost()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Body(new RatingBody

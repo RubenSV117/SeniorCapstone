@@ -12,21 +12,18 @@ namespace ReGenSDK.Service.Impl
         {
         }
 
-        public override async Task<List<string>> GetList()
+        public override Task<List<string>> Get()
         {
-            var dictionary = await Get();
-            return dictionary.Keys.ToList();
-        }
+            return HttpGet()
+                .RequireAuthentication()
+                .Parse<List<string>>()
+                .Execute();
 
-        public override Task<Dictionary<string, bool>> Get()
-        {
-            throw new NotImplementedException();
-            //TODO
         }
 
         public override Task Create(string recipeId)
         {
-            return Put()
+            return HttpPut()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Execute();
@@ -34,7 +31,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Delete(string recipeId)
         {
-            return Delete()
+            return HttpDelete()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Execute();

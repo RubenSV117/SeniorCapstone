@@ -34,7 +34,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task<List<RecipeLite>> Search(string query, TagFilter tags)
         {
-            return Get()
+            return HttpGet()
                 .Query("q", query)
                 .Body(tags)
                 .Parse<List<RecipeLiteJson>>()

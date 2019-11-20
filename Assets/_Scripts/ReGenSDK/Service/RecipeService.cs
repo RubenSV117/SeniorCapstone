@@ -15,5 +15,10 @@ namespace ReGenSDK.Service
         public abstract Task Update(string recipeId, Recipe recipe);
         public abstract Task Delete(string recipeId);
         public abstract Task<Recipe> Create(Recipe recipe);
+
+        public Task Update(Recipe recipe)
+        {
+            return Update(recipe.Key, recipe);
+        }
     }
 }

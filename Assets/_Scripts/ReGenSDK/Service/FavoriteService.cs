@@ -11,8 +11,7 @@ namespace ReGenSDK.Service
         {
         }
 
-        public abstract Task<List<string>> GetList();
-        public abstract Task<Dictionary<string, bool>> Get();
+        public abstract Task<List<string>> Get();
         public abstract Task Create(string recipeId);
         public abstract Task Delete(string recipeId);
     }

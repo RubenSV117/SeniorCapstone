@@ -167,9 +167,6 @@
               </e>
             </e>
           </e>
-          <e p="Database" t="Include">
-            <e p="DatabaseManager.cs" t="Include" />
-          </e>
           <e p="Editor" t="Include">
             <e p="ILoginService.cs" t="Include" />
             <e p="LoginService.cs" t="Include" />
@@ -256,7 +253,6 @@
               <e p="StarController.cs" t="Include" />
             </e>
             <e p="ReviewManagerUI.cs" t="Include" />
-            <e p="favorites.cs" t="Include" />
           </e>
           <e p="Slideshow" t="Include">
             <e p="Slideshow.cs" t="Include" />

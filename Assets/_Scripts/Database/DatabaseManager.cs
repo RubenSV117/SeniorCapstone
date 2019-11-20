@@ -190,127 +190,127 @@ public class DatabaseManager : MonoBehaviour
 
     }
 
-
-    public void getFavorites()
-    {
-        userFavorites = new List<string>();
-        FirebaseUser user = auth.CurrentUser;
-        if (user != null)
-        {
-            hasAttemptFinished = false;
-            StartCoroutine(WaitForFavorites());
-
-            FirebaseDatabase.DefaultInstance
-                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
-                           .GetValueAsync().ContinueWith(task =>
-                           {
-                               if (task.IsFaulted)
-                               {
-                                   print("faulted");
-                                   hasAttemptFinished = true;
-
-                               }
-                               else if (task.IsCompleted)
-                               {
-                                   if (task.Result.ChildrenCount == 0)
-                                       return;
-
-                                   DataSnapshot snapshot = task.Result;
-
-                                   foreach (var s in snapshot.Children)
-                                   {
-                                       userFavorites.Add(s.Key);
-                                   }
-
-
-                                   hasAttemptFinished = true;
-                               }
-
-                           });
-        }
-    }
-
-    private IEnumerator WaitForFavorites()
-    {
-        yield return new WaitUntil(() => hasAttemptFinished);
-
-        RecipeManagerUI.Instance.SetFavorited(userFavorites);
-
-    }
+//
+//    public void getFavorites()
+//    {
+//        userFavorites = new List<string>();
+//        FirebaseUser user = auth.CurrentUser;
+//        if (user != null)
+//        {
+//            hasAttemptFinished = false;
+//            StartCoroutine(WaitForFavorites());
+//
+//            FirebaseDatabase.DefaultInstance
+//                           .GetReference("users").Child(auth.CurrentUser.UserId).Child("favorites")
+//                           .GetValueAsync().ContinueWith(task =>
+//                           {
+//                               if (task.IsFaulted)
+//                               {
+//                                   print("faulted");
+//                                   hasAttemptFinished = true;
+//
+//                               }
+//                               else if (task.IsCompleted)
+//                               {
+//                                   if (task.Result.ChildrenCount == 0)
+//                                       return;
+//
+//                                   DataSnapshot snapshot = task.Result;
+//
+//                                   foreach (var s in snapshot.Children)
+//                                   {
+//                                       userFavorites.Add(s.Key);
+//                                   }
+//
+//
+//                                   hasAttemptFinished = true;
+//                               }
+//
+//                           });
+//        }
+//    }
+//
+//    private IEnumerator WaitForFavorites()
+//    {
+//        yield return new WaitUntil(() => hasAttemptFinished);
+//
+//        RecipeManagerUI.Instance.SetFavorited(userFavorites);
+//
+//    }
 
     /*
      * Method for favoriting a recipe, takes the recipeID of the selected recipe and sends that to the users favorites on firebase
      */
-    public bool favoriteRecipe(string recipeID)
-    {
-
-        FirebaseUser user = auth.CurrentUser;
-
-        if (user != null)
-        {
-            string uid = user.UserId;
-            string json = JsonUtility.ToJson(recipeID);
-            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).SetValueAsync(true);
-            return true;
-        }
-        else
-        {
-            print("No user logged in.");
-            return false;
-        }
-
-    }
+//    public bool favoriteRecipe(string recipeID)
+//    {
+//
+//        FirebaseUser user = auth.CurrentUser;
+//
+//        if (user != null)
+//        {
+//            string uid = user.UserId;
+//            string json = JsonUtility.ToJson(recipeID);
+//            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).SetValueAsync(true);
+//            return true;
+//        }
+//        else
+//        {
+//            print("No user logged in.");
+//            return false;
+//        }
+//
+//    }
     //Same as favorite but removes
-    public bool unfavoriteRecipe(string recipeID)
-    {
-
-        FirebaseUser user = auth.CurrentUser;
-
-        if (user != null)
-        {
-            string uid = user.UserId;
-            string json = JsonUtility.ToJson(recipeID);
-            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).RemoveValueAsync();
-            return true;
-        }
-        else
-        {
-            print("No user logged in.");
-            return false;
-        }
-    }
+//    public bool unfavoriteRecipe(string recipeID)
+//    {
+//
+//        FirebaseUser user = auth.CurrentUser;
+//
+//        if (user != null)
+//        {
+//            string uid = user.UserId;
+//            string json = JsonUtility.ToJson(recipeID);
+//            databaseReference.Child("users").Child(uid).Child("favorites").Child(recipeID).RemoveValueAsync();
+//            return true;
+//        }
+//        else
+//        {
+//            print("No user logged in.");
+//            return false;
+//        }
+//    }
 
     /*
      * Method for publishing a recipe to firebase,
      * Takes in the recipe object that has all the inputted info from the recipe publishing page and a photo of the food
      * then sends the photo to storage and the recipe to our DB
      */
-    public void PublishNewRecipe(Recipe recipe, string local_file)
-    {
-        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
-        string key = databaseReference.Child("recipes").Push().Key;
-        // File located on disk
-        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
-        // Create a reference to the file you want to upload
-        storage_ref.PutFileAsync("file://" + local_file)
-          .ContinueWith((Task<StorageMetadata> task) =>
-          {
-              if (task.IsFaulted || task.IsCanceled)
-              {
-                  Debug.Log(task.Exception.ToString());
-              }
-              else
-              {
-                  Debug.Log("Finished uploading...");
-              }
-          });
-        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
-
-        string json = JsonUtility.ToJson(recipe);
-        databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
-
-        NotificationManager.Instance.ShowNotification("Publish Successful");
-    }
+//    public void PublishNewRecipe(Recipe recipe, string local_file)
+//    {
+//        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
+//        string key = databaseReference.Child("recipes").Push().Key;
+//        // File located on disk
+//        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://regen-66cf8.appspot.com/Recipes/" + key);
+//        // Create a reference to the file you want to upload
+//        storage_ref.PutFileAsync("file://" + local_file)
+//          .ContinueWith((Task<StorageMetadata> task) =>
+//          {
+//              if (task.IsFaulted || task.IsCanceled)
+//              {
+//                  Debug.Log(task.Exception.ToString());
+//              }
+//              else
+//              {
+//                  Debug.Log("Finished uploading...");
+//              }
+//          });
+//        recipe.ImageReferencePath = $"gs://regen-66cf8.appspot.com/Recipes/" + key;
+//
+//        string json = JsonUtility.ToJson(recipe);
+//        databaseReference.Child("recipes").Child(key).SetRawJsonValueAsync(json);
+//
+//        NotificationManager.Instance.ShowNotification("Publish Successful");
+//    }
 
     private IEnumerator WaitForElasticSearch(UnityWebRequestAsyncOperation operation)
     {

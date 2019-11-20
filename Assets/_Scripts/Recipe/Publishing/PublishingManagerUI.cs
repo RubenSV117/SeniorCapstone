@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Firebase.Storage;
+using ReGenSDK;
 using ReGenSDK.Model;
+using ReGenSDK.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -236,19 +239,31 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
             return;
 
         // create recipe 
-        Recipe newRecipe = new Recipe()
+        Recipe newRecipe = new Recipe
         {
             Name = recipeName,
-            AuthorId = "",
             Calories = calories,
             PrepTimeMinutes = minutesPrep,
             Tags = tags,
-            Ingredients = ingredients
+            Ingredients = ingredients,
+            Steps = new List<string>()
         };
-           
-
+        
         // send for publish
-        DatabaseManager.Instance.PublishNewRecipe(newRecipe, CameraManager.PathOfCurrentImage);
+        var recipeApi = ReGenClient.Instance.Recipes;
+        recipeApi.Create(newRecipe).Success(recipe =>
+        {
+            var path = $"gs://regen-66cf8.appspot.com/Recipes/{recipe.Key}";
+            FirebaseStorage.DefaultInstance
+                .GetReferenceFromUrl(path)
+                .PutFileAsync($"file://{CameraManager.PathOfCurrentImage}")
+                .Success(data =>
+                {
+                    Debug.Log("Finished uploading...");
+                    recipe.ImageReferencePath = path;
+                    recipeApi.Update(recipe);
+                }).Failure(Debug.LogException);
+        });
 
         // close canvas and refresh its content
         Disable();

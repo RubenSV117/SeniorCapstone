@@ -18,7 +18,7 @@ namespace ReGenSDK.Service.Impl
         {
             if (recipeId == null) throw new ArgumentNullException(nameof(recipeId));
             if (size <= 0) throw new ArgumentOutOfRangeException(nameof(size));
-            return Get()
+            return HttpGet()
                 .Path(recipeId)
                 .Query("start", start)
                 .Query("size", size.ToString())
@@ -28,7 +28,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task<Review> Get(string recipeId)
         {
-            return Get()
+            return HttpGet()
                 .Path(recipeId)
                 .Path("self")
                 .RequireAuthentication()
@@ -39,7 +39,7 @@ namespace ReGenSDK.Service.Impl
         public override Task Create(string recipeId, Review review)
         {
             ValidateReview(review.Content, review.Rating);
-            return Put()
+            return HttpPut()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Body(review)
@@ -49,7 +49,7 @@ namespace ReGenSDK.Service.Impl
         public override Task Update(string recipeId, Review review)
         {
             ValidateReview(review.Content, review.Rating);
-            return Post()
+            return HttpPost()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Body(review)
@@ -64,7 +64,7 @@ namespace ReGenSDK.Service.Impl
 
         public override Task Delete(string recipeId)
         {
-            return Delete()
+            return HttpDelete()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Execute();

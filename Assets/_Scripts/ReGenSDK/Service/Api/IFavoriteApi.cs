@@ -9,11 +9,11 @@ namespace ReGenSDK.Service.Api
         /// <summary>
         /// Returns a collection of the user's favorite recipes.
         /// </summary>
-        /// <returns>A dictionary whose keys are the recipeId and whose value is <c>true</c></returns>
+        /// <returns>A list of recipeIds</returns>
         /// <remarks>[Requires authentication]</remarks>
 //        [Get("")]
 //        [Headers("Authorization: Bearer")]
-        Task<Dictionary<string, bool>> Get();
+        Task<List<string>> Get();
 
         /// <summary>
         /// Adds a recipe to the user's favorites.

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using ReGenSDK;
 using ReGenSDK.Model;
+using ReGenSDK.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,8 +48,9 @@ public class RecipeManagerUI : MonoBehaviour
     private bool reviewsAreActive = true;
 
     private List<Review> reviewList = new List<Review>();
-    private ReviewController rc;
     private int reviewCounter;
+
+    private bool hasPreviousRating = false;
 
     private void Awake()
     {
@@ -165,19 +168,21 @@ public class RecipeManagerUI : MonoBehaviour
 
         #region Load saved user inputs (if recipe was favorited, rated, reviewed, etc.)
 
-        DatabaseManager.Instance.getFavorites();
-
-        DatabaseManager.Instance
-            .GetPreviousSurveyRating(currentRecipe.Key, rating =>
+        ReGenClient.Instance.Favorites.Get().Success(favorites =>
+            {
+                unfavoriteButton.SetActive(favorites.Contains(currentRecipe.Key));
+            });
+        ReGenClient.Instance.Ratings.Get(currentRecipe.Key).Success(rating =>
+        {
+            if (rating != default)
             {
                 DrawSurveyRating(rating);
-            });
-        DatabaseManager.Instance
-            .GetCommunityRating(currentRecipe.Key, rating =>
-            {
-                DrawCommunityRating((int)rating);
-            });
-
+                hasPreviousRating = true;
+            }
+            
+        });
+        ReGenClient.Instance.Ratings.GetAverage(currentRecipe.Key).Success(rating => DrawCommunityRating((int)rating));
+        
         #endregion
 
         canvas.SetActive(true);
@@ -290,44 +295,14 @@ public class RecipeManagerUI : MonoBehaviour
         loadingObject.SetActive(false);
     }
 
-    public void SetFavorited(List<string> favorites)
-    {
-        if(favorites.Contains(currentRecipe.Key))
-            HandleFavorite();
-
-        else
-            HandleUnfavorite();
-    }
-
     public void HandleFavorite()
     {
-        bool worked = DatabaseManager.Instance.favoriteRecipe(currentRecipe.Key);
-
-        if (worked)
-        {
-            unfavoriteButton.SetActive(true);
-            //NotificationManager.Instance.ShowNotification("Favorited");
-        }
-        else
-        {
-            unfavoriteButton.SetActive(false);
-            //NotificationManager.Instance.ShowNotification("Failed to favorite.");
-        }
+        ReGenClient.Instance.Favorites.Create(currentRecipe.Key).Success(() => unfavoriteButton.SetActive(true));
     }
 
     public void HandleUnfavorite()
     {
-        bool worked = DatabaseManager.Instance.unfavoriteRecipe(currentRecipe.Key);
-        if (worked)
-        {
-            unfavoriteButton.SetActive(false);
-            //NotificationManager.Instance.ShowNotification("Unfavoriting.");
-
-        }
-        else
-        {
-            //NotificationManager.Instance.ShowNotification("Failed to unfavorite.");
-        }
+        ReGenClient.Instance.Favorites.Delete(currentRecipe.Key).Success(() => unfavoriteButton.SetActive(false));
     }
 
     #region Rating system methods
@@ -344,7 +319,22 @@ public class RecipeManagerUI : MonoBehaviour
 
             // The DB method makes a circular reference to this class and runs UpdateSurveyRating()
             // to update the survey UI.
-            DatabaseManager.Instance.UpdateUserRatingForRecipe(currentRecipe.Key, rating);
+            if (hasPreviousRating)
+            {
+                ReGenClient.Instance.Ratings.Update(currentRecipe.Key, rating).Success(() =>
+                {
+                    DrawSurveyRating(rating);
+                });
+            }
+            else
+            {
+                hasPreviousRating = true;
+                ReGenClient.Instance.Ratings.Create(currentRecipe.Key, rating).Success(() =>
+                {
+                    DrawSurveyRating(rating);
+                });
+            }
+            
         }
         catch (Exception)
         {

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using UnityEngine.Networking;
 using System.Text;
+using ReGenSDK;
 using ReGenSDK.Model;
 using UnityEngine.UI;
 /// <summary>
@@ -37,15 +38,8 @@ public class ReviewController : MonoBehaviour
     [SerializeField] private Text recipeNameText;
     [SerializeField] private GameObject deleteButton;
 
-    public Action ReviewCallback;
-
     #endregion
-    //Database endpoint
-    public static string Endpoint = "https://regen-66cf8.firebaseio.com/";
-
-    //Here is the backend handling most database calls
-
-    public static DatabaseManager Instance;
+    
 
     //firebase object
     private DatabaseReference databaseReference;
@@ -55,17 +49,19 @@ public class ReviewController : MonoBehaviour
 
     public void DidTapSubmit()
     {
-        RatingReviewing review = new RatingReviewing(stars.GetNumberOfActiveStars(), inputField.text, RecipeManagerUI.currentRecipe);
-//        ReviewServiceImpl reviewService = new ReviewServiceImpl();
-//        reviewService.SubmitReview(review.recipe.Key, review.review);
+        ReGenClient.Instance.Reviews.Create(RecipeManagerUI.currentRecipe.Key, new Review
+        {
+            Content = inputField.text,
+            Rating = stars.GetNumberOfActiveStars()
+        });
         gameObject.SetActive(false);
     }
 
-    public void PrefilReview(RatingReviewing review)
+    public void PrefilReview(Review review)
     {
-        stars.SetStarValue(review.stars);
-        inputField.text = review.review;
-        recipeNameText.text = review.recipe.Name;
+        stars.SetStarValue(review.Rating);
+        inputField.text = review.Content;
+//        recipeNameText.text = review.Name;
     }
 
 
@@ -80,19 +76,7 @@ public class ReviewController : MonoBehaviour
     {
        
     }
-    private IEnumerator WaitForReviews()
-    {
-        yield return new WaitUntil(() => hasAttemptFinished);
-
-        ReviewCallback();
-
-        foreach (Review r in reviewList)
-        {
-            Debug.Log(r.UserId);
-        }
-
-    }
-
+    
     public void SetDeleteButton(bool isActive)
     {
         deleteButton.SetActive(isActive);
@@ -103,19 +87,6 @@ public class ReviewController : MonoBehaviour
         // TODO: wire to database call
     }
 
-}
-
-public struct RatingReviewing
-{
-    public string review;
-    public Recipe recipe;
-    public float stars;
-    public RatingReviewing(int stars, string review, Recipe recipe)
-    {
-        this.review = review;
-        this.stars = stars;
-        this.recipe = recipe;
-    }
 }
 
 

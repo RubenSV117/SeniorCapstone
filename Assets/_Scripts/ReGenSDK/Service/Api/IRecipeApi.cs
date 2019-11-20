@@ -19,6 +19,6 @@ namespace ReGenSDK.Service.Api
 
 //        [Put("")]
 //        [Headers("Authorization: Bearer")]
-        Task Create([NotNull] Recipe recipe);
+        Task<Recipe> Create([NotNull] Recipe recipe);
     }
 }

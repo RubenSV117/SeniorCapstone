@@ -5,6 +5,9 @@
     <e p="C:\Users\TonTL\.Rider2019.2\system\extResources" t="IncludeRecursive" />
     <e p="C:\Users\TonTL\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_SeniorCapstone.-2129816528.00" t="ExcludeRecursive" />
     <e p="C:\Users\TonTL\repo\SeniorCapstone" t="IncludeRecursive">
+      <e p=".git\info\exclude" t="IncludeRecursive" />
+      <e p=".git\modules\Assets\ReGenSDK\info\exclude" t="IncludeRecursive" />
+      <e p=".git\modules\ReGenSDK\info\exclude" t="IncludeRecursive" />
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp-firstpass.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />

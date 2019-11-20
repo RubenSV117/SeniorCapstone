@@ -43,13 +43,14 @@ namespace ReGenSDK.Service.Impl
                 .Execute();
         }
 
-        public override Task Create(Recipe recipe)
+        public override Task<Recipe> Create(Recipe recipe)
         {
             ValidateRecipe(recipe.Name, recipe.Ingredients, recipe.Steps,
                 recipe.Tags, recipe.ImageReferencePath, recipe.RootImagePath);
             return Put()
                 .RequireAuthentication()
                 .Body(recipe)
+                .Parse<Recipe>()
                 .Execute();
         }
 

@@ -65,10 +65,9 @@ public class RecipeManagerUI : MonoBehaviour
 
     public void InitRecipeUI(Recipe newRecipe)
     {
+
         currentRecipe = newRecipe;
         dishImage.sprite = newRecipe.ImageSprite;
-        if (gameObject.GetComponent<ReviewController>() == null)
-            rc = gameObject.AddComponent<ReviewController>();
 
         #region Update recipe header info
 
@@ -157,7 +156,9 @@ public class RecipeManagerUI : MonoBehaviour
         reviewView.text = "Reviews";
 
         //update reviews
-        rc.getReviews(currentRecipe.Key, HandleReviews);
+        ReviewsPage rc = ReGenClient.Instance.Reviews.GetPage(currentRecipe.Key,null,100).Result;
+        reviewList = rc.Reviews;
+        HandleReviews();
         
 
 
@@ -190,7 +191,6 @@ public class RecipeManagerUI : MonoBehaviour
 
     void HandleReviews()
     {
-        reviewList = rc.reviewList;
         reviewCounter = reviewList.Count;
 
         if(reviewCounter == 0)

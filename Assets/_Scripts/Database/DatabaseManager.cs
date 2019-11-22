@@ -312,16 +312,16 @@ public class DatabaseManager : MonoBehaviour
 //        NotificationManager.Instance.ShowNotification("Publish Successful");
 //    }
 
-    private IEnumerator WaitForElasticSearch(UnityWebRequestAsyncOperation operation)
-    {
-        yield return 0;
-    }
+    //private IEnumerator WaitForElasticSearch(UnityWebRequestAsyncOperation operation)
+    //{
+    //    yield return 0;
+    //}
 
     //Search function for firebase using ID's found.
-    public void Search(object hits)
-    {
+    //public void Search(object hits)
+    //{
        
-    }
+    //}
     
     //coroutine that waits for search to be finished fully before updating the UI
     private IEnumerator WaitForRecipes()

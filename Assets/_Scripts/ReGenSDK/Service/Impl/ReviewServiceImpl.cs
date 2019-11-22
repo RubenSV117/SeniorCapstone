@@ -14,7 +14,7 @@ namespace ReGenSDK.Service.Impl
         }
 
 
-        public override Task<ReviewsPage> GetPage(string recipeId, string start = null, int size = 5)
+        public override Task<ReviewsPage> GetPage(string recipeId, string start = "", int size = 5)
         {
             if (recipeId == null) throw new ArgumentNullException(nameof(recipeId));
             if (size <= 0) throw new ArgumentOutOfRangeException(nameof(size));

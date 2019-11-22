@@ -156,9 +156,11 @@ public class RecipeManagerUI : MonoBehaviour
         reviewView.text = "Reviews";
 
         //update reviews
-        ReviewsPage rc = ReGenClient.Instance.Reviews.GetPage(currentRecipe.Key,null,100).Result;
-        reviewList = rc.Reviews;
-        HandleReviews();
+        ReGenClient.Instance.Reviews.GetPage(currentRecipe.Key, null, 100).Success(list =>
+        {
+            reviewList = list.Reviews;
+            HandleReviews();
+        });
         
 
 
@@ -206,7 +208,11 @@ public class RecipeManagerUI : MonoBehaviour
                 reviewsObjects.Add(reviewInfo);
 
                 Text reviewText = reviewInfo.GetComponentInChildren<Text>();
-
+                foreach(var n in reviewList)
+                {
+                    Debug.Log(n.Content);
+                }
+                
                 reviewText.text = reviewList[i].Content;
             }
             Text test = Instantiate(moreReviewsButton, verticalGroupTrans.transform.position, infoPrefab.transform.rotation,

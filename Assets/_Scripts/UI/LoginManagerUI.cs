@@ -84,7 +84,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
             })
             .Failure(exception =>
             {
-                NotificationManager.Instance.SetLoadingPanel(true);
+                NotificationManager.Instance.SetLoadingPanel(false);
                 OnAccountActionAttempt?.Invoke(exception.Message);
             });
     }
@@ -113,7 +113,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
             })
             .Failure(exception =>
             {
-                NotificationManager.Instance.SetLoadingPanel(true);
+                NotificationManager.Instance.SetLoadingPanel(false);
                 OnAccountActionAttempt?.Invoke(exception.Message);
             });
     }

@@ -36,6 +36,8 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
     [SerializeField] private Text ingredientAmount;
     [SerializeField] private GameObject largeCameraButtons;
     [SerializeField] private GameObject smallCameraButtons;
+    [SerializeField] private RectTransform contentView;
+    [SerializeField] private float heightIncrement;
 
     private List<Ingredient> ingredients = new List<Ingredient>();
     private List<string> directions = new List<string>();
@@ -160,6 +162,20 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
         // update the ingredient count text
         Invoke("UpdateIngredientCount", .1f);
+
+        IncrementHeight();
+    }
+
+    private void IncrementHeight()
+    {
+        Vector2 size = contentView.sizeDelta;
+        contentView.sizeDelta = new Vector2(size.x, size.y + heightIncrement);
+    }
+
+    private void DecrementContentHeight()
+    {
+        Vector2 size = contentView.sizeDelta;
+        contentView.sizeDelta = new Vector2(size.x, size.y - heightIncrement);
     }
 
     public IngredientBuilderView AddIngredientBuilderView()
@@ -183,6 +199,8 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
         // fire event for ui element change
         OnUIElementAdded?.Invoke();
+
+        IncrementHeight();
     }
 
     public DirectionBuilderView AddDirectiontBuilderView()
@@ -206,6 +224,8 @@ public class PublishingManagerUI : MonoBehaviour, IPanel
 
         // update the ingredient count text, apparently theres a tiny delay before the child count is properly updated
        Invoke("UpdateIngredientCount", .1f);
+
+        DecrementContentHeight();
     }
 
     public void BuildRecipe()

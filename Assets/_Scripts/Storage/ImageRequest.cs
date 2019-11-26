@@ -28,6 +28,12 @@ public class ImageRequest : MonoBehaviour
 
     public void GetSprite()
     {
+        if (itemPath == null)
+        {
+            return;
+        }
+
+
         Debug.Log($"StorageManager Requesting image at {itemPath}");
 
         // get reference to the itemPath

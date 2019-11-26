@@ -257,7 +257,7 @@ public class LoginManagerUI : MonoBehaviour, IPanel
 
         attemptFinished = false;
 
-        FacebookManager.Instance.Login();
+        //FacebookManager.Instance.Login();
     }
 
     public void RecoverEmailPassword()

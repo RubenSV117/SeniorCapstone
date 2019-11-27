@@ -1,7 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using Firebase.Extensions;
 using Firebase.Storage;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 /// <summary>
@@ -11,7 +13,6 @@ public class ImageRequest : MonoBehaviour
 {
     public string itemPath;
     public Image image;
-    private Uri uri;
 
     /// <summary>
     /// Link the image to initialize to the path to retrieve from 
@@ -29,54 +30,37 @@ public class ImageRequest : MonoBehaviour
     public void GetSprite()
     {
         Debug.Log($"StorageManager Requesting image at {itemPath}");
+        if (string.IsNullOrWhiteSpace(itemPath))
+        {
+            var black = Texture2D.blackTexture;
+            image.sprite = Sprite.Create(black, new Rect(Vector2.zero, new Vector2(black.width, black.height)),
+                new Vector2(0.5f, 00.5f));
+            Destroy(gameObject);
+            return;
+        }
 
         // get reference to the itemPath
         StorageReference reference = StorageManager.storageReference.GetReferenceFromUrl(itemPath);
-
-        uri = null;
-
-        // launch coroutine to wait for the Uri to be set 
-        StartCoroutine(GetImage(image));
-
-        reference.GetDownloadUrlAsync().ContinueWith((task) =>
+        reference.GetDownloadUrlAsync().ContinueWithOnMainThread((task) =>
         {
             if (!task.IsFaulted && !task.IsCanceled)
             {
                 print($"URI {task.Result}");
-                uri = task.Result;
+                var request = UnityWebRequestTexture.GetTexture(task.Result);
+                var operation = request.SendWebRequest();
+                operation.completed += asyncOperation =>
+                {
+                    var texture = ((DownloadHandlerTexture) request.downloadHandler).texture;
+                    image.sprite = Sprite.Create(texture,
+                        new Rect(Vector2.zero, new Vector2(texture.width, texture.height)),
+                        new Vector2(0.5f, 0.5f));
+                };
+                Destroy(gameObject);
             }
-
             else
             {
                 print($"StorageManager Requesting image Failed");
             }
         });
-    }
-
-    private IEnumerator GetImage(Image image)
-    {
-        // wait until the Uri has been set
-        yield return new WaitWhile(() => uri == null);
-
-        // retrieve the image
-        WWW request = new WWW(uri.ToString());
-
-        yield return request;
-
-        if (request.texture == null || image == null)
-        {
-            Destroy(gameObject);
-
-            yield break;
-        }
-
-        // create a sprite with the data retrieved and set the image to it
-        Sprite newSprite = Sprite.Create(request.texture,
-            new Rect(Vector2.zero, new Vector2(request.texture.width, request.texture.height)),
-            new Vector2(0.5f, 0.5f));
-
-        image.sprite = newSprite;
-
-        Destroy(gameObject);
     }
 }

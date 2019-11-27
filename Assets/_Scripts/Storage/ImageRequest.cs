@@ -32,6 +32,7 @@ public class ImageRequest : MonoBehaviour
         Debug.Log($"StorageManager Requesting image at {itemPath}");
         if (string.IsNullOrWhiteSpace(itemPath))
         {
+            print("No imagepath so using black texture");
             var black = Texture2D.blackTexture;
             image.sprite = Sprite.Create(black, new Rect(Vector2.zero, new Vector2(black.width, black.height)),
                 new Vector2(0.5f, 00.5f));

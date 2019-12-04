@@ -198,7 +198,6 @@ public class LoginManagerUI : MonoBehaviour, IPanel
     {
         loginGroup.SetActive(false);
         emailLoginGroup.SetActive(true);
-        forgotEmailPasswordButton.SetActive(true);
 
         // clear email button listener and set to Email sign in
         //emailLoginButton.onClick.RemoveAllListeners();

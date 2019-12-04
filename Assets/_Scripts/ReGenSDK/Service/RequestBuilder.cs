@@ -141,6 +141,7 @@ namespace ReGenSDK.Service
 
                 unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
                 Debug.Log($"Sending Web Request: {method} {endpoint}");
+                Debug.Log("Authorization: " + unityWebRequest.GetRequestHeader("Authorization"));
                 var request = unityWebRequest.SendWebRequest();
                 request.completed += operation =>
                 {

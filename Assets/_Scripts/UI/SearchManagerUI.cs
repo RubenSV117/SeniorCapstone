@@ -78,6 +78,11 @@ public class SearchManagerUI : MonoBehaviour
                 var tasks = new List<Task<Recipe>>();
                 foreach (var result in list) {
                     Debug.Log("Retrieving recipe for result: " + result);
+                    if (result.Key == null)
+                    {
+                        Debug.LogWarning("Search results has no key: " + result);
+                        continue;
+                    }
                     try
                     {
                         tasks.Add(ReGenClient.Instance.Recipes.Get(result.Key));

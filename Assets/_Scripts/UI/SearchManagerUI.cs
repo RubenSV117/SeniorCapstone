@@ -50,7 +50,7 @@ public class SearchManagerUI : MonoBehaviour
 
     private string RandomLetter()
     {
-        int num = Random.RandomRange(0, 25);
+        int num = Random.Range(0, 25);
         char randomLetter = (char)('a' + num);
         return "" + randomLetter; 
     }

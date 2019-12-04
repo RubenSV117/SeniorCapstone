@@ -18,7 +18,7 @@ public class IngredientBuilderView : MonoBehaviour
     private Ingredient ingredient;
 
     private string amount;
-    private string name;
+    private new string name;
     private bool hasAddedIngredient; 
 
     #endregion

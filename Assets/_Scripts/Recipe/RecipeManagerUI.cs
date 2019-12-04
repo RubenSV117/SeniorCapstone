@@ -242,6 +242,7 @@ public class RecipeManagerUI : MonoBehaviour
         reviewPanel.Reset();
         reviewPanel.recipe = currentRecipe;
         reviewPanel.gameObject.SetActive(true);
+        ReGenClient.Instance.Reviews.Get(currentRecipe.Key).Success(review => { reviewPanel.PrefilReview(review); });
     }
 
     public void HideRewiewPanel()

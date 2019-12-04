@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -56,15 +57,14 @@ public class StarController : MonoBehaviour
     {
         int fullStars = (int)value;
         float partialValue = value - fullStars;
-
         if (fullStars > stars.Count || fullStars <= 0)
             return;
 
-        for (int i = 0; i < fullStars; i++)
-            stars[i].TurnOn();
+        for (int i = 0; i < stars.Count; i++)
+            if (i <= fullStars) stars[i].TurnOn();
+            else stars[i].TurnOff();
 
-
-        if (partialValue == 0)
+        if (Math.Abs(partialValue) < 0.05)
             return;
 
         int indexToFill = Mathf.CeilToInt(value) - 1;

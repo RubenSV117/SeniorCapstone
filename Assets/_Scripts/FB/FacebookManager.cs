@@ -42,7 +42,7 @@ public class FacebookManager : MonoBehaviour
 
     public void Login(Action<string> success, Action<string> failure)
     {
-        var permissions = new List<string>() {"public_profile", "email"};
+        var permissions = new List<string> {"public_profile", "email"};
 
         FB.LogInWithReadPermissions(permissions, (result) =>
         {

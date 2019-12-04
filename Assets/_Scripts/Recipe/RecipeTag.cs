@@ -7,7 +7,7 @@
 /// </summary>
 public class RecipeTag : MonoBehaviour
 {
-    [SerializeField] private string tag;
+    [SerializeField] private new string tag;
 
     public string GetTag()
     {

@@ -108,11 +108,13 @@ public class SearchManagerUI : MonoBehaviour
         // remove previous recipes
         if (recipeListTrans.transform.childCount > 0 && !favoriteSearch)
         {
+            Debug.Log("Adding NONFAVORITES to UI");
             for (int i = 0; i < recipeListTrans.transform.childCount; i++)
                 Destroy(recipeListTrans.transform.GetChild(i).gameObject);
         }
         if (recipeListTransFavorites.transform.childCount > 0 && favoriteSearch)
         {
+            Debug.Log("Adding favorites to UI");
             for (int i = 0; i < recipeListTransFavorites.transform.childCount; i++)
                 Destroy(recipeListTransFavorites.transform.GetChild(i).gameObject);
         }
@@ -184,7 +186,23 @@ public class SearchManagerUI : MonoBehaviour
 
     public void EnableFavoritesPanel() 
     {
+        List<String> favorites = new List<String>();
+        List<Recipe> favRecipes = new List<Recipe>();
         favoritesPanel.SetActive(true);
+        ReGenClient.Instance.Favorites.Get().Success(list =>
+        {
+            favorites = list;
+            foreach(var fav in favorites)
+            {
+                ReGenClient.Instance.Recipes.Get(fav).Success(newList =>
+                {
+                    favRecipes.Add(newList);
+                    RefreshRecipeList(favRecipes, true);
+                });
+            }
+            loadingPanel.SetActive(false); 
+        });
+
     }
 
 }

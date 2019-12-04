@@ -52,11 +52,19 @@ public class ImageRequest : MonoBehaviour
                 operation.completed += asyncOperation =>
                 {
                     var texture = ((DownloadHandlerTexture) request.downloadHandler).texture;
-                    image.sprite = Sprite.Create(texture,
+                    try
+                    {
+                        image.sprite = Sprite.Create(texture,
                         new Rect(Vector2.zero, new Vector2(texture.width, texture.height)),
                         new Vector2(0.5f, 0.5f));
+                    }
+                    catch(Exception e)
+                    {
+                        Debug.Log(e);
+                    }
+                    Destroy(gameObject);
                 };
-                Destroy(gameObject);
+
             }
             else
             {

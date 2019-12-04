@@ -197,7 +197,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1376281189734692571, guid: bfdac76055442b545a462a08a5fbcdf4,
           type: 3}
-        m_MethodName: ShowMoreReviews
+        m_MethodName: ShowReviewPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

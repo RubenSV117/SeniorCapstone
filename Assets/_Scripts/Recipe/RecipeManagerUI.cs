@@ -242,7 +242,6 @@ public class RecipeManagerUI : MonoBehaviour
         reviewPanel.Reset();
         reviewPanel.recipe = currentRecipe;
         reviewPanel.gameObject.SetActive(true);
-        //gameObject.transform.Find("RatingSurveySection").SetAsLastSibling();
     }
 
     public void HideRewiewPanel()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using ReGenSDK.Exceptions;
@@ -131,12 +132,13 @@ namespace ReGenSDK.Service
                         throw new RegenAuthenticationException("token was not retrieved for endpoint " + endpoint);
                     }
 
-                    unityWebRequest.SetRequestHeader("Authorization", $"Bearer: {token}");
+                    unityWebRequest.SetRequestHeader("Authorization", $"Bearer {token}");
                 }
 
                 if (body != null)
                 {
                     unityWebRequest.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
+                    unityWebRequest.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(body));
                 }
 
                 unityWebRequest.downloadHandler = new DownloadHandlerBuffer();

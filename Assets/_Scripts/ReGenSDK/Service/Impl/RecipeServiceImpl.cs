@@ -15,16 +15,18 @@ namespace ReGenSDK.Service.Impl
         {
         }
 
-        public override Task<Recipe> Get(string recipeId)
+        public override Task<Recipe> Get([NotNull] string recipeId)
         {
+            if (recipeId == null) throw new ArgumentNullException(nameof(recipeId));
             return HttpGet()
                 .Path(recipeId)
                 .Parse<Recipe>()
                 .Execute();
         }
 
-        public override Task Update(string recipeId, Recipe recipe)
+        public override Task Update([NotNull] string recipeId, Recipe recipe)
         {
+            if (recipeId == null) throw new ArgumentNullException(nameof(recipeId));
             ValidateRecipe(recipe.Name, recipe.Ingredients, recipe.Steps,
                 recipe.Tags);
             return HttpPost()
@@ -35,16 +37,18 @@ namespace ReGenSDK.Service.Impl
 
         }
 
-        public override Task Delete(string recipeId)
+        public override Task Delete([NotNull] string recipeId)
         {
+            if (recipeId == null) throw new ArgumentNullException(nameof(recipeId));
             return HttpDelete()
                 .Path(recipeId)
                 .RequireAuthentication()
                 .Execute();
         }
 
-        public override Task<Recipe> Create(Recipe recipe)
+        public override Task<Recipe> Create([NotNull] Recipe recipe)
         {
+            if (recipe == null) throw new ArgumentNullException(nameof(recipe));
             ValidateRecipe(recipe.Name, recipe.Ingredients, recipe.Steps,
                 recipe.Tags);
             return HttpPut()

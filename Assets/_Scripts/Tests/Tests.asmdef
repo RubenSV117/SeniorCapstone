@@ -1,7 +1,6 @@
 {
     "name": "Tests",
     "references": [
-        "Packages",
         "_Scripts"
     ],
     "optionalUnityReferences": [

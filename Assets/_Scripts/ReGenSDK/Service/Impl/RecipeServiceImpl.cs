@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Castle.Core.Internal;
 using JetBrains.Annotations;
 using ReGenSDK.Model;
-using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace ReGenSDK.Service.Impl
 {
@@ -61,7 +58,7 @@ namespace ReGenSDK.Service.Impl
         private void ValidateRecipe([NotNull] string recipeName,
             [NotNull] List<Ingredient> recipeIngredients, [NotNull] List<string> recipeSteps, [NotNull] List<string> recipeTags)
         {
-            if (recipeName.IsNullOrEmpty()) throw new ArgumentNullException(nameof(recipeName));
+            if (string.IsNullOrEmpty(recipeName)) throw new ArgumentNullException(nameof(recipeName));
             if (recipeIngredients == null) throw new ArgumentNullException(nameof(recipeIngredients));
             if (recipeSteps == null) throw new ArgumentNullException(nameof(recipeSteps));
             if (recipeTags == null) throw new ArgumentNullException(nameof(recipeTags));

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Firebase.Database;
 using ReGenSDK;
 using ReGenSDK.Model;
 using UnityEngine;
@@ -29,9 +28,6 @@ public class ReviewController : MonoBehaviour
     #endregion
 
     private bool hasExistingReview = false;
-    //firebase object
-    private DatabaseReference databaseReference;
-    private bool hasAttemptFinished;
     public List<Review> reviewList = new List<Review>();
     #region Public Methods
 

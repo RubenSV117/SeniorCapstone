@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using ReGenSDK.Exceptions;
 using ReGenSDK.Tasks;
-using RestSharp.Extensions;
 using UnityEngine;
 using UnityEngine.Networking;
 

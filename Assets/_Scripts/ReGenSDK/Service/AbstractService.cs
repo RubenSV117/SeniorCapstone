@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Castle.Core.Internal;
-using RestSharp.Serializers;
-using UnityEditor;
 using UnityEngine.Networking;
 
 namespace ReGenSDK.Service

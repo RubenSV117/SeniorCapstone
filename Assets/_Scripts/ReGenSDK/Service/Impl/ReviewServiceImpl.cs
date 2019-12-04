@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using ReGenSDK.Model;
-using RestSharp.Validation;
 
 namespace ReGenSDK.Service.Impl
 {
